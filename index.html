@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#2b2350">
+<link rel="manifest" href="./manifest.json">
+<link rel="icon" href="./icon-192.png">
+<link rel="apple-touch-icon" href="./icon-192.png">
+<title>Mystères à Chaville</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Trebuchet MS', 'Comic Sans MS', sans-serif;
+    background: linear-gradient(160deg, #2b2350 0%, #3a2f6b 60%, #4a3d85 100%);
+    color: #fff; min-height: 100dvh;
+    display: flex; justify-content: center; align-items: center;
+  }
+  .box { width: 100%; max-width: 440px; padding: 24px; text-align: center; }
+  .logo { font-size: 4rem; }
+  h1 { color: #feca57; font-size: 1.6rem; line-height: 1.3; margin: 8px 0 4px; text-shadow: 0 2px 0 rgba(0,0,0,.3); }
+  p.sub { opacity: .85; font-size: .95rem; margin-bottom: 26px; }
+  a.card {
+    display: flex; align-items: center; gap: 14px; text-align: left;
+    background: rgba(255,255,255,.12); border: 2px solid rgba(255,255,255,.2);
+    border-radius: 20px; padding: 16px; margin-top: 14px;
+    color: #fff; text-decoration: none;
+  }
+  a.card:active { background: rgba(255,255,255,.22); }
+  a.card .em { font-size: 2.2rem; }
+  a.card .t { font-weight: bold; font-size: 1.05rem; }
+  a.card .s { font-size: .82rem; opacity: .85; margin-top: 3px; line-height: 1.35; }
+  .foot { margin-top: 30px; font-size: .75rem; opacity: .55; line-height: 1.5; }
+</style>
+</head>
+<body>
+  <div class="box">
+    <div class="logo">🐱🔍</div>
+    <h1>Mystères à Chaville</h1>
+    <p class="sub" style="margin-bottom:4px">🎓 L'Académie des Chats Détectives</p>
+    <p class="sub">Observe 👀 · Déchiffre ✏️ · Calcule 🧮 · Déduis 🧠</p>
+
+    <a class="card" href="./academie.html">
+      <span class="em">🗺️</span>
+      <span>
+        <span class="t">Le jeu — la carte de Chaville</span>
+        <span class="s">6 enquêtes à débloquer, avec le commissaire Griffe et Pistache</span>
+      </span>
+    </a>
+
+    <a class="card" href="./demo.html">
+      <span class="em">🎮</span>
+      <span>
+        <span class="t">Démo aventure — le marché</span>
+        <span class="s">Déplace le détective en pixel art, interroge les suspects, ramasse les indices…</span>
+      </span>
+    </a>
+
+    <p class="foot">Astuce : dans Chrome sur Android, menu ⋮ → « Ajouter à l'écran d'accueil »<br>pour installer le jeu comme une vraie application.</p>
+  </div>
+<script>
+if ('serviceWorker' in navigator && location.protocol === 'https:') {
+  addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(() => {}));
+}
+</script>
+</body>
+</html>

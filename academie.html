@@ -1,0 +1,1026 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#2b2350">
+<link rel="manifest" href="./manifest.json">
+<link rel="icon" href="./icon-192.png">
+<link rel="apple-touch-icon" href="./icon-192.png">
+
+<title>Mystères à Chaville — Le jeu</title>
+<style>
+  :root {
+    --bg: #2b2350;
+    --bg2: #3a2f6b;
+    --card: #ffffff;
+    --ink: #2b2350;
+    --accent: #ff9f43;
+    --accent2: #feca57;
+    --good: #2ecc71;
+    --bad: #ff6b6b;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { height: 100%; }
+  body {
+    font-family: 'Trebuchet MS', 'Comic Sans MS', 'Chalkboard SE', sans-serif;
+    background: linear-gradient(160deg, var(--bg) 0%, var(--bg2) 60%, #4a3d85 100%);
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    min-height: 100dvh;
+  }
+  #app {
+    width: 100%;
+    max-width: 480px;
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    padding: 16px;
+  }
+  .screen { display: none; flex-direction: column; flex: 1; animation: fadein .35s ease; }
+  .screen.active { display: flex; }
+  @keyframes fadein { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+
+  h1 { font-size: 1.55rem; text-align: center; line-height: 1.25; margin: 6px 0; color: var(--accent2); text-shadow: 0 2px 0 rgba(0,0,0,.3); }
+  h2 { font-size: 1.25rem; text-align: center; margin: 6px 0 12px; color: var(--accent2); }
+  p.lead { text-align: center; font-size: 1rem; line-height: 1.5; opacity: .95; }
+
+  .bigcat { font-size: 3.4rem; text-align: center; margin: 4px 0; }
+
+  .btn {
+    display: block; width: 100%;
+    background: linear-gradient(180deg, var(--accent2), var(--accent));
+    color: var(--ink);
+    border: none; border-radius: 18px;
+    padding: 15px 18px;
+    font-size: 1.05rem; font-weight: bold;
+    font-family: inherit;
+    margin-top: 12px;
+    cursor: pointer;
+    box-shadow: 0 4px 0 #d17f1f;
+    transition: transform .08s ease;
+  }
+  .btn:active { transform: translateY(3px); box-shadow: 0 1px 0 #d17f1f; }
+  .btn.secondary { background: rgba(255,255,255,.14); color: #fff; box-shadow: 0 4px 0 rgba(0,0,0,.25); }
+  .btn.small { padding: 10px 14px; font-size: .95rem; width: auto; display: inline-block; }
+  .btn:disabled { opacity: .45; }
+
+  .topbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; min-height: 34px; gap: 8px; }
+  .topbar .home-btn { background: rgba(255,255,255,.14); border: none; color: #fff; font-size: 1.1rem; border-radius: 12px; padding: 6px 12px; cursor: pointer; font-family: inherit; }
+  .badge { background: rgba(255,255,255,.14); border-radius: 12px; padding: 6px 12px; font-size: .85rem; }
+
+  .panel { background: rgba(255,255,255,.1); border-radius: 20px; padding: 16px; margin-top: 10px; }
+
+  .quote {
+    display: flex; gap: 10px; align-items: flex-start;
+    background: rgba(255,255,255,.1);
+    border-radius: 16px; padding: 12px; margin-top: 10px;
+    font-size: .92rem; line-height: 1.45;
+  }
+  .quote .who { font-size: 1.7rem; }
+  .quote i { opacity: .95; }
+
+  /* ==== CARTE DE CHAVILLE ==== */
+  .mapwrap {
+    position: relative;
+    margin-top: 12px;
+    border-radius: 22px;
+    height: 470px;
+    overflow: hidden;
+    background:
+      radial-gradient(circle at 75% 8%, rgba(254,202,87,.28), transparent 26%),
+      linear-gradient(180deg, #1e2a52 0%, #2c3a66 45%, #34557a 78%, #2e6b7d 100%);
+    border: 2px solid rgba(255,255,255,.18);
+    box-shadow: inset 0 0 60px rgba(0,0,0,.35);
+  }
+  .mapwrap .fog { position: absolute; inset: 0; pointer-events: none;
+    background: repeating-linear-gradient(115deg, transparent 0 60px, rgba(255,255,255,.035) 60px 120px); }
+  .mapwrap svg.path { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+  .map-node {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    background: rgba(20, 18, 45, .78);
+    border: 2px solid rgba(255,255,255,.3);
+    border-radius: 16px;
+    color: #fff;
+    font-family: inherit;
+    text-align: center;
+    padding: 8px 10px;
+    min-width: 96px;
+    cursor: pointer;
+  }
+  .map-node .em { font-size: 1.7rem; display: block; }
+  .map-node .nm { font-size: .74rem; font-weight: bold; display: block; margin-top: 2px; line-height: 1.15; }
+  .map-node .st { font-size: .7rem; letter-spacing: 1px; display: block; margin-top: 2px; color: var(--accent2); }
+  .map-node.done { border-color: var(--good); }
+  .map-node.next { border-color: var(--accent2); animation: pulse 1.6s infinite; }
+  .map-node.locked { opacity: .55; cursor: default; filter: grayscale(.6); }
+  @keyframes pulse { 0%,100% { box-shadow: 0 0 0 0 rgba(254,202,87,.55); } 50% { box-shadow: 0 0 0 9px rgba(254,202,87,0); } }
+  .medal {
+    background: linear-gradient(90deg, rgba(254,202,87,.25), rgba(255,159,67,.25));
+    border: 2px solid var(--accent2);
+    border-radius: 16px; padding: 10px; text-align: center;
+    margin-top: 12px; font-size: .95rem; font-weight: bold;
+  }
+
+  /* Suspects */
+  .suspects { display: grid; grid-template-columns: repeat(auto-fit, minmax(84px, 1fr)); gap: 10px; margin-top: 12px; }
+  .suspect {
+    background: rgba(255,255,255,.12);
+    border: 2px solid rgba(255,255,255,.2);
+    border-radius: 16px;
+    padding: 10px 6px;
+    text-align: center;
+    cursor: pointer;
+    position: relative;
+  }
+  .suspect .face { font-size: 2rem; }
+  .suspect .name { font-weight: bold; font-size: .88rem; margin-top: 4px; }
+  .suspect .desc { font-size: .7rem; opacity: .85; margin-top: 2px; line-height: 1.25; }
+  .suspect.eliminated { opacity: .35; }
+  .suspect.eliminated::after { content: "❌"; position: absolute; top: 6px; right: 6px; font-size: 1rem; }
+  .suspect.selected { border-color: var(--accent2); background: rgba(254,202,87,.25); }
+
+  /* Scène d'observation */
+  .scene { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px; }
+  .scene .spot { background: rgba(255,255,255,.14); border-radius: 16px; padding: 10px 8px; text-align: center; }
+  .scene .spot .em { font-size: 1.9rem; }
+  .scene .spot .lb { font-size: .76rem; line-height: 1.3; margin-top: 4px; }
+
+  .timerwrap { background: rgba(0,0,0,.3); border-radius: 10px; height: 14px; margin-top: 12px; overflow: hidden; }
+  .timerbar { height: 100%; width: 100%; background: linear-gradient(90deg, var(--good), var(--accent2)); border-radius: 10px; transition: width 1s linear; }
+
+  /* QCM */
+  .qcm .btn { background: rgba(255,255,255,.14); color: #fff; box-shadow: 0 4px 0 rgba(0,0,0,.25); font-weight: normal; }
+  .qcm .btn.correct { background: var(--good); color: #fff; box-shadow: 0 4px 0 #1e9e54; font-weight: bold; }
+  .qcm .btn.wrong { background: var(--bad); color: #fff; box-shadow: 0 4px 0 #c94f4f; }
+
+  /* Anagrammes */
+  .note {
+    background: #fdf6e3; color: #5b4a2f;
+    border-radius: 14px; padding: 14px;
+    font-size: .98rem; line-height: 1.7;
+    box-shadow: 0 3px 8px rgba(0,0,0,.3);
+    transform: rotate(-1deg);
+    margin-top: 10px;
+  }
+  .note .blank { display: inline-block; min-width: 70px; border-bottom: 2px dashed #b59b6a; text-align: center; font-weight: bold; color: #a05c17; padding: 0 4px; }
+  .note .blank.done { color: #1e9e54; border-bottom-style: solid; }
+  .letters { display: flex; flex-wrap: wrap; gap: 7px; justify-content: center; margin-top: 14px; }
+  .letters button {
+    width: 40px; height: 46px;
+    font-size: 1.25rem; font-weight: bold; font-family: inherit;
+    border: none; border-radius: 12px;
+    background: var(--card); color: var(--ink);
+    box-shadow: 0 3px 0 #b9b9c9;
+    cursor: pointer;
+  }
+  .letters button:disabled { opacity: .25; }
+  .built { text-align: center; font-size: 1.4rem; letter-spacing: 4px; min-height: 2.1rem; margin-top: 12px; color: var(--accent2); font-weight: bold; }
+  .anagram-actions { display: flex; gap: 10px; justify-content: center; margin-top: 8px; }
+
+  .feedback { text-align: center; margin-top: 12px; font-size: .95rem; min-height: 1.5rem; font-weight: bold; line-height: 1.4; }
+  .feedback.good { color: #7bed9f; }
+  .feedback.bad { color: #ff9d9d; }
+
+  .cluebox { background: rgba(254,202,87,.15); border: 2px dashed var(--accent2); border-radius: 14px; padding: 12px; margin-top: 10px; font-size: .9rem; line-height: 1.45; }
+  .cluebox b { color: var(--accent2); }
+
+  .stars-big { text-align: center; font-size: 2.6rem; margin: 10px 0; letter-spacing: 6px; }
+  .spacer { flex: 1; }
+  .footer-note { text-align: center; font-size: .75rem; opacity: .6; margin-top: 12px; }
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- CARTE (ACCUEIL) -->
+  <section class="screen active" id="s-map">
+    <h1>🐱🔍 L'Académie des Chats Détectives</h1>
+    <p class="lead" style="font-size:.88rem;">La brume tombe sur Chaville…<br>Choisis un lieu sur la carte, détective ! <span id="map-progress"></span></p>
+    <div class="mapwrap" id="mapwrap">
+      <div class="fog"></div>
+      <svg class="path" viewBox="0 0 100 100" preserveAspectRatio="none">
+        <polyline points="25,85 75,78 20,60 72,52 30,33 70,14"
+          fill="none" stroke="rgba(254,202,87,.5)" stroke-width="0.8"
+          stroke-dasharray="2,2.5" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <div id="map-medal"></div>
+    <p class="footer-note">Observe 👀 · Déchiffre ✏️ · Calcule 🧮 · Déduis 🧠</p>
+  </section>
+
+  <!-- INTRO ENQUÊTE -->
+  <section class="screen" id="s-intro">
+    <div class="topbar">
+      <button class="home-btn" onclick="goHome()">🗺️</button>
+      <span class="badge" id="intro-badge"></span>
+    </div>
+    <h2 id="intro-title"></h2>
+    <div class="panel"><p id="intro-story" style="line-height:1.5; font-size:.93rem;"></p></div>
+    <div class="quote"><span class="who">😾</span><i id="intro-griffe"></i></div>
+    <div class="quote"><span class="who">🐭</span><i id="intro-pistache"></i></div>
+    <p class="lead" style="margin-top:10px; font-weight:bold;">Les suspects :</p>
+    <div class="suspects" id="intro-suspects"></div>
+    <div class="spacer"></div>
+    <button class="btn" onclick="startObservation()">Commencer l'enquête 🔍</button>
+  </section>
+
+  <!-- OBSERVATION -->
+  <section class="screen" id="s-obs">
+    <div class="topbar">
+      <button class="home-btn" onclick="goHome()">🗺️</button>
+      <span class="badge">Étape 1 · Observation 👀</span>
+    </div>
+    <h2>Mémorise la scène !</h2>
+    <p class="lead" style="font-size:.88rem;">Regarde chaque détail, on va te poser des questions…</p>
+    <div class="timerwrap"><div class="timerbar" id="obs-timer"></div></div>
+    <div class="scene" id="obs-scene"></div>
+    <div class="spacer"></div>
+    <button class="btn secondary" onclick="endObservation()">J'ai tout mémorisé ✅</button>
+  </section>
+
+  <!-- QUESTIONS OBSERVATION -->
+  <section class="screen" id="s-quiz">
+    <div class="topbar">
+      <button class="home-btn" onclick="goHome()">🗺️</button>
+      <span class="badge" id="quiz-badge"></span>
+    </div>
+    <h2 id="quiz-question"></h2>
+    <div class="qcm" id="quiz-options"></div>
+    <div class="feedback" id="quiz-feedback"></div>
+    <div class="spacer"></div>
+  </section>
+
+  <!-- MESSAGE CODÉ -->
+  <section class="screen" id="s-word">
+    <div class="topbar">
+      <button class="home-btn" onclick="goHome()">🗺️</button>
+      <span class="badge">Étape 2 · Message codé ✏️</span>
+    </div>
+    <h2>Un message mystérieux !</h2>
+    <p class="lead" style="font-size:.88rem;" id="word-intro"></p>
+    <div class="note" id="word-note"></div>
+    <p class="lead" style="margin-top:12px; font-size:.88rem;">Remets les lettres dans l'ordre :</p>
+    <div class="built" id="word-built">&nbsp;</div>
+    <div class="letters" id="word-letters"></div>
+    <div class="anagram-actions">
+      <button class="btn small secondary" onclick="wordErase()">⌫ Effacer</button>
+      <button class="btn small secondary" onclick="wordHint()">🐭 Pistache ?</button>
+    </div>
+    <div class="feedback" id="word-feedback"></div>
+    <div class="spacer"></div>
+  </section>
+
+  <!-- CALCUL -->
+  <section class="screen" id="s-math">
+    <div class="topbar">
+      <button class="home-btn" onclick="goHome()">🗺️</button>
+      <span class="badge">Étape 3 · Calcul du détective 🧮</span>
+    </div>
+    <h2 id="math-title"></h2>
+    <div class="panel"><p id="math-text" style="line-height:1.55; font-size:.93rem; white-space:pre-line;"></p></div>
+    <div class="qcm" id="math-options"></div>
+    <div class="feedback" id="math-feedback"></div>
+    <div class="spacer"></div>
+  </section>
+
+  <!-- DÉDUCTION -->
+  <section class="screen" id="s-deduce">
+    <div class="topbar">
+      <button class="home-btn" onclick="goHome()">🗺️</button>
+      <span class="badge">Étape 4 · Déduction 🧠</span>
+    </div>
+    <h2>Qui est le coupable ?</h2>
+    <div id="deduce-clues"></div>
+    <p class="lead" style="margin-top:10px; font-weight:bold;">Touche le suspect que tu accuses :</p>
+    <div class="suspects" id="deduce-suspects"></div>
+    <div class="feedback" id="deduce-feedback"></div>
+    <div class="spacer"></div>
+  </section>
+
+  <!-- RÉSULTAT -->
+  <section class="screen" id="s-result">
+    <div class="bigcat" id="result-emoji">🎉</div>
+    <h2 id="result-title"></h2>
+    <div class="stars-big" id="result-stars"></div>
+    <div class="panel"><p id="result-story" style="line-height:1.55; font-size:.93rem; white-space:pre-line;"></p></div>
+    <div class="spacer"></div>
+    <button class="btn" onclick="goHome()">Retour à la carte 🗺️</button>
+  </section>
+
+</div>
+
+<script>
+'use strict';
+
+/* ============ DONNÉES DES ENQUÊTES ============ */
+const ENQUETES = [
+  {
+    id: 0, emoji: '🐟', mapName: "Le Marché", x: 25, y: 85,
+    title: "L'affaire des croquettes volées",
+    place: "Le marché de Chaville",
+    story: "Catastrophe au marché ! Cette nuit, quelqu'un a dévalisé le stand de Madame Sardine : un sac entier de croquettes de luxe a disparu. Cinq chats se trouvaient au marché hier soir…",
+    griffe: "« Une affaire simple pour commencer, chaton. Ouvre l'œil, et le bon. »",
+    pistache: "« Le marché ! J'adore… surtout le stand de fromage. Hum, pardon. On enquête ! »",
+    suspects: [
+      { name: "Moustache", face: "🐱🧢", desc: "Gros chat gris, casquette" },
+      { name: "Caramel",  face: "🐱🧣", desc: "Gros chat roux, écharpe" },
+      { name: "Perle",    face: "🐱📿", desc: "Petite chatte blanche" },
+      { name: "Réglisse", face: "🐈‍⬛🎀", desc: "Chat noir tout mince" },
+      { name: "Tigrou",   face: "🐱👓", desc: "Petit chat tigré, lunettes" }
+    ],
+    scene: [
+      { em: "🐟🏪", lb: "Le stand de Madame Sardine" },
+      { em: "🐱🧢", lb: "Moustache reniflait les croquettes" },
+      { em: "🐱🧣", lb: "Caramel buvait un lait" },
+      { em: "🐱📿", lb: "Perle achetait un poisson" },
+      { em: "🐱👓", lb: "Tigrou lisait le journal" },
+      { em: "🐈‍⬛🎀", lb: "Réglisse écoutait de la musique" },
+      { em: "🐦", lb: "Un pigeon picorait des miettes" },
+      { em: "⏰", lb: "L'horloge indiquait 19 h" }
+    ],
+    obsTime: 25,
+    quiz: [
+      { q: "Que faisait Moustache près du stand ?", opts: ["Il buvait un lait", "Il reniflait les croquettes", "Il lisait le journal", "Il dormait"], a: 1 },
+      { q: "Qui lisait le journal ?", opts: ["Perle", "Caramel", "Tigrou", "Réglisse"], a: 2 },
+      { q: "Quelle heure indiquait l'horloge ?", opts: ["18 h", "19 h", "20 h", "21 h"], a: 1 }
+    ],
+    wordIntro: "Près du stand, tu trouves un bout de papier déchiré…",
+    sentence: ["« Rendez-vous à ", 0, " près de la ", 1, " pour partager le festin. »"],
+    words: [
+      { answer: "MINUIT", hint: "L'heure où les deux aiguilles sont tout en haut… 🕛" },
+      { answer: "FONTAINE", hint: "On y boit de l'eau, sur la place du village ⛲" }
+    ],
+    math: [
+      {
+        title: "L'empreinte de patte 🐾",
+        text: "Devant le stand, une empreinte de patte mesure 6 cm. Le vétérinaire est formel : seuls les chats de plus de 5 kg laissent des empreintes de plus de 5 cm.\n\nCarnet de pesée :\nMoustache : 7 kg · Caramel : 6 kg · Perle : 3 kg · Réglisse : 4 kg · Tigrou : 3 kg.\n\nCombien de suspects pèsent plus de 5 kg ?",
+        opts: ["1", "2", "3", "4"], a: 1,
+        clue: "L'empreinte est grande : le voleur est un <b>gros chat</b> (plus de 5 kg). Perle, Réglisse et Tigrou sont hors de cause !",
+        eliminate: [2, 3, 4]
+      },
+      {
+        title: "Le coffre du témoin 🔐",
+        text: "Le pigeon a tout vu ! Mais il a enfermé son témoignage dans un coffre à code. Sur le coffre, il est écrit :\n\nCode = (6 × 7) + 10\n\nQuel est le code ?",
+        opts: ["42", "52", "62", "67"], a: 1,
+        clue: "Le témoignage du pigeon : « J'ai vu le voleur de dos… il avait un <b>poil gris</b> et quelque chose sur la tête ! »",
+        eliminate: []
+      }
+    ],
+    culprit: 0,
+    ending: "Bravo, détective ! 🎖️ C'était bien Moustache : un gros chat gris de 7 kg, avec sa casquette sur la tête. Il voulait organiser un festin surprise à minuit près de la fontaine… sans demander la permission ! Il a tout rendu, s'est excusé auprès de Madame Sardine, et l'a invitée au festin.",
+    failHint: "Relis les indices : un GROS chat, au poil GRIS, avec quelque chose sur la tête…",
+    unlock: "Le commissaire Griffe hoche la tête : « Pas mal. La Duchesse a besoin de toi au Manoir. »"
+  },
+  {
+    id: 1, emoji: "📿", mapName: "Le Manoir", x: 75, y: 78,
+    title: "Le collier de la Duchesse",
+    place: "Le bal du manoir",
+    story: "Hier soir, grand bal au manoir ! Mais à 21 h 30, la Duchesse Angora a poussé un cri : son précieux collier de perles avait disparu. Cinq chats travaillaient au manoir ce soir-là…",
+    griffe: "« La Duchesse est une amie, chaton. Ne me déçois pas. »",
+    pistache: "« Un bal ! Tu crois qu'il reste du gâteau ? … Concentrons-nous. »",
+    suspects: [
+      { name: "Léo",     face: "🐱🤵", desc: "Majordome siamois" },
+      { name: "Zoé",     face: "🐱🩰", desc: "Danseuse tricolore" },
+      { name: "Barnabé", face: "🐱👨‍🍳", desc: "Cuisinier persan" },
+      { name: "Filou",   face: "🐱🎩", desc: "Magicien roux" },
+      { name: "Luna",    face: "🐈‍⬛🎹", desc: "Pianiste noire" }
+    ],
+    scene: [
+      { em: "🐱🤵", lb: "Léo servait les boissons au salon" },
+      { em: "🐱🩰", lb: "Zoé dansait devant les invités" },
+      { em: "🐱👨‍🍳", lb: "Barnabé préparait le gâteau à la cuisine" },
+      { em: "🐱🎩", lb: "Filou faisait un tour de magie" },
+      { em: "🐈‍⬛🎹", lb: "Luna jouait du piano" },
+      { em: "👑😺", lb: "La Duchesse saluait ses invités" },
+      { em: "🕘", lb: "L'horloge du bal indiquait 21 h" },
+      { em: "💐", lb: "Un bouquet de roses sur la table" }
+    ],
+    obsTime: 25,
+    quiz: [
+      { q: "Que faisait Filou pendant le bal ?", opts: ["Il dansait", "Il servait les boissons", "Un tour de magie", "Il dormait"], a: 2 },
+      { q: "Qui jouait du piano ?", opts: ["Zoé", "Luna", "Léo", "La Duchesse"], a: 1 },
+      { q: "Que préparait Barnabé à la cuisine ?", opts: ["Une soupe", "Des croquettes", "Un gâteau", "Une salade"], a: 2 }
+    ],
+    wordIntro: "Dans le couloir, une note froissée traîne par terre…",
+    sentence: ["« Le collier est caché à la ", 0, ", dans le pot de ", 1, ". »"],
+    words: [
+      { answer: "CUISINE", hint: "La pièce où on prépare les repas 🍳" },
+      { answer: "FARINE", hint: "Poudre blanche pour faire les gâteaux 🥖" }
+    ],
+    math: [
+      {
+        title: "Les alibis du bal ⏱️",
+        text: "Le collier a disparu entre 21 h 00 et 21 h 30.\n\nLe tour de magie de Filou, devant TOUS les invités, a duré de 20 h 50 à 21 h 20, et Zoé a dansé pendant tout le tour.\n\nCombien de minutes a duré le tour de magie ?",
+        opts: ["20 minutes", "30 minutes", "40 minutes", "70 minutes"], a: 1,
+        clue: "Filou et Zoé étaient <b>devant tous les invités</b> : difficile de filer à la cuisine sans être vus !",
+        eliminate: [1, 3]
+      },
+      {
+        title: "Les traces de farine 🥖",
+        text: "Sur le tapis du couloir, tu comptes des traces de pattes blanches : 4 rangées de 6 empreintes, toutes couvertes de farine.\n\nCombien d'empreintes en tout ?",
+        opts: ["10", "18", "24", "46"], a: 2,
+        clue: "Des empreintes pleines de <b>farine</b> qui vont vers la cuisine… Et Luna n'a jamais quitté son piano : tous les invités l'ont entendue jouer sans s'arrêter !",
+        eliminate: [4]
+      }
+    ],
+    culprit: 2,
+    ending: "Magnifique déduction ! 🎖️ C'était Barnabé, le cuisinier. Mais surprise : ce n'est pas un vrai voleur ! Le fermoir du collier s'était cassé et le collier était tombé dans son saladier. Barnabé l'avait caché dans le pot de farine, le temps de le réparer, pour faire une surprise à la Duchesse… La Duchesse a ri, et tout le manoir a partagé le gâteau.",
+    failHint: "Pense aux alibis : qui était devant tout le monde ? Et ces traces de farine, elles mènent où… ?",
+    unlock: "La Duchesse te recommande partout en ville. Le port t'ouvre ses quais… et son mystère."
+  },
+  {
+    id: 2, emoji: "⚓", mapName: "Le Port", x: 20, y: 60,
+    title: "Le chalutier fantôme",
+    place: "Les quais dans la brume",
+    story: "Chaque nuit, des caisses de sardines disparaissent des quais. Et les pêcheurs jurent avoir vu un chalutier SANS ÉQUIPAGE glisser tout seul dans la brume… Un bateau fantôme ? Vraiment ?",
+    griffe: "« Un bateau fantôme ? Balivernes. Trouve-moi la vraie explication, chaton. »",
+    pistache: "« Les f-f-fantômes, ça n'existe pas… hein ? Dis ? PROMIS ? »",
+    suspects: [
+      { name: "Barbe-Grise", face: "🐱⚓", desc: "Capitaine, vieux loup de mer" },
+      { name: "Marinette", face: "🐱🧢", desc: "Matelote rousse" },
+      { name: "Gaspard", face: "🐱🔦", desc: "Gardien du phare" },
+      { name: "Plume", face: "🐱🐟", desc: "Poissonnière blanche" },
+      { name: "Lontra", face: "🦦", desc: "Loutre joueuse de passage" },
+      { name: "Riton", face: "🐀", desc: "Rat des quais, solitaire" }
+    ],
+    scene: [
+      { em: "🌫️🚢", lb: "Le chalutier « L'Écume » amarré au quai" },
+      { em: "🐱⚓", lb: "Barbe-Grise réparait un filet" },
+      { em: "🐱🧢", lb: "Marinette rangeait les cordages" },
+      { em: "🐱🔦", lb: "Gaspard allumait le phare" },
+      { em: "🐱🐟", lb: "Plume fermait sa poissonnerie" },
+      { em: "🦦", lb: "Lontra faisait des glissades sur la rampe" },
+      { em: "🐀", lb: "Riton grignotait un biscuit, tout seul" },
+      { em: "📦", lb: "7 caisses de sardines empilées" },
+      { em: "🌕", lb: "La pleine lune éclairait la brume" }
+    ],
+    obsTime: 22,
+    quiz: [
+      { q: "Que faisait Lontra sur le quai ?", opts: ["Elle dormait", "Des glissades sur la rampe", "Elle pêchait", "Elle chargeait des caisses"], a: 1 },
+      { q: "Combien de caisses de sardines étaient empilées ?", opts: ["5", "6", "7", "8"], a: 2 },
+      { q: "Qui allumait le phare ?", opts: ["Barbe-Grise", "Marinette", "Gaspard", "Plume"], a: 2 },
+      { q: "Que réparait le capitaine Barbe-Grise ?", opts: ["Une voile", "Un filet", "Une ancre", "Un tonneau"], a: 1 }
+    ],
+    wordIntro: "Une bouteille flotte près du quai. Dedans, un message aux mots mélangés…",
+    sentence: ["« Les caisses glissent avec le ", 0, " jusqu'aux ", 1, " du vieux phare. »"],
+    words: [
+      { answer: "COURANT", hint: "C'est l'eau qui pousse tout sur son passage 🌊" },
+      { answer: "ROCHERS", hint: "Les gros cailloux au pied du phare 🪨" }
+    ],
+    math: [
+      {
+        title: "Les caisses disparues 📦",
+        text: "Le registre du port :\nlundi, 2 caisses disparues · mardi, 4 · mercredi, 6 · jeudi, 8…\n\nSi cela continue, combien de caisses disparaîtront vendredi ?",
+        opts: ["9", "10", "12", "14"], a: 1,
+        clue: "Chaque nuit, il en disparaît davantage : le voleur nourrit une <b>famille qui s'agrandit</b>. Et des traces <b>toutes mouillées</b> mènent du quai jusqu'à la mer !",
+        eliminate: []
+      },
+      {
+        title: "La corde rongée 🪢",
+        text: "L'amarre du chalutier mesurait 12 m. On n'en retrouve que 3 morceaux de 3 m chacun.\n\nCombien de mètres de corde ont disparu ?",
+        opts: ["1 m", "3 m", "6 m", "9 m"], a: 1,
+        clue: "La corde a été <b>rongée par de petites dents pointues</b>. Aucun chat ne laisse des marques pareilles !",
+        eliminate: [0, 1, 2, 3]
+      }
+    ],
+    culprit: 4,
+    ending: "Affaire classée ! 🎖️ Pas de fantôme : Lontra et sa famille de loutres, affamées, rongeaient les amarres — et le courant poussait doucement le chalutier vers les rochers, où elles récupéraient les caisses. Dans la brume, on aurait juré un bateau fantôme ! Les pêcheurs, soulagés, déposent maintenant chaque soir un panier de sardines pour les loutres.",
+    failHint: "De petites dents pointues, des traces mouillées, une famille qui adore nager et les sardines…",
+    unlock: "« Un bateau fantôme démasqué ! » titre la gazette. Mademoiselle Plume te réclame à la Bibliothèque."
+  },
+  {
+    id: 3, emoji: "📚", mapName: "La Bibliothèque", x: 72, y: 52,
+    title: "Le grimoire aux pages blanches",
+    place: "La grande bibliothèque",
+    story: "Les mots s'effacent un à un des livres de Mademoiselle Plume ! Chaque matin, de nouveaux livres aux pages toutes blanches. Un grimoire ensorcelé ? La bibliothécaire est désespérée…",
+    griffe: "« Des mots qui s'effacent tout seuls ? Il y a forcément un truc, chaton. Trouve-le. »",
+    pistache: "« Une bibliothèque ! Chut… je grignoterai mes indices en silence. 🤫 »",
+    suspects: [
+      { name: "Archibald", face: "🐱🧐", desc: "Vieux savant au monocle" },
+      { name: "Griotte", face: "🐱🎨", desc: "Grande poétesse au béret" },
+      { name: "Basile", face: "🐱🧵", desc: "Relieur costaud" },
+      { name: "Colette", face: "🐱🧣", desc: "Conteuse au châle" },
+      { name: "Malo", face: "🐱📚", desc: "Chaton apprenti, timide" },
+      { name: "Noisette", face: "🐿️", desc: "Écureuil curieux des jardins" },
+      { name: "Saphir", face: "🐈‍⬛", desc: "Grand chat qui dort au chaud" }
+    ],
+    scene: [
+      { em: "📚", lb: "Le rayon des contes, à moitié vide" },
+      { em: "🐱🧐", lb: "Archibald consultait un dictionnaire" },
+      { em: "🐱🎨", lb: "Griotte écrivait sur un carnet rouge" },
+      { em: "🐱🧵", lb: "Basile recousait un vieux livre" },
+      { em: "🐱🧣", lb: "Colette racontait une histoire aux chatons" },
+      { em: "🐱📚", lb: "Malo portait un gros sac de cahiers" },
+      { em: "🐿️", lb: "Noisette guettait à la fenêtre" },
+      { em: "🐈‍⬛", lb: "Saphir dormait sur le radiateur" },
+      { em: "🕯️", lb: "Une bougie encore tiède sur la table du fond" }
+    ],
+    obsTime: 20,
+    quiz: [
+      { q: "Que recousait Basile ?", opts: ["Un rideau", "Un vieux livre", "Un coussin", "Une écharpe"], a: 1 },
+      { q: "Sur quoi écrivait Griotte ?", opts: ["Un carnet rouge", "Une ardoise", "Un parchemin", "Un carnet bleu"], a: 0 },
+      { q: "Qu'y avait-il sur la table du fond ?", opts: ["Des lunettes", "Une bougie encore tiède", "Un encrier", "Une loupe"], a: 1 },
+      { q: "Qui dormait sur le radiateur ?", opts: ["Noisette", "Malo", "Saphir", "Archibald"], a: 2 }
+    ],
+    wordIntro: "Glissée dans un livre aux pages blanches, une note aux mots mélangés…",
+    sentence: ["« J'emprunte chaque ", 0, " pour préparer une ", 1, " à la fête du ", 2, ". »"],
+    words: [
+      { answer: "HISTOIRE", hint: "On la raconte le soir, elle commence par « Il était une fois » 📖" },
+      { answer: "SURPRISE", hint: "On la cache jusqu'au dernier moment 🎁" },
+      { answer: "PRINTEMPS", hint: "La saison des fleurs, juste après l'hiver 🌸" }
+    ],
+    math: [
+      {
+        title: "La cire de bougie 🕯️",
+        text: "La bougie de la table du fond brûle 2 cm par heure. Elle mesurait 12 cm, il n'en reste que 4 cm.\n\nCombien d'heures a-t-elle brûlé cette nuit ?",
+        opts: ["2 heures", "3 heures", "4 heures", "8 heures"], a: 2,
+        clue: "Quelqu'un a lu ici <b>4 heures en pleine nuit</b>. Or hier soir, Archibald jouait du violon et Colette contait des histoires au concert du village : ils ont un <b>alibi</b> !",
+        eliminate: [0, 3]
+      },
+      {
+        title: "L'échelle du rayon 🪜",
+        text: "L'échelle des rayons compte 15 barreaux. D'après les traces de pattes, le lecteur mystère ne monte jamais plus haut que le barreau 15 − 8.\n\nQuel barreau ?",
+        opts: ["5", "6", "7", "8"], a: 2,
+        clue: "Le barreau 7, c'est <b>tout en bas</b> : notre lecteur a de <b>toutes petites pattes</b>… tachées d'<b>encre</b> ! Griotte, Basile et Saphir sont bien trop grands.",
+        eliminate: [1, 2, 6]
+      }
+    ],
+    culprit: 4,
+    ending: "Quelle enquête ! 🎖️ Malo avoue en rougissant : chaque nuit, il emportait les recueils de contes et laissait ses cahiers vierges à la place — voilà les « pages blanches » ! Il recopiait les plus belles histoires à la bougie pour préparer un spectacle surprise à la fête du printemps. Mademoiselle Plume, émue, lui offre une vraie carte de bibliothèque… et le rôle de conteur au spectacle.",
+    failHint: "De toutes petites pattes, des taches d'encre… qui apprend à écrire, ici ?",
+    unlock: "Toute la ville parle de toi ! Le Vieux Théâtre t'appelle : la diva a un problème…"
+  },
+  {
+    id: 4, emoji: "🎭", mapName: "Le Théâtre", x: 30, y: 33,
+    title: "La diva sans voix",
+    place: "Le Vieux Théâtre",
+    story: "Ce soir, grand concert de Madame Sopranino ! Mais sa partition a disparu, remplacée par une feuille couverte de signes étranges. « Le théâtre est hanté ! » murmure-t-on en coulisses…",
+    griffe: "« Le théâtre hanté ? Mon œil. Le concert doit avoir lieu ce soir, chaton. File. »",
+    pistache: "« J'ai le trac pour la diva, moi ! Et ces signes bizarres me donnent la chair de souris… »",
+    suspects: [
+      { name: "Rideau", face: "🐱🔧", desc: "Machiniste costaud" },
+      { name: "Mélodie", face: "🐱🎻", desc: "Harpiste rêveuse" },
+      { name: "Fausset", face: "🐱🎤", desc: "Ténor bavard" },
+      { name: "Paillette", face: "🐱✂️", desc: "Costumière étourdie" },
+      { name: "Lumière", face: "🐱💡", desc: "Éclairagiste précis" },
+      { name: "Écho", face: "🐱📖", desc: "Vieux souffleur discret" }
+    ],
+    scene: [
+      { em: "🎭", lb: "La scène décorée d'étoiles" },
+      { em: "🐱🔧", lb: "Rideau accrochait un décor de lune" },
+      { em: "🐱🎻", lb: "Mélodie accordait sa harpe" },
+      { em: "🐱🎤", lb: "Fausset répétait ses vocalises" },
+      { em: "🐱✂️", lb: "Paillette cousait une cape dorée" },
+      { em: "🐱💡", lb: "Lumière réglait les projecteurs" },
+      { em: "🐱📖", lb: "Écho relisait le livret" },
+      { em: "👑🐱", lb: "Mme Sopranino buvait une tisane au miel" }
+    ],
+    obsTime: 18,
+    quiz: [
+      { q: "Que cousait Paillette ?", opts: ["Un rideau rouge", "Une cape dorée", "Un chapeau", "Un costume noir"], a: 1 },
+      { q: "Qui accordait sa harpe ?", opts: ["Mélodie", "Fausset", "Lumière", "Écho"], a: 0 },
+      { q: "Que buvait Madame Sopranino ?", opts: ["Un lait chaud", "Une tisane au miel", "Un chocolat", "De l'eau"], a: 1 },
+      { q: "Que faisait Rideau ?", opts: ["Il balayait", "Il accrochait un décor de lune", "Il réglait les lumières", "Il répétait"], a: 1 }
+    ],
+    wordIntro: "La « fausse partition »… n'est pas une partition ! C'est un message aux mots mélangés :",
+    sentence: ["« Le ", 0, " commence quand le ", 1, " est fini — pense à la ", 2, " ! »"],
+    words: [
+      { answer: "SPECTACLE", hint: "Ce qu'on vient voir au théâtre 🎭" },
+      { answer: "COSTUME", hint: "La diva le porte sur scène 👗" },
+      { answer: "DOUBLURE", hint: "Le tissu caché à l'intérieur d'un vêtement 🧵" }
+    ],
+    math: [
+      {
+        title: "L'heure de la diva ⏰",
+        text: "Le concert commence à 20 h 30. Il faut 45 minutes de maquillage puis 25 minutes de coiffure.\n\nÀ quelle heure la diva doit-elle commencer sa préparation ?",
+        opts: ["19 h 00", "19 h 20", "19 h 30", "19 h 50"], a: 1,
+        clue: "La partition a disparu pendant l'<b>essayage du costume</b>, dans la loge. Rideau, Mélodie, Fausset et Lumière étaient <b>sur scène</b>, devant tout le monde !",
+        eliminate: [0, 1, 2, 4]
+      },
+      {
+        title: "Les fils dorés ✨",
+        text: "Sur le pupitre, des petits fils dorés : 3 fils de 4 cm et 2 fils de 6 cm.\n\nQuelle longueur de fil doré en tout ?",
+        opts: ["18 cm", "20 cm", "24 cm", "36 cm"], a: 2,
+        clue: "Des fils <b>dorés</b>, exactement comme la cape cousue en coulisses… Il ne reste que deux suspects : lequel des deux manie une aiguille ?",
+        eliminate: []
+      }
+    ],
+    culprit: 3,
+    ending: "Coup de théâtre ! 🎖️ Paillette écarquille les yeux… puis éclate de rire : en cousant la cape dorée à toute vitesse, elle a rangé la partition dans la DOUBLURE et laissé son patron de couture sur le pupitre — voilà les « signes étranges » ! On découd la cape, la partition est retrouvée, et Madame Sopranino chante si bien que même les souris du grenier applaudissent. Le théâtre n'était pas hanté… juste très étourdi !",
+    failHint: "Une « partition » pleine de symboles de couture, des fils dorés… qui cousait une cape dorée ?",
+    unlock: "Le commissaire Griffe en personne vient te chercher : « Ma plus grande affaire, chaton. La Tour de l'Horloge. »"
+  },
+  {
+    id: 5, emoji: "🕰️", mapName: "La Tour de l'Horloge", x: 70, y: 14,
+    title: "La nuit où le temps s'arrêta",
+    place: "La Tour de l'Horloge — enquête finale",
+    story: "La grande horloge de Chaville s'est arrêtée à MINUIT PILE, la nuit de la pleine lune. Plus de sonneries : toute la ville est déréglée ! On murmure qu'un fantôme habite la tour… C'est ta plus grande affaire, détective.",
+    griffe: "« Toute la ville compte sur toi, chaton. Moi aussi. Ne te presse pas : observe. »",
+    pistache: "« Le temps s'est arrêté… mais pas mon appétit. Tiens, la moitié de mon fromage — pour le courage ! »",
+    suspects: [
+      { name: "Tic", face: "🐱⚙️", desc: "Horloger jumeau" },
+      { name: "Tac", face: "🐱🔩", desc: "Horloger jumeau" },
+      { name: "Hector", face: "🦉", desc: "Hibou de la tour" },
+      { name: "Perdrix", face: "🐦‍⬛", desc: "Pie bavarde des toits" },
+      { name: "Minuit", face: "🐈‍⬛", desc: "Veilleuse de nuit" },
+      { name: "Carillon", face: "🐱🔔", desc: "Sonneur des cloches" },
+      { name: "Luciole", face: "🐱✨", desc: "Chatte des toits" }
+    ],
+    scene: [
+      { em: "🕛", lb: "L'horloge arrêtée sur minuit pile" },
+      { em: "🐱⚙️", lb: "Tic huilait les petits rouages" },
+      { em: "🐱🔩", lb: "Tac remontait le grand ressort" },
+      { em: "🦉", lb: "Hector faisait des allers-retours vers le sommet" },
+      { em: "🐦‍⬛", lb: "Perdrix dormait dans la gouttière" },
+      { em: "🐈‍⬛", lb: "Minuit faisait sa ronde de nuit" },
+      { em: "🐱🔔", lb: "Carillon astiquait les cloches" },
+      { em: "🐱✨", lb: "Luciole regardait la pleine lune" },
+      { em: "🪶", lb: "Des plumes et des brindilles sur l'escalier" }
+    ],
+    obsTime: 15,
+    quiz: [
+      { q: "Sur quelle heure l'horloge s'est-elle arrêtée ?", opts: ["21 h", "22 h", "Minuit pile", "3 h"], a: 2 },
+      { q: "Que faisait Hector le hibou ?", opts: ["Il dormait", "Des allers-retours vers le sommet", "Il chassait", "Il chantait"], a: 1 },
+      { q: "Qu'y avait-il sur l'escalier ?", opts: ["De la farine", "Des plumes et des brindilles", "Des feuilles", "De la cire"], a: 1 },
+      { q: "Qui dormait dans la gouttière ?", opts: ["Perdrix", "Hector", "Minuit", "Luciole"], a: 0 }
+    ],
+    wordIntro: "Sur la porte de la tour, un message gratté maladroitement, aux mots mélangés…",
+    sentence: ["« Pardon pour le ", 0, " : mes ", 1, " dorment au chaud dans les ", 2, ". »"],
+    words: [
+      { answer: "SILENCE", hint: "Quand on n'entend plus rien du tout… chuuut 🤫" },
+      { answer: "PETITS", hint: "Les bébés d'une maman 🐣" },
+      { answer: "ROUAGES", hint: "Les roues dentées à l'intérieur d'une machine ⚙️" }
+    ],
+    math: [
+      {
+        title: "Les sonneries perdues 🔔",
+        text: "L'horloge sonne à chaque heure pile. Elle s'est tue cette nuit à minuit.\n\nAujourd'hui à 18 h, combien de sonneries ont été manquées depuis minuit ?",
+        opts: ["12", "17", "18", "24"], a: 2,
+        clue: "Le mécanisme s'est arrêté <b>en pleine nuit</b>, tout en douceur : quelque chose de léger s'y est installé pendant que la ville dormait…",
+        eliminate: []
+      },
+      {
+        title: "Le nid mystérieux 🪺",
+        text: "Dans les rouages, on découvre un nid de 300 g. Il contient 20 brindilles de 10 g chacune ; le reste, ce sont des plumes.\n\nCombien pèsent les plumes ?",
+        opts: ["80 g", "100 g", "120 g", "200 g"], a: 1,
+        clue: "Des brindilles et des <b>plumes</b> : l'habitant du nid a des <b>ailes</b> ! Aucun chat n'a de plumes… Il ne reste que deux suspects. Souviens-toi de la scène : qui vivait la nuit ?",
+        eliminate: [0, 1, 4, 5, 6]
+      }
+    ],
+    culprit: 2,
+    ending: "AFFAIRE RÉSOLUE ! 🏅 Hector avoue de sa grosse voix : ses petits venaient d'éclore, et le sommet de la tour était le seul endroit au chaud. Ses allers-retours nocturnes, c'était pour les nourrir ! Toute la ville construit un magnifique nichoir juste à côté du cadran, l'horloge repart dans un grand carillon…\n\nEt devant tout Chaville réuni, le commissaire Griffe te remet la MÉDAILLE D'OR de l'Académie : « Pas mal, chaton. Pas mal du tout. »",
+    failHint: "Des plumes, des allers-retours vers le sommet en pleine nuit… Qui vole la nuit : la pie ou le hibou ?",
+    unlock: ""
+  }
+];
+
+/* ============ ÉTAT ============ */
+const progress = { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };  // étoiles (en mémoire)
+let E = null;
+let mistakes = 0;
+let obsInterval = null;
+let quizIndex = 0;
+let wordIndex = 0;
+let wordBuilt = "";
+let wordShuffled = [];
+let mathIndex = 0;
+let eliminated = new Set();
+let locked = false;
+
+/* ============ OUTILS ============ */
+const $ = id => document.getElementById(id);
+function show(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  $(id).classList.add('active');
+  window.scrollTo(0, 0);
+}
+function shuffle(arr) {
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = (i * 7 + a.length * 13 + quizIndex + wordIndex + 5) % (i + 1);
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+function starsStr(n) { return "⭐".repeat(n) + "☆".repeat(3 - n); }
+function isUnlocked(id) { return id === 0 || progress[id - 1] > 0; }
+
+/* ============ CARTE ============ */
+function renderMap() {
+  const wrap = $('mapwrap');
+  wrap.querySelectorAll('.map-node').forEach(n => n.remove());
+  let nextFound = false;
+  ENQUETES.forEach(e => {
+    const b = document.createElement('button');
+    const unlocked = isUnlocked(e.id);
+    const done = progress[e.id] > 0;
+    let cls = "map-node";
+    if (done) cls += " done";
+    else if (unlocked && !nextFound) { cls += " next"; nextFound = true; }
+    else if (!unlocked) cls += " locked";
+    b.className = cls;
+    b.style.left = e.x + "%";
+    b.style.top = e.y + "%";
+    b.innerHTML = `<span class="em">${unlocked ? e.emoji : "🔒"}</span>
+      <span class="nm">${e.mapName}</span>
+      <span class="st">${done ? starsStr(progress[e.id]) : (unlocked ? "Nouvelle affaire !" : "Verrouillé")}</span>`;
+    if (unlocked) b.onclick = () => startCase(e.id);
+    wrap.appendChild(b);
+  });
+  const doneCount = ENQUETES.filter(e => progress[e.id] > 0).length;
+  $('map-progress').textContent = `(${doneCount}/${ENQUETES.length} affaires résolues)`;
+  $('map-medal').innerHTML = doneCount === ENQUETES.length
+    ? `<div class="medal">🏅 Médaille d'Or de l'Académie — Chaville est fière de toi, détective !</div>`
+    : "";
+}
+function goHome() {
+  if (obsInterval) { clearInterval(obsInterval); obsInterval = null; }
+  renderMap();
+  show('s-map');
+}
+
+/* ============ DÉMARRAGE D'UNE ENQUÊTE ============ */
+function startCase(id) {
+  E = ENQUETES[id];
+  mistakes = 0; quizIndex = 0; wordIndex = 0; mathIndex = 0;
+  eliminated = new Set(); locked = false;
+  $('intro-title').textContent = E.emoji + " " + E.title;
+  $('intro-badge').textContent = E.place;
+  $('intro-story').textContent = E.story;
+  $('intro-griffe').textContent = "Commissaire Griffe : " + E.griffe;
+  $('intro-pistache').textContent = "Pistache : " + E.pistache;
+  const sus = $('intro-suspects');
+  sus.innerHTML = "";
+  E.suspects.forEach(s => {
+    const d = document.createElement('div');
+    d.className = "suspect";
+    d.innerHTML = `<div class="face">${s.face}</div><div class="name">${s.name}</div><div class="desc">${s.desc}</div>`;
+    sus.appendChild(d);
+  });
+  show('s-intro');
+}
+
+/* ============ ÉTAPE 1 : OBSERVATION ============ */
+function startObservation() {
+  const scene = $('obs-scene');
+  scene.innerHTML = "";
+  E.scene.forEach(sp => {
+    const d = document.createElement('div');
+    d.className = "spot";
+    d.innerHTML = `<div class="em">${sp.em}</div><div class="lb">${sp.lb}</div>`;
+    scene.appendChild(d);
+  });
+  show('s-obs');
+  let remaining = E.obsTime;
+  const bar = $('obs-timer');
+  bar.style.width = "100%";
+  if (obsInterval) clearInterval(obsInterval);
+  obsInterval = setInterval(() => {
+    remaining--;
+    bar.style.width = Math.max(0, (remaining / E.obsTime) * 100) + "%";
+    if (remaining <= 0) endObservation();
+  }, 1000);
+}
+function endObservation() {
+  if (obsInterval) { clearInterval(obsInterval); obsInterval = null; }
+  quizIndex = 0;
+  renderQuiz();
+  show('s-quiz');
+}
+function renderQuiz() {
+  const item = E.quiz[quizIndex];
+  $('quiz-badge').textContent = `Étape 1 · Question ${quizIndex + 1}/${E.quiz.length} 👀`;
+  $('quiz-question').textContent = item.q;
+  $('quiz-feedback').textContent = "";
+  $('quiz-feedback').className = "feedback";
+  const box = $('quiz-options');
+  box.innerHTML = "";
+  locked = false;
+  item.opts.forEach((opt, i) => {
+    const b = document.createElement('button');
+    b.className = "btn";
+    b.textContent = opt;
+    b.onclick = () => answerQuiz(i, b);
+    box.appendChild(b);
+  });
+}
+function answerQuiz(i, btn) {
+  if (locked) return;
+  locked = true;
+  const item = E.quiz[quizIndex];
+  const buttons = $('quiz-options').children;
+  const fb = $('quiz-feedback');
+  if (i === item.a) {
+    btn.classList.add('correct');
+    fb.textContent = "Bien vu, détective ! 🎉";
+    fb.className = "feedback good";
+  } else {
+    btn.classList.add('wrong');
+    buttons[item.a].classList.add('correct');
+    mistakes++;
+    fb.textContent = "Presque ! La bonne réponse était : " + item.opts[item.a];
+    fb.className = "feedback bad";
+  }
+  setTimeout(() => {
+    quizIndex++;
+    if (quizIndex < E.quiz.length) renderQuiz();
+    else startWord();
+  }, 1600);
+}
+
+/* ============ ÉTAPE 2 : MESSAGE CODÉ ============ */
+function startWord() {
+  wordIndex = 0;
+  $('word-intro').textContent = E.wordIntro;
+  renderWord();
+  show('s-word');
+}
+function renderNote() {
+  const note = $('word-note');
+  note.innerHTML = "";
+  E.sentence.forEach(part => {
+    if (typeof part === "string") {
+      note.appendChild(document.createTextNode(part));
+    } else {
+      const sp = document.createElement('span');
+      const done = part < wordIndex;
+      sp.className = "blank" + (done ? " done" : "");
+      sp.textContent = done ? E.words[part].answer : "? ? ?";
+      note.appendChild(sp);
+    }
+  });
+}
+function renderWord() {
+  renderNote();
+  wordBuilt = "";
+  $('word-built').innerHTML = "&nbsp;";
+  $('word-feedback').textContent = "";
+  $('word-feedback').className = "feedback";
+  const target = E.words[wordIndex].answer;
+  let letters = shuffle(target.split(''));
+  if (letters.join('') === target) letters = letters.reverse();
+  wordShuffled = letters;
+  const box = $('word-letters');
+  box.innerHTML = "";
+  letters.forEach((ch, idx) => {
+    const b = document.createElement('button');
+    b.textContent = ch;
+    b.id = "letter-" + idx;
+    b.onclick = () => pickLetter(idx);
+    box.appendChild(b);
+  });
+}
+function pickLetter(idx) {
+  const b = $("letter-" + idx);
+  if (!b || b.disabled) return;
+  b.disabled = true;
+  wordBuilt += wordShuffled[idx];
+  $('word-built').textContent = wordBuilt;
+  const target = E.words[wordIndex].answer;
+  if (wordBuilt.length === target.length) {
+    if (wordBuilt === target) {
+      const fb = $('word-feedback');
+      fb.textContent = "Mot déchiffré ! ✨";
+      fb.className = "feedback good";
+      wordIndex++;
+      setTimeout(() => {
+        if (wordIndex < E.words.length) renderWord();
+        else { renderNote(); setTimeout(startMath, 1200); }
+      }, 1000);
+    } else {
+      mistakes++;
+      const fb = $('word-feedback');
+      fb.textContent = "Ce n'est pas le bon mot… essaie encore !";
+      fb.className = "feedback bad";
+      setTimeout(() => { wordErase(); fb.textContent = ""; }, 1200);
+    }
+  }
+}
+function wordErase() {
+  wordBuilt = "";
+  $('word-built').innerHTML = "&nbsp;";
+  document.querySelectorAll('#word-letters button').forEach(b => b.disabled = false);
+}
+function wordHint() {
+  const fb = $('word-feedback');
+  fb.textContent = "🐭 Pistache chuchote : « " + E.words[wordIndex].hint + " »";
+  fb.className = "feedback good";
+}
+
+/* ============ ÉTAPE 3 : CALCUL ============ */
+function startMath() {
+  mathIndex = 0;
+  renderMath();
+  show('s-math');
+}
+function renderMath() {
+  const item = E.math[mathIndex];
+  $('math-title').textContent = item.title;
+  $('math-text').textContent = item.text;
+  $('math-feedback').textContent = "";
+  $('math-feedback').className = "feedback";
+  const box = $('math-options');
+  box.innerHTML = "";
+  locked = false;
+  item.opts.forEach((opt, i) => {
+    const b = document.createElement('button');
+    b.className = "btn";
+    b.textContent = opt;
+    b.onclick = () => answerMath(i, b);
+    box.appendChild(b);
+  });
+}
+function answerMath(i, btn) {
+  if (locked) return;
+  locked = true;
+  const item = E.math[mathIndex];
+  const buttons = $('math-options').children;
+  const fb = $('math-feedback');
+  if (i === item.a) {
+    btn.classList.add('correct');
+    fb.textContent = "Exact ! Tu débloques un indice 🔓";
+    fb.className = "feedback good";
+  } else {
+    btn.classList.add('wrong');
+    buttons[item.a].classList.add('correct');
+    mistakes++;
+    fb.textContent = "La bonne réponse était " + item.opts[item.a] + ". Voici quand même l'indice…";
+    fb.className = "feedback bad";
+  }
+  item.eliminate.forEach(x => eliminated.add(x));
+  setTimeout(() => {
+    mathIndex++;
+    if (mathIndex < E.math.length) renderMath();
+    else startDeduce();
+  }, 1800);
+}
+
+/* ============ ÉTAPE 4 : DÉDUCTION ============ */
+function startDeduce() {
+  const clues = $('deduce-clues');
+  clues.innerHTML = "";
+  const w = E.words.map(x => x.answer.toLowerCase()).join(" / ");
+  const c0 = document.createElement('div');
+  c0.className = "cluebox";
+  c0.innerHTML = "📜 <b>Le message :</b> il parlait de « " + w + " »…";
+  clues.appendChild(c0);
+  E.math.forEach(m => {
+    const d = document.createElement('div');
+    d.className = "cluebox";
+    d.innerHTML = "🔎 <b>Indice :</b> " + m.clue;
+    clues.appendChild(d);
+  });
+  const sus = $('deduce-suspects');
+  sus.innerHTML = "";
+  E.suspects.forEach((s, i) => {
+    const d = document.createElement('div');
+    d.className = "suspect" + (eliminated.has(i) ? " eliminated" : "");
+    d.innerHTML = `<div class="face">${s.face}</div><div class="name">${s.name}</div><div class="desc">${s.desc}</div>`;
+    d.onclick = () => accuse(i, d);
+    sus.appendChild(d);
+  });
+  $('deduce-feedback').textContent = "";
+  $('deduce-feedback').className = "feedback";
+  locked = false;
+  show('s-deduce');
+}
+function accuse(i, el) {
+  if (locked) return;
+  const fb = $('deduce-feedback');
+  if (i === E.culprit) {
+    locked = true;
+    el.classList.add('selected');
+    fb.textContent = "Affaire résolue ! 🎉";
+    fb.className = "feedback good";
+    setTimeout(showResult, 1000);
+  } else {
+    mistakes++;
+    el.classList.add('eliminated');
+    fb.textContent = "Non, ce n'est pas " + E.suspects[i].name + "… 🐭 Pistache : « " + E.failHint + " »";
+    fb.className = "feedback bad";
+  }
+}
+
+/* ============ RÉSULTAT ============ */
+function showResult() {
+  const stars = mistakes === 0 ? 3 : (mistakes <= 2 ? 2 : 1);
+  const firstTime = progress[E.id] === 0;
+  progress[E.id] = Math.max(progress[E.id], stars);
+  $('result-emoji').textContent = stars === 3 ? "🏆" : (stars === 2 ? "🎉" : "😺");
+  $('result-title').textContent = stars === 3 ? "Enquête parfaite !" : "Enquête résolue !";
+  $('result-stars').textContent = starsStr(stars);
+  let txt = E.ending;
+  if (firstTime && E.unlock) txt += "\n\n🗺️ " + E.unlock;
+  if (stars < 3) txt += "\n\n(Rejoue l'enquête sans erreur pour gagner 3 étoiles !)";
+  $('result-story').textContent = txt;
+  show('s-result');
+}
+
+renderMap();
+</script>
+<script>if('serviceWorker' in navigator && location.protocol==='https:'){addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));}</script>
+</body>
+</html>

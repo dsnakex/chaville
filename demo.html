@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#2b2350">
+<link rel="manifest" href="./manifest.json">
+<link rel="icon" href="./icon-192.png">
+<link rel="apple-touch-icon" href="./icon-192.png">
+
+<title>Mystères à Chaville — Démo aventure</title>
+<style>
+  :root {
+    --bg: #2b2350; --ink: #2b2350;
+    --accent: #ff9f43; --accent2: #feca57;
+    --good: #2ecc71; --bad: #ff6b6b;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { height: 100%; }
+  body {
+    font-family: 'Trebuchet MS', 'Comic Sans MS', sans-serif;
+    background: linear-gradient(160deg, #2b2350, #3a2f6b);
+    color: #fff;
+    display: flex; justify-content: center;
+    min-height: 100dvh;
+    touch-action: manipulation;
+  }
+  #app { width: 100%; max-width: 480px; min-height: 100dvh; display: flex; flex-direction: column; padding: 10px; }
+
+  .hud {
+    display: flex; align-items: center; gap: 10px;
+    background: rgba(255,255,255,.1); border-radius: 14px;
+    padding: 8px 12px; margin-bottom: 8px;
+  }
+  .hud .obj { flex: 1; font-size: .82rem; line-height: 1.3; }
+  .hud .clues { font-size: .9rem; font-weight: bold; color: var(--accent2); white-space: nowrap; }
+  .hud .carnet-btn {
+    border: none; font-family: inherit; cursor: pointer;
+    background: rgba(255,255,255,.16); color: #fff;
+    font-size: 1.15rem; border-radius: 10px; padding: 6px 10px;
+  }
+  .c-sec { font-weight: bold; color: #7b5cd6; font-size: .9rem; margin: 12px 0 4px; }
+  .c-entry { background: #f6f2fc; border-radius: 10px; padding: 8px 10px; margin-top: 6px; font-size: .85rem; line-height: 1.4; }
+  .c-entry b { display: block; margin-bottom: 2px; }
+  .c-empty { font-size: .85rem; opacity: .6; font-style: italic; margin-top: 4px; }
+
+  #stage {
+    position: relative; border-radius: 18px; overflow: hidden;
+    border: 2px solid rgba(255,255,255,.2);
+    align-self: center;
+    max-width: 100%;
+  }
+  canvas {
+    display: block;
+    width: auto; height: auto;
+    max-width: calc(100vw - 28px);
+    max-height: calc(100dvh - 170px);   /* la scène tient toujours dans l'écran, HUD compris */
+    image-rendering: pixelated; image-rendering: crisp-edges;
+    background: #b99c6b;
+  }
+
+  .hint { text-align: center; font-size: .75rem; opacity: .65; margin-top: 8px; }
+
+  /* Overlays (dialogues, mini-jeux) */
+  .overlay {
+    position: absolute; inset: 0; display: none;
+    background: rgba(20,18,45,.55);
+    align-items: flex-end; justify-content: center;
+    z-index: 10;
+  }
+  .overlay.active { display: flex; }
+  .sheet {
+    width: 100%; background: #fff; color: var(--ink);
+    border-radius: 18px 18px 0 0; padding: 14px 16px 18px;
+    animation: up .22s ease;
+    max-height: 86%; overflow-y: auto;
+  }
+  @keyframes up { from { transform: translateY(30px); opacity: 0; } to { transform: none; opacity: 1; } }
+  .sheet .who { font-weight: bold; color: #7b5cd6; font-size: .95rem; margin-bottom: 6px; }
+  .sheet .txt { font-size: .95rem; line-height: 1.5; }
+  .sheet .btn {
+    display: block; width: 100%; border: none; font-family: inherit;
+    background: linear-gradient(180deg, var(--accent2), var(--accent));
+    color: var(--ink); font-weight: bold; font-size: 1rem;
+    border-radius: 14px; padding: 12px; margin-top: 12px; cursor: pointer;
+    box-shadow: 0 3px 0 #d17f1f;
+  }
+  .sheet .btn.alt { background: #eceff1; box-shadow: 0 3px 0 #b0bec5; }
+
+  .letters { display: flex; flex-wrap: wrap; gap: 7px; justify-content: center; margin-top: 12px; }
+  .letters button {
+    width: 40px; height: 46px; font-size: 1.25rem; font-weight: bold; font-family: inherit;
+    border: none; border-radius: 12px; background: #ede7f6; color: var(--ink);
+    box-shadow: 0 3px 0 #c5b8e8; cursor: pointer;
+  }
+  .letters button:disabled { opacity: .25; }
+  .built { text-align: center; font-size: 1.35rem; letter-spacing: 4px; min-height: 2rem; margin-top: 10px; color: #7b5cd6; font-weight: bold; }
+
+  .qcm button {
+    display: block; width: 100%; border: none; font-family: inherit;
+    background: #eceff1; color: var(--ink); font-size: .95rem;
+    border-radius: 12px; padding: 12px; margin-top: 8px; cursor: pointer;
+    box-shadow: 0 3px 0 #b0bec5;
+  }
+  .qcm button.correct { background: var(--good); color: #fff; font-weight: bold; }
+  .qcm button.wrong { background: var(--bad); color: #fff; }
+
+  .sus-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 10px; }
+  .sus-grid .s {
+    background: #f3e5f5; border: 2px solid #d1c4e9; border-radius: 12px;
+    padding: 8px 4px; text-align: center; cursor: pointer; font-size: .8rem;
+  }
+  .sus-grid .s .f { font-size: 1.6rem; }
+  .sus-grid .s.no { opacity: .4; }
+  .fb { text-align: center; font-weight: bold; font-size: .9rem; margin-top: 10px; min-height: 1.2rem; }
+  .fb.good { color: #1e9e54; } .fb.bad { color: #d34f4f; }
+</style>
+</head>
+<body>
+<div id="app">
+  <div class="hud">
+    <div class="obj" id="objective">🎬 Démo exploration — Touche l'écran pour déplacer le détective. Parle aux chats, cherche les indices ✨</div>
+    <div class="clues" id="cluecount">🔍 0/3</div>
+    <button class="carnet-btn" id="btn-carnet" title="Carnet du détective">📔</button>
+  </div>
+
+  <div id="stage">
+    <canvas id="cv"></canvas>
+
+    <!-- Dialogue -->
+    <div class="overlay" id="ov-dial">
+      <div class="sheet">
+        <div class="who" id="dial-who"></div>
+        <div class="txt" id="dial-txt"></div>
+        <button class="btn" id="dial-next">Continuer ▸</button>
+      </div>
+    </div>
+
+    <!-- Anagramme -->
+    <div class="overlay" id="ov-word">
+      <div class="sheet">
+        <div class="who">📜 Une note déchirée !</div>
+        <div class="txt">« Rendez-vous à <b>? ? ?</b> près de la fontaine pour le festin. »<br>Remets les lettres dans l'ordre :</div>
+        <div class="built" id="w-built">&nbsp;</div>
+        <div class="letters" id="w-letters"></div>
+        <button class="btn alt" id="w-erase">⌫ Effacer</button>
+        <div class="fb" id="w-fb"></div>
+      </div>
+    </div>
+
+    <!-- Calcul -->
+    <div class="overlay" id="ov-math">
+      <div class="sheet">
+        <div class="who">🐦 Le pigeon témoin</div>
+        <div class="txt">« Rrrou ! J'ai tout vu, mais mon témoignage est dans mon coffre à code…<br><br><b>Code = (6 × 7) + 10</b> »</div>
+        <div class="qcm" id="m-opts"></div>
+        <div class="fb" id="m-fb"></div>
+      </div>
+    </div>
+
+    <!-- Carnet du détective -->
+    <div class="overlay" id="ov-carnet">
+      <div class="sheet">
+        <div class="who">📔 Le carnet du détective</div>
+        <div id="carnet-list"></div>
+        <button class="btn" id="carnet-close">Fermer ✔</button>
+      </div>
+    </div>
+
+    <!-- Accusation -->
+    <div class="overlay" id="ov-accuse">
+      <div class="sheet">
+        <div class="who">😾 Commissaire Griffe</div>
+        <div class="txt">« Alors, chaton, tes conclusions ? Une grande empreinte de <b>gros chat</b>, un <b>poil gris</b>, quelque chose <b>sur la tête</b>, un rendez-vous à <b>minuit</b>… Qui accuses-tu ? »</div>
+        <div class="sus-grid" id="a-grid"></div>
+        <div class="fb" id="a-fb"></div>
+      </div>
+    </div>
+  </div>
+
+  <p class="hint">Démo « niveau 1 » : déplacement au toucher · pixel art dessiné par le code · enquête du marché</p>
+</div>
+
+<script>
+'use strict';
+
+/* ================= MONDE ================= */
+const W = 360, H = 470, S = 2;   // monde logique, rendu x2
+const cv = document.getElementById('cv');
+cv.width = W * S; cv.height = H * S;
+const ctx = cv.getContext('2d');
+ctx.imageSmoothingEnabled = false;
+
+const OBSTACLES = [
+  { x: 26, y: 58, w: 128, h: 62 },   // stand Sardine
+  { x: 236, y: 58, w: 96, h: 58 },   // stand du lait
+  { x: 28, y: 178, w: 64, h: 42 },   // caisses de poisson
+  { x: 146, y: 226, w: 68, h: 68 },  // fontaine
+  { x: 306, y: 208, w: 34, h: 62 }   // banc
+];
+
+/* ================= SPRITES PIXEL ART ================= */
+// . transparent · B corps · D ombre/pattes · K yeux · W museau · A accessoire (tête) · N nœud/écharpe (cou)
+const CAT_F = [
+[
+"..B......B...",
+".BBB....BBB..",
+".BBBBBBBBBB..",
+".BKBBBBBBKB..",
+".BBBBWWBBBB..",
+".NNNNNNNNNN..",
+".BBBBBBBBB...",
+"BBBBBBBBBBB.B",
+"BBBBBBBBBBBBB",
+"BBBBBBBBBBBB.",
+".BB..BB..BB..",
+".DD..DD..DD.."
+],
+[
+"..B......B...",
+".BBB....BBB..",
+".BBBBBBBBBB..",
+".BKBBBBBBKB..",
+".BBBBWWBBBB..",
+".NNNNNNNNNN..",
+".BBBBBBBBB...",
+"BBBBBBBBBBB.B",
+"BBBBBBBBBBBBB",
+"BBBBBBBBBBBB.",
+"..BB.BB..BB..",
+"..DD.DD.DD..."
+]];
+const MOUSE = [
+".GG..GG.",
+".GGGGGG.",
+"GKGGGGKG",
+".GGGGGG.",
+"GGGGGGG.",
+".G..G.T."
+];
+
+function drawSprite(map, x, y, px, colors, flip) {
+  const h = map.length, w = map[0].length;
+  for (let r = 0; r < h; r++) {
+    for (let c = 0; c < w; c++) {
+      const ch = map[r][flip ? w - 1 - c : c];
+      if (ch === '.') continue;
+      const col = colors[ch];
+      if (!col) continue;
+      ctx.fillStyle = col;
+      ctx.fillRect(Math.round((x + (c - w / 2) * px) * S), Math.round((y + (r - h) * px) * S), px * S, px * S);
+    }
+  }
+}
+function drawCat(x, y, pal, frame, flip, hat) {
+  drawSprite(CAT_F[frame], x, y, 2, pal, flip);
+  if (hat) { // couvre-chef par-dessus les oreilles
+    ctx.fillStyle = pal.A;
+    ctx.fillRect(Math.round((x - 11) * S), Math.round((y - 24) * S), 22 * S, 4 * S);
+    ctx.fillRect(Math.round((x - 7) * S), Math.round((y - 28) * S), 14 * S, 4 * S);
+  }
+}
+
+/* ================= ENTITÉS ================= */
+const player = { x: 120, y: 430, tx: 120, ty: 430, speed: 92, frame: 0, ft: 0, flip: false };
+const pistache = { x: 100, y: 435 };
+
+const NPCS = [
+  { id: "sardine", name: "Madame Sardine", x: 90, y: 52, ax: 90, ay: 136, pal: { B: "#8fb3c7", D: "#5f8299", K: "#222", W: "#fff", N: "#ef5350", A: "#ef5350" }, hat: false,
+    lines: ["Détective, enfin ! Cette nuit, on a volé tout mon sac de croquettes de luxe… 😿", "Cherche des indices sur la place, et interroge tout le monde. Je compte sur toi !"] },
+  { id: "moustache", name: "Moustache", x: 62, y: 322, pal: { B: "#90a4ae", D: "#607d8b", K: "#222", W: "#fff", N: "#90a4ae", A: "#1976d2" }, hat: true,
+    lines: ["Moi ? Je… je passais juste renifler les croquettes hier soir. C'est tout ! 😅", "Bon d'accord, j'y suis resté un long moment. Elles sentaient TELLEMENT bon…"] },
+  { id: "caramel", name: "Caramel", x: 284, y: 142, pal: { B: "#ef9a51", D: "#c77b35", K: "#222", W: "#fff", N: "#d32f2f", A: "#d32f2f" }, hat: false,
+    lines: ["J'ai bu mon lait, et hop, au panier ! Je dors tôt, moi.", "Par contre… j'ai croisé un chat qui rôdait encore autour du stand à la fermeture."] },
+  { id: "perle", name: "Perle", x: 112, y: 204, pal: { B: "#eceff1", D: "#b0bec5", K: "#222", W: "#f8bbd0", N: "#42a5f5", A: "#42a5f5" }, hat: false,
+    lines: ["Moi je n'ai rien vu… mais j'ai entendu un GROS bruit de pattes, tard le soir.", "Des pattes lourdes, tu vois ? Pas des petites pattes de chaton !"] },
+  { id: "reglisse", name: "Réglisse", x: 244, y: 286, pal: { B: "#37474f", D: "#263238", K: "#8d6e63", W: "#cfd8dc", N: "#ec407a", A: "#ec407a" }, hat: false,
+    lines: ["Désolé, ma musique était à fond, je n'ai rien entendu du tout. 🎧", "Mais un conseil : regarde bien PAR TERRE, près du stand…"] },
+  { id: "tigrou", name: "Tigrou", x: 286, y: 244, pal: { B: "#c98f4e", D: "#9c6b2f", K: "#222", W: "#fff", N: "#c98f4e", A: "#455a64" }, hat: false,
+    lines: ["Le journal du soir annonce un « grand festin secret » à venir… Louche, non ? 🗞️", "Un festin, ça demande BEAUCOUP de croquettes…" ] },
+  { id: "griffe", name: "Commissaire Griffe", x: 180, y: 452, pal: { B: "#607d8b", D: "#455a64", K: "#222", W: "#cfd8dc", N: "#37474f", A: "#37474f" }, hat: true,
+    lines: [] }
+];
+
+const CLUES = [
+  { id: "paw",  x: 152, y: 132, em: "🐾", found: false, kind: "info",
+    title: "🐾 Une grande empreinte !",
+    txt: "Une empreinte de patte de 6 cm devant le stand. Le vétérinaire est formel : seule une patte de GROS chat (plus de 5 kg) laisse une trace pareille. Et il y a un poil GRIS collé dedans !" },
+  { id: "note", x: 300, y: 334, em: "📜", found: false, kind: "word" },
+  { id: "pigeon", x: 44, y: 252, em: "🐦", found: false, kind: "math" },
+  { id: "fg", x: 180, y: 318, em: "🃏", found: true, kind: "fg" }   // révélé après la résolution
+];
+
+const SUSPECTS = [
+  { name: "Moustache", f: "🐱🧢", d: "Gros, gris, casquette" },
+  { name: "Caramel",  f: "🐱🧣", d: "Gros, roux" },
+  { name: "Perle",    f: "🐱📿", d: "Petite, blanche" },
+  { name: "Réglisse", f: "🐈‍⬛🎀", d: "Mince, noir" },
+  { name: "Tigrou",   f: "🐱👓", d: "Petit, tigré" }
+];
+const CULPRIT = 0;
+
+/* ================= ÉTAT ================= */
+let pending = null;        // entité à activer à l'arrivée
+let dialQueue = [], dialWho = "";
+let cluesFound = 0;
+let solved = false;
+const $ = id => document.getElementById(id);
+
+function updateHUD() {
+  $('cluecount').textContent = `🔍 ${cluesFound}/3`;
+  if (solved) $('objective').textContent = "🏆 Démo terminée ! Tu peux continuer à te promener sur la place.";
+  else if (cluesFound >= 3) $('objective').textContent = "😾 Tu as tous les indices ! Va voir le commissaire Griffe, en bas de la place.";
+  else $('objective').textContent = "Touche l'écran pour te déplacer. Parle aux chats 💬 et ramasse les indices ✨";
+}
+
+/* ================= DIALOGUES ================= */
+function openDialog(who, lines, onDone) {
+  dialWho = who; dialQueue = lines.slice();
+  $('dial-who').textContent = who;
+  $('dial-txt').textContent = dialQueue.shift();
+  $('dial-next').textContent = dialQueue.length ? "Continuer ▸" : "Fermer ✔";
+  $('ov-dial').classList.add('active');
+  $('dial-next').onclick = () => {
+    if (dialQueue.length) {
+      $('dial-txt').textContent = dialQueue.shift();
+      $('dial-next').textContent = dialQueue.length ? "Continuer ▸" : "Fermer ✔";
+    } else {
+      $('ov-dial').classList.remove('active');
+      if (onDone) onDone();
+    }
+  };
+}
+
+/* ================= MINI-JEUX ================= */
+// Anagramme MINUIT
+const WORD = "MINUIT";
+let wBuilt = "", wLetters = [];
+function openWord() {
+  wBuilt = "";
+  $('w-built').innerHTML = "&nbsp;";
+  $('w-fb').textContent = "";
+  const sh = "TIUNMI".split('');       // mélange fixe, jamais égal au mot
+  wLetters = sh;
+  const box = $('w-letters');
+  box.innerHTML = "";
+  sh.forEach((ch, i) => {
+    const b = document.createElement('button');
+    b.textContent = ch; b.id = "wl" + i;
+    b.onclick = () => {
+      if (b.disabled) return;
+      b.disabled = true;
+      wBuilt += ch;
+      $('w-built').textContent = wBuilt;
+      if (wBuilt.length === WORD.length) {
+        if (wBuilt === WORD) {
+          $('w-fb').textContent = "MINUIT ! Le voleur avait rendez-vous à minuit ✨";
+          $('w-fb').className = "fb good";
+          setTimeout(() => { $('ov-word').classList.remove('active'); foundClue('note'); }, 1400);
+        } else {
+          $('w-fb').textContent = "Ce n'est pas ça… essaie encore !";
+          $('w-fb').className = "fb bad";
+          setTimeout(() => { wBuilt = ""; $('w-built').innerHTML = "&nbsp;"; document.querySelectorAll('#w-letters button').forEach(x => x.disabled = false); $('w-fb').textContent = ""; }, 1100);
+        }
+      }
+    };
+    box.appendChild(b);
+  });
+  $('w-erase').onclick = () => { wBuilt = ""; $('w-built').innerHTML = "&nbsp;"; document.querySelectorAll('#w-letters button').forEach(x => x.disabled = false); };
+  $('ov-word').classList.add('active');
+}
+
+// Calcul du pigeon
+function openMath() {
+  const opts = ["42", "52", "62", "67"], good = 1;
+  $('m-fb').textContent = "";
+  const box = $('m-opts');
+  box.innerHTML = "";
+  let done = false;
+  opts.forEach((o, i) => {
+    const b = document.createElement('button');
+    b.textContent = o;
+    b.onclick = () => {
+      if (done) return;
+      if (i === good) {
+        done = true;
+        b.classList.add('correct');
+        $('m-fb').textContent = "« Rrrou ! Le voleur avait un poil GRIS et quelque chose SUR LA TÊTE ! »";
+        $('m-fb').className = "fb good";
+        setTimeout(() => { $('ov-math').classList.remove('active'); foundClue('pigeon'); }, 1600);
+      } else {
+        b.classList.add('wrong');
+        $('m-fb').textContent = "Le pigeon secoue la tête… recompte !";
+        $('m-fb').className = "fb bad";
+        setTimeout(() => { b.classList.remove('wrong'); $('m-fb').textContent = ""; }, 900);
+      }
+    };
+    box.appendChild(b);
+  });
+  $('ov-math').classList.add('active');
+}
+
+// Accusation
+function openAccuse() {
+  const grid = $('a-grid');
+  grid.innerHTML = "";
+  $('a-fb').textContent = "";
+  SUSPECTS.forEach((s, i) => {
+    const d = document.createElement('div');
+    d.className = "s";
+    d.innerHTML = `<div class="f">${s.f}</div><b>${s.name}</b><br><span style="font-size:.68rem">${s.d}</span>`;
+    d.onclick = () => {
+      if (solved) return;
+      if (i === CULPRIT) {
+        solved = true;
+        $('a-fb').textContent = "🎉 Affaire résolue !";
+        $('a-fb').className = "fb good";
+        setTimeout(() => {
+          $('ov-accuse').classList.remove('active');
+          openDialog("🏆 Affaire résolue !", [
+            "Moustache baisse les oreilles : « D'accord, d'accord… je voulais organiser un festin surprise à minuit près de la fontaine. Pardon, Madame Sardine ! »",
+            "Il rend tout, s'excuse… et invite tout le marché au festin. 🎉",
+            "😾 Griffe : « Pas mal, chaton. Pas mal du… attends. » Il plisse les yeux. « Quelque chose vient d'apparaître près de la fontaine. Va voir. »"
+          ], () => {
+            const fg = CLUES.find(c => c.id === "fg");
+            fg.found = false;   // la carte grise apparaît
+            $('objective').textContent = "🃏 Une carte mystérieuse brille près de la fontaine…";
+          });
+        }, 900);
+      } else {
+        d.classList.add('no');
+        $('a-fb').textContent = "Non… " + s.name + " ne colle pas aux indices. Réfléchis : gros, gris, couvre-chef !";
+        $('a-fb').className = "fb bad";
+      }
+    };
+    grid.appendChild(d);
+  });
+  $('ov-accuse').classList.add('active');
+}
+
+/* ================= CARNET DU DÉTECTIVE ================= */
+const CLUE_NOTES = {
+  paw:    { t: "🐾 L'empreinte de patte", x: "6 cm de large : un GROS chat (plus de 5 kg). Un poil GRIS était collé dedans." },
+  note:   { t: "📜 La note déchirée", x: "« Rendez-vous à MINUIT près de la fontaine pour partager le festin. »" },
+  pigeon: { t: "🐦 Le témoignage du pigeon", x: "Le voleur avait un poil GRIS et quelque chose SUR LA TÊTE." },
+  fg:     { t: "🃏 La carte de visite grise", x: "« Tu n'as vu que ce que je t'ai laissé voir… — F.G. » Qui est le Fantôme Gris ?!" }
+};
+const TESTIMONIES = {
+  sardine:   "Madame Sardine : tout le sac de croquettes de luxe a disparu pendant la nuit.",
+  moustache: "Moustache : « Je passais juste renifler les croquettes… longtemps. » 🤨",
+  caramel:   "Caramel : a croisé un chat qui rôdait autour du stand à la fermeture.",
+  perle:     "Perle : a entendu de GROSSES pattes lourdes, tard le soir.",
+  reglisse:  "Réglisse : n'a rien entendu (musique à fond), conseille de regarder par terre.",
+  tigrou:    "Tigrou : le journal annonce un « grand festin secret » à venir…"
+};
+function openCarnet() {
+  if (document.querySelector('.overlay.active')) return;   // pas par-dessus un dialogue
+  const list = $('carnet-list');
+  let h = '<div class="c-sec">🔍 Indices trouvés</div>';
+  const clueEntries = CLUES.filter(c => CLUE_NOTES[c.id] && (c.id === "fg" ? c.collected : c.found));
+  if (clueEntries.length === 0) h += '<div class="c-empty">Rien pour l\'instant — cherche ce qui brille ✨</div>';
+  clueEntries.forEach(c => { const n = CLUE_NOTES[c.id]; h += `<div class="c-entry"><b>${n.t}</b>${n.x}</div>`; });
+  h += '<div class="c-sec">💬 Témoignages recueillis</div>';
+  const met = NPCS.filter(n => n.met && TESTIMONIES[n.id]);
+  if (met.length === 0) h += '<div class="c-empty">Personne interrogé pour l\'instant — va parler aux chats !</div>';
+  met.forEach(n => { h += `<div class="c-entry">${TESTIMONIES[n.id]}</div>`; });
+  list.innerHTML = h;
+  $('ov-carnet').classList.add('active');
+}
+$('btn-carnet').onclick = openCarnet;
+$('carnet-close').onclick = () => $('ov-carnet').classList.remove('active');
+
+function foundClue(id) {
+  const c = CLUES.find(c => c.id === id);
+  if (c && !c.found) { c.found = true; cluesFound++; }
+  updateHUD();
+}
+
+/* ================= INTERACTIONS ================= */
+function interact(ent) {
+  if (ent.npc) {
+    const n = ent.ref;
+    if (n.id === "griffe") {
+      if (solved) openDialog("😾 Commissaire Griffe", ["« L'affaire est classée, chaton. Va donc te promener… ou rejouer ! »"]);
+      else if (cluesFound >= 3) openAccuse();
+      else openDialog("😾 Commissaire Griffe", ["« Trop tôt pour accuser, chaton. Il te manque des indices : explore la place ! (" + cluesFound + "/3) »"]);
+    } else {
+      n.met = true;
+      openDialog((n.id === "sardine" ? "🐟 " : "💬 ") + n.name, n.lines);
+    }
+  } else {
+    const c = ent.ref;
+    if (c.found) return;
+    if (c.kind === "info") openDialog(c.title, [c.txt], () => foundClue(c.id));
+    else if (c.kind === "word") openWord();
+    else if (c.kind === "math") openMath();
+    else if (c.kind === "fg") {
+      c.found = true;
+      c.collected = true;
+      openDialog("🃏 Une carte de visite grise…", [
+        "D'une écriture élégante, à l'encre argentée : « Joli coup de patte, chaton. Mais tu n'as vu que ce que je t'ai laissé voir… Qui, d'après toi, avait crocheté la serrure du stand ? — F.G. »",
+        "😾 Le commissaire Griffe pâlit. « F.G. … Le Fantôme Gris. Je pensais ne plus jamais entendre parler de lui. »",
+        "🐭 Pistache frissonne : « Le Fantôme QUOI ?! C'est qui ?! » — 😾 « Une longue histoire, petite. Une très longue histoire… »",
+        "✨ À suivre dans la prochaine aventure ! (Fin de la démo)"
+      ], updateHUD);
+    }
+  }
+}
+
+/* ================= DÉPLACEMENT ================= */
+function collide(x, y) {
+  if (x < 12 || x > W - 12 || y < 40 || y > H - 6) return true;
+  return OBSTACLES.some(o => x > o.x - 8 && x < o.x + o.w + 8 && y > o.y && y < o.y + o.h + 10);
+}
+cv.addEventListener('pointerdown', ev => {
+  const r = cv.getBoundingClientRect();
+  const x = (ev.clientX - r.left) / r.width * W;
+  const y = (ev.clientY - r.top) / r.height * H;
+  // touche-t-on une entité interactive ?
+  pending = null;
+  const ents = [
+    ...NPCS.map(n => ({ npc: true, ref: n, x: n.x, y: n.y - 12, ax: n.ax ?? n.x, ay: n.ay ?? Math.min(H - 8, n.y + 8) })),
+    ...CLUES.filter(c => !c.found).map(c => ({ npc: false, ref: c, x: c.x, y: c.y, ax: c.x, ay: Math.min(H - 8, c.y + 14) }))
+  ];
+  for (const e of ents) {
+    if (Math.hypot(x - e.x, y - e.y) < 22) {
+      pending = e;
+      break;
+    }
+  }
+  const t = pending ? { x: pending.ax, y: pending.ay } : { x, y };
+  player.tx = Math.max(14, Math.min(W - 14, t.x));
+  player.ty = Math.max(44, Math.min(H - 8, t.y));
+});
+
+let last = 0;
+function loop(ts) {
+  const dt = Math.min(0.05, (ts - last) / 1000 || 0);
+  last = ts;
+  // déplacement du joueur
+  const dx = player.tx - player.x, dy = player.ty - player.y;
+  const dist = Math.hypot(dx, dy);
+  if (dist > 2) {
+    const step = player.speed * dt;
+    const nx = player.x + dx / dist * Math.min(step, dist);
+    const ny = player.y + dy / dist * Math.min(step, dist);
+    if (!collide(nx, player.y)) player.x = nx;
+    if (!collide(player.x, ny)) player.y = ny;
+    if (Math.abs(dx) > 2) player.flip = dx < 0;
+    player.ft += dt;
+    if (player.ft > 0.16) { player.frame = 1 - player.frame; player.ft = 0; }
+    // bloqué contre un obstacle → on abandonne la cible
+    if (Math.abs(player.x - nx) < 0.01 && Math.abs(player.y - ny) < 0.01 && collide(nx, ny)) { player.tx = player.x; player.ty = player.y; }
+  } else {
+    player.frame = 0;
+    if (pending && Math.hypot(pending.ax - player.x, pending.ay - player.y) < 20) {
+      const p = pending; pending = null;
+      interact(p);
+    }
+  }
+  // Pistache suit
+  pistache.x += (player.x - 18 * (player.flip ? -1 : 1) - pistache.x) * Math.min(1, dt * 4);
+  pistache.y += (player.y + 2 - pistache.y) * Math.min(1, dt * 4);
+
+  draw(ts);
+  requestAnimationFrame(loop);
+}
+
+/* ================= RENDU ================= */
+function px(x, y, w, h, col) { ctx.fillStyle = col; ctx.fillRect(x * S, y * S, w * S, h * S); }
+
+function drawScene(ts) {
+  // pavés
+  px(0, 0, W, H, "#c2a678");
+  for (let y = 0; y < H; y += 20)
+    for (let x = (y / 20 % 2) * 10; x < W; x += 20)
+      px(x, y, 10, 10, "#b89a6c");
+  px(0, 0, W, 42, "#8a7354");                    // muret du fond
+  px(0, 40, W, 3, "#6e5a40");
+
+  // stand de Madame Sardine
+  const o1 = OBSTACLES[0];
+  px(o1.x, o1.y - 26, o1.w, 20, "#3f7fbf");
+  for (let i = 0; i < o1.w; i += 16) px(o1.x + i, o1.y - 26, 8, 20, "#eef4fa");   // auvent rayé
+  px(o1.x, o1.y, o1.w, o1.h, "#8d6e4f");
+  px(o1.x, o1.y, o1.w, 8, "#6d5138");
+  ctx.font = (14 * S) + "px sans-serif"; ctx.textAlign = "center";
+  ctx.fillText("🐟", (o1.x + 28) * S, (o1.y + 40) * S);
+  ctx.fillText("🥫", (o1.x + 70) * S, (o1.y + 40) * S);
+  ctx.fillText("🦐", (o1.x + 108) * S, (o1.y + 40) * S);
+
+  // stand du lait
+  const o2 = OBSTACLES[1];
+  px(o2.x, o2.y - 26, o2.w, 20, "#c94f4f");
+  for (let i = 0; i < o2.w; i += 16) px(o2.x + i, o2.y - 26, 8, 20, "#fdeaea");
+  px(o2.x, o2.y, o2.w, o2.h, "#8d6e4f");
+  px(o2.x, o2.y, o2.w, 8, "#6d5138");
+  ctx.fillText("🥛", (o2.x + 26) * S, (o2.y + 38) * S);
+  ctx.fillText("🧀", (o2.x + 64) * S, (o2.y + 38) * S);
+
+  // caisses
+  const o3 = OBSTACLES[2];
+  ctx.fillText("📦", (o3.x + 16) * S, (o3.y + 30) * S);
+  ctx.fillText("📦", (o3.x + 46) * S, (o3.y + 30) * S);
+  ctx.fillText("📦", (o3.x + 30) * S, (o3.y + 14) * S);
+
+  // fontaine
+  const f = OBSTACLES[3];
+  px(f.x, f.y, f.w, f.h, "#9aa7b5");
+  px(f.x + 6, f.y + 6, f.w - 12, f.h - 12, "#5f9ec9");
+  const rip = Math.floor(ts / 400) % 2;
+  px(f.x + 14 + rip * 4, f.y + 14, f.w - 28, f.h - 28, "#7db8de");
+  ctx.fillText("⛲", (f.x + f.w / 2) * S, (f.y + 26) * S);
+
+  // banc + lampadaire
+  const b = OBSTACLES[4];
+  px(b.x, b.y, b.w, b.h, "#7a5b3a");
+  px(b.x + 4, b.y + 4, b.w - 8, b.h - 8, "#94714b");
+  px(38, 218, 6, 40, "#4a4a55");
+  px(32, 208, 18, 12, "#ffe9a8");
+
+  // indices scintillants
+  CLUES.forEach(c => {
+    if (c.found) return;
+    const tw = 0.5 + 0.5 * Math.sin(ts / 250 + c.x);
+    ctx.globalAlpha = 0.35 + 0.45 * tw;
+    ctx.fillStyle = "#fff7c0";
+    ctx.beginPath();
+    ctx.arc(c.x * S, c.y * S, (13 + tw * 3) * S, 0, 7);
+    ctx.fill();
+    ctx.globalAlpha = 1;
+    ctx.font = (13 * S) + "px sans-serif";
+    ctx.fillText(c.em, c.x * S, (c.y + 5) * S);
+  });
+}
+
+function draw(ts) {
+  ctx.clearRect(0, 0, cv.width, cv.height);
+  drawScene(ts);
+
+  // PNJ (triés par y pour la profondeur, avec le joueur)
+  const drawables = [
+    ...NPCS.map(n => ({ y: n.y, fn: () => {
+      drawCat(n.x, n.y, n.pal, 0, n.x > player.x, n.hat);
+      // bulle 💬 si pas encore vu / griffe prêt
+      if (n.id === "griffe" && cluesFound >= 3 && !solved) {
+        ctx.font = (12 * S) + "px sans-serif";
+        ctx.fillText("❗", n.x * S, (n.y - 34) * S);
+      }
+    } })),
+    { y: player.y, fn: () => drawCat(player.x, player.y, { B: "#a1887f", D: "#795548", K: "#222", W: "#fff", N: "#5d4037", A: "#4e342e" }, player.frame, player.flip, true) },
+    { y: pistache.y, fn: () => drawSprite(MOUSE, pistache.x, pistache.y, 2, { G: "#b0a8b9", K: "#222", T: "#e8a0b0" }, player.flip) }
+  ];
+  drawables.sort((a, b) => a.y - b.y).forEach(d => d.fn());
+
+  // étiquettes des PNJ
+  ctx.font = (7 * S) + "px 'Trebuchet MS', sans-serif";
+  ctx.fillStyle = "rgba(20,18,45,.75)";
+  NPCS.forEach(n => {
+    const wdt = ctx.measureText(n.name).width;
+    ctx.fillRect(n.x * S - wdt / 2 - 3 * S, (n.y + 2) * S, wdt + 6 * S, 10 * S);
+  });
+  ctx.fillStyle = "#fff";
+  NPCS.forEach(n => ctx.fillText(n.name, n.x * S, (n.y + 9.5) * S));
+
+  // cible de déplacement
+  if (Math.hypot(player.tx - player.x, player.ty - player.y) > 4) {
+    ctx.strokeStyle = "rgba(255,255,255,.65)";
+    ctx.lineWidth = S;
+    ctx.beginPath();
+    ctx.arc(player.tx * S, player.ty * S, 6 * S + (Math.floor(performance.now() / 200) % 2) * 2, 0, 7);
+    ctx.stroke();
+  }
+}
+
+updateHUD();
+requestAnimationFrame(loop);
+
+// Dialogue d'ouverture
+setTimeout(() => {
+  openDialog("😾 Commissaire Griffe", [
+    "« Bienvenue sur le terrain, chaton ! Voici la place du marché — en vrai, cette fois. »",
+    "« Déplace-toi en touchant l'écran. Parle à Madame Sardine, interroge les suspects, et ramasse les 3 indices qui brillent ✨. »",
+    "« Quand tu as tout, reviens me voir en bas de la place. Pistache t'accompagne. File ! »"
+  ]);
+}, 600);
+</script>
+<script>if('serviceWorker' in navigator && location.protocol==='https:'){addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));}</script>
+</body>
+</html>
