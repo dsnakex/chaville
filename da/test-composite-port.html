@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Test composite — Le port de Chaville</title>
+<style>
+  body { margin:0; background:#26223A; min-height:100dvh; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:12px; font-family:'Trebuchet MS',sans-serif; }
+  .stage { position:relative; width:100%; max-width:430px; border-radius:20px; overflow:hidden; box-shadow:0 12px 44px rgba(0,0,0,.5); }
+  .stage img { display:block; width:100%; height:auto; }
+  .stage svg.overlay { position:absolute; inset:0; width:100%; height:100%; }
+  .missing { color:#C7BBD4; text-align:center; font-size:.85rem; padding:40px 20px; line-height:1.6; }
+  .caption { color:#C7BBD4; font-size:.78rem; text-align:center; margin-top:10px; max-width:420px; line-height:1.5; }
+  .caption b { color:#F4C95D; }
+  .sparkle { animation:sp 1.8s ease-in-out infinite; }
+  .sparkle.s2 { animation-delay:.6s; } .sparkle.s3 { animation-delay:1.1s; }
+  @keyframes sp { 0%,100% { opacity:.2; } 50% { opacity:1; } }
+  .bob { animation:bob 2.8s ease-in-out infinite; }
+  @keyframes bob { 0%,100% { transform:translateY(0); } 50% { transform:translateY(-4px); } }
+  .drift { animation:drift 16s ease-in-out infinite alternate; }
+  .drift.d2 { animation-duration:22s; animation-delay:-8s; }
+  @keyframes drift { from { transform:translateX(-30px); } to { transform:translateX(30px); } }
+</style>
+</head>
+<body>
+  <!-- Symboles vectoriels de la DA (détective, Pistache, étincelle) -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <g id="cat-det">
+        <path d="M-30,100 C-64,96 -72,60 -46,54 C-60,66 -54,88 -26,90 Z" fill="#8F6242"></path>
+        <ellipse cx="0" cy="95" rx="36" ry="42" fill="#A9744F"></ellipse>
+        <ellipse cx="0" cy="106" rx="21" ry="29" fill="#EBD9BC"></ellipse>
+        <ellipse cx="-15" cy="135" rx="11" ry="7" fill="#8F6242"></ellipse>
+        <ellipse cx="15" cy="135" rx="11" ry="7" fill="#8F6242"></ellipse>
+        <path d="M-34,0 L-44,-24 L-14,-12 Z" fill="#A9744F"></path>
+        <path d="M-32,-4 L-38,-18 L-20,-11 Z" fill="#E8B48B" stroke="none"></path>
+        <path d="M34,0 L44,-24 L14,-12 Z" fill="#A9744F"></path>
+        <path d="M32,-4 L38,-18 L20,-11 Z" fill="#E8B48B" stroke="none"></path>
+        <circle cx="0" cy="28" r="36" fill="#A9744F"></circle>
+        <ellipse cx="0" cy="42" rx="17" ry="12" fill="#EBD9BC"></ellipse>
+        <circle cx="-14" cy="24" r="9.5" fill="#FFFDF5"></circle>
+        <circle cx="14" cy="24" r="9.5" fill="#FFFDF5"></circle>
+        <circle cx="-13" cy="25" r="5.8" fill="#2F2A45" stroke="none"></circle>
+        <circle cx="15" cy="25" r="5.8" fill="#2F2A45" stroke="none"></circle>
+        <circle cx="-11" cy="23" r="2" fill="#FFFFFF" stroke="none"></circle>
+        <circle cx="17" cy="23" r="2" fill="#FFFFFF" stroke="none"></circle>
+        <path d="M-4.5,35 L4.5,35 L0,40 Z" fill="#D96C5C" stroke="none"></path>
+        <path d="M0,40 Q0,45 -5,46 M0,40 Q0,45 5,46" fill="none" stroke="#2F2A45" stroke-width="1.6" stroke-linecap="round"></path>
+        <g stroke="#2F2A45" stroke-width="1.2" opacity="0.45" stroke-linecap="round">
+          <path d="M-19,37 L-34,34"></path><path d="M-19,42 L-33,43"></path>
+          <path d="M19,37 L34,34"></path><path d="M19,42 L33,43"></path>
+        </g>
+        <circle cx="-9" cy="36" r="1" fill="#8F6242" stroke="none"></circle>
+        <circle cx="9" cy="36" r="1" fill="#8F6242" stroke="none"></circle>
+        <ellipse cx="0" cy="6" rx="39" ry="8.5" fill="#75604B"></ellipse>
+        <path d="M-36,6 Q-38,-28 0,-31 Q38,-28 36,6 Q0,-4 -36,6 Z" fill="#8C7461"></path>
+        <path d="M-33,3 Q0,-7 33,3" fill="none" stroke="#F4C95D" stroke-width="4" stroke-linecap="round"></path>
+        <path d="M-26,56 Q0,72 26,56 L26,70 Q0,86 -26,70 Z" fill="#C4574E"></path>
+        <path d="M12,72 Q20,96 10,112 L-4,106 Q6,92 0,74 Z" fill="#C4574E"></path>
+        <path d="M10,112 L7,120 M2,109 L-1,117" stroke="#F4C95D" stroke-width="2.5" stroke-linecap="round" fill="none"></path>
+        <path d="M24,74 L50,56" stroke="#A9744F" stroke-width="14" stroke-linecap="round" fill="none"></path>
+        <circle cx="52" cy="54" r="8.5" fill="#B08154"></circle>
+        <path d="M54,50 L66,34" stroke="#6B4A36" stroke-width="6" stroke-linecap="round" fill="none"></path>
+        <circle cx="74" cy="24" r="17" fill="#CFE3EA" fill-opacity="0.55" stroke="#F4C95D" stroke-width="5"></circle>
+        <path d="M65,17 A13,13 0 0 1 74,11" fill="none" stroke="#FFFFFF" stroke-width="2.6" stroke-linecap="round" opacity="0.85"></path>
+      </g>
+      <g id="mouse-pal">
+        <path d="M17,26 Q42,32 44,12 Q45,-2 33,0" fill="none" stroke="#9D93B5" stroke-width="4" stroke-linecap="round"></path>
+        <ellipse cx="0" cy="16" rx="16" ry="20" fill="#B4AECB"></ellipse>
+        <ellipse cx="-2" cy="22" rx="9" ry="12" fill="#EDE6F2"></ellipse>
+        <circle cx="-11" cy="-15" r="9" fill="#B4AECB"></circle>
+        <circle cx="-11" cy="-15" r="5" fill="#F0B9C6" stroke="none"></circle>
+        <circle cx="11" cy="-15" r="9" fill="#B4AECB"></circle>
+        <circle cx="11" cy="-15" r="5" fill="#F0B9C6" stroke="none"></circle>
+        <circle cx="0" cy="-2" r="13" fill="#B4AECB"></circle>
+        <circle cx="-5" cy="-4" r="4.6" fill="#FFFDF5"></circle>
+        <circle cx="5" cy="-4" r="4.6" fill="#FFFDF5"></circle>
+        <circle cx="-4.4" cy="-3.6" r="2.8" fill="#2F2A45" stroke="none"></circle>
+        <circle cx="5.6" cy="-3.6" r="2.8" fill="#2F2A45" stroke="none"></circle>
+        <circle cx="-3.6" cy="-4.6" r="1" fill="#FFFFFF" stroke="none"></circle>
+        <circle cx="6.4" cy="-4.6" r="1" fill="#FFFFFF" stroke="none"></circle>
+        <circle cx="0" cy="3" r="2.6" fill="#E58BA0" stroke="none"></circle>
+        <path d="M-8,10 L8,10 L0,18 Z" fill="#F4C95D"></path>
+        <g transform="rotate(-10 10 18)">
+          <rect x="5" y="11" width="11" height="14" rx="2" fill="#F7EFDC" stroke="#2F2A45" stroke-width="1.5"></rect>
+          <path d="M8,16 L13,16 M8,19 L13,19" stroke="#2F2A45" stroke-width="1" opacity="0.5"></path>
+        </g>
+        <ellipse cx="-7" cy="35" rx="5" ry="3" fill="#9D93B5"></ellipse>
+        <ellipse cx="6" cy="35" rx="5" ry="3" fill="#9D93B5"></ellipse>
+      </g>
+      <path id="spark" d="M0,-8 L2.2,-2.2 8,0 2.2,2.2 0,8 -2.2,2.2 -8,0 -2.2,-2.2 Z" fill="#F4C95D"></path>
+    </defs>
+  </svg>
+
+  <div class="stage">
+    <img src="../assets/decors/port.png" alt="Le port de Chaville"
+         onerror="this.style.display='none';document.getElementById('missing').style.display='block';document.getElementById('ov').style.display='none';">
+    <div class="missing" id="missing" style="display:none">
+      🖼️ Placez votre décor du port dans le même dossier que ce fichier,<br>
+      présent dans <b style="color:#F4C95D">assets/decors/port.png</b>, puis rechargez la page.
+    </div>
+    <svg class="overlay" id="ov" viewBox="0 0 768 1376" preserveAspectRatio="xMidYMid slice">
+      <!-- brume animée supplémentaire, par-dessus le décor peint -->
+      <g fill="#C7BBD4" opacity=".8">
+        <ellipse class="drift" cx="240" cy="1000" rx="260" ry="34" opacity=".22"></ellipse>
+        <ellipse class="drift d2" cx="520" cy="920" rx="230" ry="28" opacity=".18"></ellipse>
+      </g>
+      <!-- flaque de lumière sous les personnages -->
+      <ellipse cx="250" cy="1330" rx="150" ry="26" fill="#F4C95D" opacity=".14"></ellipse>
+      <!-- personnages vectoriels sur le quai -->
+      <g stroke="#2F2A45" stroke-width="2.2" stroke-linejoin="round">
+        <g class="bob"><use href="#cat-det" transform="translate(230,1315) scale(1.25)"></use></g>
+        <g class="bob" style="animation-delay:-1.4s"><use href="#mouse-pal" transform="translate(400,1330) scale(1.25)"></use></g>
+      </g>
+      <!-- indices scintillants interactifs -->
+      <g class="sparkle"><use href="#spark" transform="translate(120,1180) scale(1.4)"></use></g>
+      <g class="sparkle s2"><use href="#spark" transform="translate(470,1275) scale(1)"></use></g>
+      <g class="sparkle s3"><use href="#spark" transform="translate(680,1090) scale(1.2)"></use></g>
+    </svg>
+  </div>
+  <p class="caption">Test du <b>pipeline hybride</b> : votre décor peint par l'IA d'image en fond, et par-dessus, dessinés par le code — le Détective, Pistache, la brume qui dérive et les indices d'or qui scintillent.</p>
+</body>
+</html>
