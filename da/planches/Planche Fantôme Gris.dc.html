@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap" rel="stylesheet">
+<style>
+  body { margin: 0; background: #EFE5D2; font-family: 'Nunito', sans-serif; color: #2F2A45; }
+  a { color: #8A5A3F; } a:hover { color: #5F3D28; }
+</style>
+</helmet>
+<section style="padding:56px 64px; display:flex; flex-direction:column; gap:28px;">
+  <header style="max-width:980px; display:flex; flex-direction:column; gap:8px;">
+    <div style="font-family:'Fredoka',sans-serif; font-weight:700; font-size:38px; color:#2F2A45;">Le Fantôme Gris — maître voleur</div>
+    <p style="margin:0; font-size:17px; line-height:1.5; color:#5A5370;">Élégant, théâtral, jamais effrayant — et jamais de visage : silhouette gris perle, cape, haut-de-forme, gants raffinés. Sa signature : une carte grise signée « F.G. » à l'encre argentée.</p>
+    <div style="display:flex; gap:20px; align-items:center; flex-wrap:wrap; font-size:12px; color:#5A5370; margin-top:6px;">
+      <span style="display:flex; align-items:center; gap:6px;"><span style="width:16px; height:16px; border-radius:4px; background:#BFBCCE; border:1px solid #2F2A45;"></span>gris perle #BFBCCE</span>
+      <span style="display:flex; align-items:center; gap:6px;"><span style="width:16px; height:16px; border-radius:4px; background:#8E8AA6; border:1px solid #2F2A45;"></span>cape #8E8AA6</span>
+      <span style="display:flex; align-items:center; gap:6px;"><span style="width:16px; height:16px; border-radius:4px; background:#625D7A; border:1px solid #2F2A45;"></span>haut-de-forme #625D7A</span>
+      <span style="display:flex; align-items:center; gap:6px;"><span style="width:16px; height:16px; border-radius:4px; background:#E8E6EF; border:1px solid #2F2A45;"></span>gants #E8E6EF</span>
+      <span style="display:flex; align-items:center; gap:6px;"><span style="width:16px; height:16px; border-radius:4px; background:#D8D5E4; border:1px solid #2F2A45;"></span>encre argentée #D8D5E4</span>
+      <span style="display:flex; align-items:center; gap:6px;"><span style="width:16px; height:16px; border-radius:4px; background:#F4C95D; border:1px solid #2F2A45;"></span>or #F4C95D</span>
+    </div>
+  </header>
+  <div style="display:flex; gap:36px; align-items:flex-start;">
+
+    <div style="width:740px; flex-shrink:0; display:flex; flex-direction:column; gap:12px;">
+      <div style="background:#FBF5E8; border:1px solid #DECFB4; border-radius:20px; padding:14px; box-shadow:0 6px 24px rgba(47,42,69,0.10);">
+        <svg viewBox="0 0 720 540" width="100%" style="display:block; border-radius:10px;">
+          <defs>
+            <linearGradient id="r1Sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2F2A45"></stop><stop offset="0.7" stop-color="#5A4A72"></stop><stop offset="1" stop-color="#8A6478"></stop></linearGradient>
+            <radialGradient id="r1Glow"><stop offset="0" stop-color="#F4C95D" stop-opacity="0.85"></stop><stop offset="1" stop-color="#F4C95D" stop-opacity="0"></stop></radialGradient>
+            <linearGradient id="r1Win" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FBE3A2"></stop><stop offset="1" stop-color="#F4C95D"></stop></linearGradient>
+            <linearGradient id="r1Fade" x1="0" y1="0" x2="0" y2="1"><stop offset="0.55" stop-color="#FFFFFF" stop-opacity="1"></stop><stop offset="1" stop-color="#FFFFFF" stop-opacity="0"></stop></linearGradient>
+            <mask id="r1Mask"><rect x="-120" y="-220" width="240" height="260" fill="url(#r1Fade)"></rect></mask>
+            <filter id="r1Blur" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="10"></feGaussianBlur></filter>
+          </defs>
+          <rect width="720" height="540" fill="url(#r1Sky)"></rect>
+          <g fill="#FBF0D4"><circle cx="300" cy="60" r="1.8"></circle><circle cx="420" cy="100" r="1.4"></circle><circle cx="260" cy="130" r="1.4"></circle><circle cx="460" cy="50" r="1.8"></circle></g>
+          <g stroke="#2F2A45" stroke-width="3" stroke-linejoin="round">
+            <g>
+              <path d="M0,540 L0,60 L150,90 L170,540 Z" fill="#57506F"></path>
+              <path d="M150,90 L196,110 L210,540 L170,540 Z" fill="#453F5E"></path>
+              <path d="M20,150 L120,168 M16,300 L130,314 M14,430 L136,440" stroke-width="1.6" opacity="0.4" fill="none"></path>
+              <g><rect x="52" y="196" width="26" height="36" rx="3" fill="url(#r1Win)" stroke-width="2.5"></rect><path d="M65,197 V231 M53,214 H77" stroke-width="1.4" opacity="0.7"></path></g>
+              <g><rect x="56" y="330" width="26" height="36" rx="3" fill="url(#r1Win)" stroke-width="2.5"></rect><path d="M69,331 V365 M57,348 H81" stroke-width="1.4" opacity="0.7"></path></g>
+              <path d="M60,146 q26,10 60,8" fill="none" stroke="#3F5240" stroke-width="10" stroke-linecap="round"></path>
+              <circle cx="104" cy="160" r="9" fill="#4A5F49" stroke-width="2"></circle><circle cx="82" cy="150" r="7" fill="#4A5F49" stroke-width="2"></circle>
+            </g>
+            <g>
+              <path d="M720,540 L720,40 L560,80 L545,540 Z" fill="#615878"></path>
+              <path d="M560,80 L516,102 L505,540 L545,540 Z" fill="#4C4666"></path>
+              <path d="M700,160 L580,176 M702,310 L575,322 M704,440 L570,448" stroke-width="1.6" opacity="0.4" fill="none"></path>
+              <g><rect x="620" y="210" width="26" height="36" rx="3" fill="url(#r1Win)" stroke-width="2.5"></rect><path d="M633,211 V245 M621,228 H647" stroke-width="1.4" opacity="0.7"></path></g>
+              <g><rect x="616" y="352" width="26" height="36" rx="3" fill="url(#r1Win)" stroke-width="2.5"></rect><path d="M629,353 V387 M617,370 H643" stroke-width="1.4" opacity="0.7"></path></g>
+              <path d="M516,150 h-26 M496,150 v14" stroke-width="3" fill="none"></path>
+              <g transform="translate(496,180)">
+                <rect x="-18" y="-14" width="36" height="27" rx="4" fill="#4A3C50" stroke-width="2.5"></rect>
+                <circle cx="0" cy="0" r="8" fill="#F4C95D" stroke-width="2"></circle><path d="M0,0 L0,-5 M0,0 L4,2" stroke-width="1.8" stroke-linecap="round"></path>
+              </g>
+            </g>
+            <rect x="150" y="500" width="420" height="40" fill="#37324E" stroke="none"></rect>
+            <path d="M170,540 L196,110 L516,102 L545,540 Z" fill="#443E5C"></path>
+            <path d="M240,530 q14,8 28,0 M330,516 q14,8 28,0 M430,528 q14,8 28,0 M290,480 q12,7 24,0 M400,472 q12,7 24,0 M340,432 q10,6 20,0 M370,396 q9,5 18,0" stroke="#26223A" stroke-width="1.5" fill="none" opacity="0.55"></path>
+            <g>
+              <path d="M228,470 V336 q0,-14 14,-14" fill="none" stroke="#26223A" stroke-width="5" stroke-linecap="round"></path>
+              <rect x="221" y="466" width="15" height="9" rx="3" fill="#26223A"></rect>
+              <circle cx="247" cy="318" r="30" fill="url(#r1Glow)" stroke="none"></circle>
+              <path d="M240,306 h14 l4,16 h-22 Z" fill="#F4C95D" stroke-width="2.5"></path>
+              <path d="M238,302 h18" stroke="#26223A" stroke-width="3.5" stroke-linecap="round"></path>
+            </g>
+            <g transform="translate(368,432) scale(0.92)" mask="url(#r1Mask)">
+              <path d="M28,-8 Q56,-4 60,-28 Q62,-44 48,-40" fill="none" stroke="#BFBCCE" stroke-width="6" stroke-linecap="round"></path>
+              <path d="M0,-110 Q-30,-100 -38,-60 Q-46,-20 -34,0 L34,0 Q46,-20 38,-60 Q30,-100 0,-110 Z" fill="#8E8AA6"></path>
+              <path d="M-30,-70 Q-34,-36 -28,-8" fill="none" stroke="#D8D5E4" stroke-width="2.5" opacity="0.7"></path>
+              <path d="M-20,-106 Q0,-120 20,-106 L14,-94 Q0,-104 -14,-94 Z" fill="#A5A2BB"></path>
+              <circle cx="0" cy="-118" r="21" fill="#BFBCCE"></circle>
+              <ellipse cx="0" cy="-134" rx="29" ry="6" fill="#55506B"></ellipse>
+              <rect x="-19" y="-176" width="38" height="42" rx="3" fill="#625D7A"></rect>
+              <path d="M-19,-142 H19" stroke="#F4C95D" stroke-width="3.5"></path>
+              <path d="M30,-78 Q48,-72 54,-60" fill="none" stroke="#8E8AA6" stroke-width="10" stroke-linecap="round"></path>
+              <circle cx="57" cy="-57" r="7" fill="#E8E6EF"></circle>
+              <path d="M48,-64 L54,-52" stroke-width="1.6" opacity="0.5"></path>
+            </g>
+            <path d="M0,-8 L2.2,-2.2 8,0 2.2,2.2 0,8 -2.2,2.2 -8,0 -2.2,-2.2 Z" fill="#F4C95D" transform="translate(320,470)" stroke="none"></path>
+            <path d="M0,-8 L2.2,-2.2 8,0 2.2,2.2 0,8 -2.2,2.2 -8,0 -2.2,-2.2 Z" fill="#F4C95D" transform="translate(292,442) scale(0.6)" stroke="none"></path>
+            <path d="M0,-8 L2.2,-2.2 8,0 2.2,2.2 0,8 -2.2,2.2 -8,0 -2.2,-2.2 Z" fill="#F4C95D" transform="translate(430,486) scale(0.7)" stroke="none"></path>
+          </g>
+          <g filter="url(#r1Blur)" fill="#C7BBD4">
+            <ellipse cx="360" cy="470" rx="240" ry="30" opacity="0.45"></ellipse>
+            <ellipse cx="300" cy="510" rx="280" ry="26" opacity="0.4"></ellipse>
+            <ellipse cx="440" cy="428" rx="150" ry="18" opacity="0.3"></ellipse>
+          </g>
+        </svg>
+      </div>
+      <span style="font-family:'Fredoka',sans-serif; font-size:12px; font-weight:600; letter-spacing:1.5px; color:#5A5370; text-align:center;">DISPARITION DANS LA RUELLE — LA BRUME L'EFFACE PAR LE BAS</span>
+    </div>
+
+    <div style="width:740px; flex-shrink:0; display:flex; flex-direction:column; gap:12px;">
+      <div style="background:#FBF5E8; border:1px solid #DECFB4; border-radius:20px; padding:14px; box-shadow:0 6px 24px rgba(47,42,69,0.10);">
+        <svg viewBox="0 0 720 540" width="100%" style="display:block; border-radius:10px;">
+          <defs>
+            <linearGradient id="r2Sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#26223A"></stop><stop offset="0.75" stop-color="#453D63"></stop><stop offset="1" stop-color="#5A4A72"></stop></linearGradient>
+            <radialGradient id="r2Moon"><stop offset="0" stop-color="#FBF0D4" stop-opacity="0.5"></stop><stop offset="1" stop-color="#FBF0D4" stop-opacity="0"></stop></radialGradient>
+            <linearGradient id="r2Win" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FBE3A2"></stop><stop offset="1" stop-color="#F4C95D"></stop></linearGradient>
+            <filter id="r2Blur" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="9"></feGaussianBlur></filter>
+          </defs>
+          <rect width="720" height="540" fill="url(#r2Sky)"></rect>
+          <g fill="#FBF0D4"><circle cx="90" cy="70" r="2"></circle><circle cx="180" cy="130" r="1.5"></circle><circle cx="300" cy="50" r="1.8"></circle><circle cx="620" cy="140" r="1.8"></circle><circle cx="560" cy="60" r="1.4"></circle><circle cx="660" cy="70" r="2"></circle><circle cx="60" cy="180" r="1.4"></circle><circle cx="240" cy="180" r="1.2"></circle></g>
+          <circle cx="520" cy="130" r="105" fill="url(#r2Moon)"></circle>
+          <circle cx="520" cy="130" r="56" fill="#FBF0D4" stroke="#2F2A45" stroke-width="3"></circle>
+          <circle cx="502" cy="116" r="9" fill="#EBDDB9" stroke="none"></circle><circle cx="536" cy="146" r="7" fill="#EBDDB9" stroke="none"></circle><circle cx="524" cy="106" r="4.5" fill="#EBDDB9" stroke="none"></circle>
+          <g stroke="#2F2A45" stroke-width="3" stroke-linejoin="round">
+            <path d="M0,540 L0,430 L90,360 L180,430 L260,368 L340,430 L340,540 Z" fill="#3B3554"></path>
+            <path d="M18,416 L84,366 M120,404 L170,430 M212,406 L256,372" stroke-width="1.6" opacity="0.45" fill="none"></path>
+            <rect x="120" y="322" width="24" height="52" fill="#4C4666"></rect>
+            <rect x="116" y="314" width="32" height="10" fill="#3B3554"></rect>
+            <path d="M132,306 q10,-14 -2,-24 q-11,-10 2,-22" fill="none" stroke="#C7BBD4" stroke-width="2.5" stroke-linecap="round" opacity="0.5"></path>
+            <path d="M340,540 L340,400 L470,318 L600,400 L600,540 Z" fill="#453F5E"></path>
+            <path d="M366,394 L458,330 M410,412 L472,368 M500,344 L576,394" stroke-width="1.6" opacity="0.45" fill="none"></path>
+            <g><rect x="430" y="430" width="24" height="32" rx="3" fill="url(#r2Win)" stroke-width="2.5"></rect><path d="M442,431 V461 M431,446 H453" stroke-width="1.4" opacity="0.7"></path></g>
+            <path d="M600,540 L600,420 L720,380 L720,540 Z" fill="#3B3554"></path>
+            <rect x="648" y="360" width="22" height="46" fill="#4C4666"></rect>
+            <rect x="644" y="352" width="30" height="10" fill="#3B3554"></rect>
+            <path d="M470,318 L600,400" fill="none" stroke-width="4"></path>
+            <g transform="translate(470,318) scale(0.95)">
+              <path d="M-26,-6 Q-54,0 -60,-24 Q-62,-40 -48,-36" fill="none" stroke="#BFBCCE" stroke-width="6" stroke-linecap="round"></path>
+              <path d="M0,-108 Q-34,-98 -52,-62 Q-72,-24 -88,-10 Q-56,-18 -40,-4 Q-20,6 0,0 Q30,4 38,-16 Q46,-52 30,-88 Q18,-104 0,-108 Z" fill="#8E8AA6"></path>
+              <path d="M-46,-58 Q-60,-34 -76,-16" fill="none" stroke="#D8D5E4" stroke-width="2.5" opacity="0.75"></path>
+              <path d="M28,-80 Q34,-50 32,-22" fill="none" stroke="#55506B" stroke-width="2" opacity="0.6"></path>
+              <path d="M-18,-104 Q0,-118 18,-104 L13,-93 Q0,-102 -13,-93 Z" fill="#A5A2BB"></path>
+              <circle cx="0" cy="-116" r="20" fill="#BFBCCE"></circle>
+              <path d="M-14,-124 Q-4,-130 4,-125" fill="none" stroke="#E8E6EF" stroke-width="2" opacity="0.8"></path>
+              <path d="M20,-76 Q40,-84 50,-104" fill="none" stroke="#8E8AA6" stroke-width="10" stroke-linecap="round"></path>
+              <circle cx="53" cy="-108" r="7" fill="#E8E6EF"></circle>
+              <g transform="translate(58,-140) rotate(18)">
+                <ellipse cx="0" cy="12" rx="27" ry="5.5" fill="#55506B"></ellipse>
+                <rect x="-17" y="-26" width="34" height="38" rx="3" fill="#625D7A"></rect>
+                <path d="M-17,-4 H17" stroke="#F4C95D" stroke-width="3"></path>
+              </g>
+            </g>
+            <path d="M0,-8 L2.2,-2.2 8,0 2.2,2.2 0,8 -2.2,2.2 -8,0 -2.2,-2.2 Z" fill="#F4C95D" transform="translate(556,268) scale(0.7)" stroke="none"></path>
+            <path d="M0,-8 L2.2,-2.2 8,0 2.2,2.2 0,8 -2.2,2.2 -8,0 -2.2,-2.2 Z" fill="#F4C95D" transform="translate(414,250) scale(0.55)" stroke="none"></path>
+          </g>
+          <g filter="url(#r2Blur)" fill="#C7BBD4">
+            <ellipse cx="180" cy="470" rx="200" ry="22" opacity="0.3"></ellipse>
+            <ellipse cx="540" cy="500" rx="230" ry="24" opacity="0.28"></ellipse>
+          </g>
+        </svg>
+      </div>
+      <span style="font-family:'Fredoka',sans-serif; font-size:12px; font-weight:600; letter-spacing:1.5px; color:#5A5370; text-align:center;">SUR LES TOITS — SALUT AU CLAIR DE LUNE, CAPE AU VENT</span>
+    </div>
+
+    <div style="width:740px; flex-shrink:0; display:flex; flex-direction:column; gap:12px;">
+      <div style="background:#FBF5E8; border:1px solid #DECFB4; border-radius:20px; padding:14px; box-shadow:0 6px 24px rgba(47,42,69,0.10);">
+        <svg viewBox="0 0 720 540" width="100%" style="display:block; border-radius:10px;">
+          <defs>
+            <linearGradient id="r3G" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4E4668"></stop><stop offset="1" stop-color="#37324E"></stop></linearGradient>
+            <linearGradient id="r3Ink" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F0EFF6"></stop><stop offset="0.5" stop-color="#9A96B0"></stop><stop offset="1" stop-color="#D8D5E4"></stop></linearGradient>
+            <filter id="r3Blur" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="9"></feGaussianBlur></filter>
+          </defs>
+          <rect width="720" height="540" fill="url(#r3G)"></rect>
+          <g stroke="#2F2A45" stroke-width="2.5" stroke-linejoin="round">
+            <g fill="#57506F">
+              <ellipse cx="90" cy="80" rx="80" ry="46"></ellipse><ellipse cx="270" cy="60" rx="90" ry="48"></ellipse><ellipse cx="460" cy="84" rx="86" ry="46"></ellipse><ellipse cx="640" cy="58" rx="84" ry="48"></ellipse>
+              <ellipse cx="0" cy="200" rx="86" ry="48"></ellipse><ellipse cx="180" cy="190" rx="92" ry="50"></ellipse><ellipse cx="540" cy="200" rx="92" ry="50"></ellipse><ellipse cx="700" cy="180" rx="80" ry="48"></ellipse>
+              <ellipse cx="80" cy="330" rx="90" ry="50"></ellipse><ellipse cx="640" cy="330" rx="90" ry="50"></ellipse>
+              <ellipse cx="30" cy="470" rx="94" ry="52"></ellipse><ellipse cx="230" cy="480" rx="96" ry="52"></ellipse><ellipse cx="470" cy="474" rx="94" ry="52"></ellipse><ellipse cx="680" cy="480" rx="90" ry="52"></ellipse>
+              <ellipse cx="360" cy="240" rx="110" ry="58" fill="#615878"></ellipse>
+            </g>
+            <path d="M50,64 q10,-8 22,-4 M250,44 q12,-8 24,-2 M620,42 q12,-8 24,-2 M160,174 q12,-8 24,-2 M520,184 q12,-8 24,-2 M60,314 q12,-8 24,-2 M210,462 q12,-8 24,-2 M450,458 q12,-8 24,-2" stroke-width="1.6" opacity="0.4" fill="none"></path>
+            <ellipse cx="368" cy="296" rx="150" ry="44" fill="#26223A" opacity="0.45" stroke="none"></ellipse>
+            <g transform="translate(360,270) rotate(-7)">
+              <rect x="-150" y="-95" width="300" height="190" rx="10" fill="#D8D5E4" stroke-width="4"></rect>
+              <rect x="-136" y="-81" width="272" height="162" rx="6" fill="none" stroke="#A5A2BB" stroke-width="2"></rect>
+              <path d="M96,44 Q118,38 124,54 Q112,50 102,56 Z" fill="#BFBCCE" opacity="0.55" stroke="none"></path>
+              <g transform="translate(-92,-52)">
+                <ellipse cx="0" cy="14" rx="17" ry="3.6" fill="#8E8AA6" stroke-width="2"></ellipse>
+                <rect x="-11" y="-12" width="22" height="25" rx="2" fill="#8E8AA6" stroke-width="2"></rect>
+                <path d="M-11,2 H11" stroke="#F4C95D" stroke-width="2.5"></path>
+              </g>
+              <text x="0" y="26" text-anchor="middle" font-family="Nunito, sans-serif" font-style="italic" font-weight="700" font-size="86" fill="url(#r3Ink)" stroke="#55506B" stroke-width="1.5">F.G.</text>
+              <path d="M-74,52 Q-20,68 40,54 Q70,48 86,54" fill="none" stroke="url(#r3Ink)" stroke-width="3.5" stroke-linecap="round"></path>
+              <text x="0" y="80" text-anchor="middle" font-family="Nunito, sans-serif" font-style="italic" font-size="15" fill="#8E8AA6" stroke="none" letter-spacing="2">avec mes compliments</text>
+            </g>
+            <path d="M0,-8 L2.2,-2.2 8,0 2.2,2.2 0,8 -2.2,2.2 -8,0 -2.2,-2.2 Z" fill="#F4C95D" transform="translate(508,178)" stroke="none"></path>
+            <path d="M0,-8 L2.2,-2.2 8,0 2.2,2.2 0,8 -2.2,2.2 -8,0 -2.2,-2.2 Z" fill="#F4C95D" transform="translate(212,352) scale(0.6)" stroke="none"></path>
+            <path d="M0,-8 L2.2,-2.2 8,0 2.2,2.2 0,8 -2.2,2.2 -8,0 -2.2,-2.2 Z" fill="#F4C95D" transform="translate(538,392) scale(0.75)" stroke="none"></path>
+          </g>
+          <g filter="url(#r3Blur)" fill="#C7BBD4">
+            <ellipse cx="120" cy="120" rx="190" ry="26" opacity="0.3"></ellipse>
+            <ellipse cx="600" cy="450" rx="200" ry="26" opacity="0.28"></ellipse>
+          </g>
+        </svg>
+      </div>
+      <span style="font-family:'Fredoka',sans-serif; font-size:12px; font-weight:600; letter-spacing:1.5px; color:#5A5370; text-align:center;">LA CARTE DE VISITE — SIGNÉE « F.G. » À L'ENCRE ARGENTÉE, SUR LES PAVÉS</span>
+    </div>
+
+  </div>
+</section>
+
+</x-dc>
+</body>
+</html>

@@ -15,7 +15,7 @@ Depuis la migration Vite (session 2), la racine ne contient plus que les pages e
 - `public/manifest.json`, `public/sw.js` — PWA installable et hors ligne. **À chaque déploiement, incrémenter le nom du cache dans `sw.js`** (`chaville-v3` → `chaville-v4`…), sinon les joueurs gardent l'ancienne version.
 - `public/icon-192.png`, `public/icon-512.png` — icône chat détective
 - `assets/decors/` — décors PNG. **Restent à la racine** (pas dans `public/`) : leur URL doit être stable (`/assets/decors/*.png`) pour le préchargement du service worker et les références relatives de `da/`. Recopiés dans `dist/` par un plugin de `vite.config.ts`.
-- `da/` — direction artistique (référence, non déployée)
+- `da/` — direction artistique (référence, non déployée). `da/planches/` contient les planches Claude Design validées (personnages, Fantôme Gris, UI, carte, lieux) — références visuelles de la session 3.
 - Déploiement : Vercel importe ce dépôt et lance `npm run build` (`vercel.json`) ; chaque push sur `main` redéploie automatiquement.
 
 ## 🎨 Direction artistique « Heure bleue encrée » (validée le 19/07/2026 — canon officiel)

@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  body { margin: 0; background: #EFE5D2; font-family: 'Nunito', sans-serif; color: #2F2A45; }
+  a { color: #8A5A3F; } a:hover { color: #5F3D28; }
+</style>
+</helmet>
+<section style="padding:56px 64px; display:flex; flex-direction:column; gap:20px;">
+  <header style="max-width:900px; display:flex; flex-direction:column; gap:8px;">
+    <div style="font-family:'Fredoka',sans-serif; font-weight:700; font-size:38px; color:#2F2A45;">Carte du bourg — écran menu</div>
+    <p style="margin:0; font-size:17px; line-height:1.5; color:#5A5370;">Vue de dessus inclinée, format téléphone. Les lieux verrouillés portent un cadenas d'or ; la grand-place est le point de départ.</p>
+  </header>
+  <div style="background:#FBF5E8; border:1px solid #DECFB4; border-radius:24px; padding:14px; box-shadow:0 6px 24px rgba(47,42,69,0.10); width:452px;">
+    <svg viewBox="0 0 780 1600" width="424" style="display:block; border-radius:14px;">
+      <defs>
+        <linearGradient id="mSky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#26223A"></stop><stop offset="1" stop-color="#5A4A72"></stop></linearGradient>
+        <linearGradient id="mGround" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4A4364"></stop><stop offset="0.5" stop-color="#443E5C"></stop><stop offset="1" stop-color="#3B3554"></stop></linearGradient>
+        <linearGradient id="mWin" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FBE3A2"></stop><stop offset="1" stop-color="#F4C95D"></stop></linearGradient>
+        <radialGradient id="mGlow"><stop offset="0" stop-color="#F4C95D" stop-opacity="0.8"></stop><stop offset="1" stop-color="#F4C95D" stop-opacity="0"></stop></radialGradient>
+        <filter id="mBlur" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="12"></feGaussianBlur></filter>
+        <g id="mW"><rect x="-2.5" y="-2.5" width="21" height="27" rx="4" fill="#F4C95D" opacity="0.3" stroke="none"></rect><rect x="0" y="0" width="16" height="22" rx="3" fill="url(#mWin)" stroke="#2F2A45" stroke-width="2"></rect><path d="M8,1 V21" stroke="#2F2A45" stroke-width="1.2" opacity="0.7"></path></g>
+        <g id="mLock">
+          <circle cx="0" cy="2" r="26" fill="url(#mGlow)" stroke="none"></circle>
+          <path d="M-9,-6 a9,9 0 0 1 18,0 v6 h-18 Z" fill="none" stroke="#2F2A45" stroke-width="8" stroke-linejoin="round"></path>
+          <path d="M-9,-6 a9,9 0 0 1 18,0 v6 h-18 Z" fill="none" stroke="#F4C95D" stroke-width="4.5" stroke-linejoin="round"></path>
+          <rect x="-15" y="-2" width="30" height="24" rx="6" fill="#F4C95D" stroke="#2F2A45" stroke-width="2.5"></rect>
+          <circle cx="0" cy="8" r="3.5" fill="#2F2A45" stroke="none"></circle>
+          <path d="M0,10 V15" stroke="#2F2A45" stroke-width="3" stroke-linecap="round"></path>
+        </g>
+        <g id="mHouse">
+          <rect x="-20" y="-16" width="40" height="32" fill="#57506F" stroke="#2F2A45" stroke-width="2.5" stroke-linejoin="round"></rect>
+          <polygon points="-24,-16 0,-34 24,-16" fill="#3B3554" stroke="#2F2A45" stroke-width="2.5" stroke-linejoin="round"></polygon>
+          <rect x="-6" y="-8" width="12" height="15" rx="2" fill="url(#mWin)" stroke="#2F2A45" stroke-width="1.8"></rect>
+        </g>
+      </defs>
+      <rect width="780" height="1600" fill="url(#mSky)"></rect>
+      <g fill="#FBF0D4"><circle cx="90" cy="60" r="2"></circle><circle cx="200" cy="110" r="1.5"></circle><circle cx="330" cy="50" r="1.8"></circle><circle cx="470" cy="90" r="1.4"></circle><circle cx="560" cy="46" r="1.6"></circle><circle cx="720" cy="120" r="1.8"></circle></g>
+      <circle cx="656" cy="88" r="34" fill="#FBF0D4" stroke="#2F2A45" stroke-width="3"></circle>
+      <circle cx="645" cy="79" r="6" fill="#EBDDB9"></circle><circle cx="666" cy="98" r="4.5" fill="#EBDDB9"></circle>
+      <path d="M0,190 Q200,150 400,175 Q600,200 780,165 L780,1600 L0,1600 Z" fill="url(#mGround)" stroke="#2F2A45" stroke-width="3"></path>
+      <text x="60" y="100" font-family="Fredoka, sans-serif" font-weight="700" font-size="58" fill="#F4C95D" stroke="#2F2A45" stroke-width="2" paint-order="stroke">Chaville</text>
+      <text x="62" y="136" font-family="Nunito, sans-serif" font-style="italic" font-size="24" fill="#C7BBD4">choisis ton enquête…</text>
+      <g stroke-linecap="round" fill="none">
+        <path d="M390,760 Q340,640 260,560 Q205,505 200,440" stroke="#5E5680" stroke-width="24"></path>
+        <path d="M430,750 Q520,660 558,570" stroke="#5E5680" stroke-width="24"></path>
+        <path d="M330,860 Q240,920 195,1005" stroke="#5E5680" stroke-width="24"></path>
+        <path d="M450,860 Q540,930 588,1030" stroke="#5E5680" stroke-width="24"></path>
+        <path d="M390,905 Q375,1120 392,1230 Q398,1310 382,1390" stroke="#5E5680" stroke-width="26"></path>
+        <g stroke="#6E6590" stroke-width="13" stroke-dasharray="9 16" opacity="0.6">
+          <path d="M390,760 Q340,640 260,560 Q205,505 200,440"></path>
+          <path d="M430,750 Q520,660 558,570"></path>
+          <path d="M330,860 Q240,920 195,1005"></path>
+          <path d="M450,860 Q540,930 588,1030"></path>
+          <path d="M390,905 Q375,1120 392,1230 Q398,1310 382,1390"></path>
+        </g>
+      </g>
+      <g stroke="#2F2A45" stroke-width="3" stroke-linejoin="round">
+        <ellipse cx="195" cy="400" rx="175" ry="82" fill="#45524A"></ellipse>
+        <path d="M60,420 Q120,400 150,430 M240,440 Q300,430 330,408" stroke-width="1.8" opacity="0.4" fill="none"></path>
+        <g>
+          <rect x="128" y="262" width="26" height="94" fill="#4C4666"></rect>
+          <polygon points="122,264 141,232 160,264" fill="#3B3554"></polygon>
+          <rect x="246" y="262" width="26" height="94" fill="#4C4666"></rect>
+          <polygon points="240,264 259,232 278,264" fill="#3B3554"></polygon>
+          <rect x="150" y="276" width="100" height="80" fill="#57506F"></rect>
+          <polygon points="144,278 200,240 256,278" fill="#3B3554"></polygon>
+          <use href="#mW" x="166" y="296"></use>
+          <rect x="216" y="296" width="16" height="22" rx="3" fill="#3A3450" stroke-width="2"></rect>
+          <path d="M190,356 v-18 a10,10 0 0 1 20,0 v18 Z" fill="#26223A"></path>
+          <circle cx="136" cy="248" r="1.6" fill="#FBF0D4" stroke="none"></circle>
+        </g>
+        <g transform="translate(560,420)">
+          <rect x="-32" y="-160" width="64" height="240" fill="#57506F"></rect>
+          <path d="M-32,-160 h64 v240 h-8 V-152 h-48 V80 h-8 Z" fill="#494263" stroke="none"></path>
+          <polygon points="-40,-158 0,-220 40,-158" fill="#3B3554"></polygon>
+          <line x1="0" y1="-220" x2="0" y2="-236" stroke="#C99B3E" stroke-width="3"></line>
+          <circle cx="0" cy="-238" r="3.5" fill="#F4C95D"></circle>
+          <circle cx="0" cy="-106" r="40" fill="url(#mGlow)" stroke="none"></circle>
+          <circle cx="0" cy="-106" r="27" fill="#F4C95D"></circle>
+          <circle cx="0" cy="-106" r="21" fill="#FBF0D4"></circle>
+          <path d="M0,-106 L0,-122 M0,-106 L12,-101" stroke-width="3" stroke-linecap="round"></path>
+          <circle cx="0" cy="-106" r="2.5" fill="#2F2A45" stroke="none"></circle>
+          <use href="#mW" x="-8" y="-52"></use>
+          <use href="#mW" x="-8" y="-8"></use>
+          <path d="M-14,80 v-20 a14,14 0 0 1 28,0 v20 Z" fill="#26223A"></path>
+        </g>
+        <use href="#mHouse" transform="translate(80,620)"></use>
+        <use href="#mHouse" transform="translate(130,660) scale(0.85)"></use>
+        <use href="#mHouse" transform="translate(680,660)"></use>
+        <use href="#mHouse" transform="translate(636,706) scale(0.85)"></use>
+        <use href="#mHouse" transform="translate(84,920) scale(0.9)"></use>
+        <use href="#mHouse" transform="translate(700,930) scale(0.9)"></use>
+        <g>
+          <ellipse cx="390" cy="800" rx="205" ry="112" fill="#514A6E"></ellipse>
+          <path d="M250,780 q30,16 60,4 M330,850 q26,14 52,0 M440,842 q26,14 52,0 M470,764 q26,14 52,0 M370,724 q22,12 44,0" stroke="#26223A" stroke-width="1.8" fill="none" opacity="0.5"></path>
+          <g transform="translate(292,764)">
+            <rect x="-30" y="-4" width="60" height="34" fill="#57506F" stroke-width="2.5"></rect>
+            <path d="M-38,-4 Q-19,-26 0,-26 Q19,-26 38,-4 Z" fill="#B96A4B" stroke-width="2.5"></path>
+            <path d="M-24,-7 Q-12,-20 0,-21 M24,-7 Q12,-20 0,-21" stroke="#F2EDE0" stroke-width="4" fill="none"></path>
+            <rect x="-22" y="4" width="44" height="12" rx="2" fill="url(#mWin)" stroke-width="2"></rect>
+          </g>
+          <g transform="translate(478,752)">
+            <rect x="-30" y="-4" width="60" height="34" fill="#57506F" stroke-width="2.5"></rect>
+            <path d="M-38,-4 Q-19,-26 0,-26 Q19,-26 38,-4 Z" fill="#59677A" stroke-width="2.5"></path>
+            <path d="M-24,-7 Q-12,-20 0,-21 M24,-7 Q12,-20 0,-21" stroke="#F2EDE0" stroke-width="4" fill="none"></path>
+            <rect x="-22" y="4" width="44" height="12" rx="2" fill="url(#mWin)" stroke-width="2"></rect>
+          </g>
+          <g transform="translate(390,716)">
+            <path d="M0,44 V-14 q0,-10 10,-10" fill="none" stroke="#26223A" stroke-width="4" stroke-linecap="round"></path>
+            <circle cx="14" cy="-28" r="18" fill="url(#mGlow)" stroke="none"></circle>
+            <path d="M9,-36 h10 l3,12 h-16 Z" fill="#F4C95D" stroke-width="2.2"></path>
+          </g>
+          <path d="M0,-9 L2.5,-2.5 9,0 2.5,2.5 0,9 -2.5,2.5 -9,0 -2.5,-2.5 Z" fill="#F4C95D" transform="translate(390,846)" stroke="none"></path>
+        </g>
+        <g transform="translate(170,1090)">
+          <rect x="-80" y="-56" width="160" height="98" fill="#615878"></rect>
+          <polygon points="-88,-56 0,-96 88,-56" fill="#3B3554"></polygon>
+          <path d="M-60,-60 L-10,-84 M-30,-58 L24,-82" stroke-width="1.6" opacity="0.45" fill="none"></path>
+          <path d="M-52,-14 v-14 a12,12 0 0 1 24,0 v14 Z" fill="url(#mWin)" stroke-width="2.2"></path>
+          <path d="M-12,-14 v-14 a12,12 0 0 1 24,0 v14 Z" fill="url(#mWin)" stroke-width="2.2"></path>
+          <path d="M28,-14 v-14 a12,12 0 0 1 24,0 v14 Z" fill="url(#mWin)" stroke-width="2.2"></path>
+          <path d="M-14,42 v-22 a14,14 0 0 1 28,0 v22 Z" fill="#26223A"></path>
+          <g transform="translate(66,-70)">
+            <rect x="-18" y="-13" width="36" height="26" rx="4" fill="#4A3C50" stroke-width="2.2"></rect>
+            <path d="M-10,2 q9,-7 10,-2 q1,-5 10,2 l0,3 q-9,-5 -10,-1 q-1,-4 -10,1 Z" fill="#FBF0D4" stroke-width="1.6"></path>
+          </g>
+        </g>
+        <g transform="translate(600,1130)">
+          <rect x="-88" y="-58" width="176" height="100" fill="#6E5A6B"></rect>
+          <polygon points="-96,-58 -88,-88 88,-88 96,-58" fill="#3B3554"></polygon>
+          <polygon points="-56,-88 0,-118 56,-88" fill="#4C4666"></polygon>
+          <rect x="-58" y="-38" width="12" height="80" fill="#8A7B8C" stroke-width="2.2"></rect>
+          <rect x="-6" y="-38" width="12" height="80" fill="#8A7B8C" stroke-width="2.2"></rect>
+          <rect x="46" y="-38" width="12" height="80" fill="#8A7B8C" stroke-width="2.2"></rect>
+          <rect x="-36" y="-24" width="24" height="30" rx="3" fill="#3A3450" stroke-width="2.2"></rect>
+          <rect x="16" y="-24" width="24" height="30" rx="3" fill="#3A3450" stroke-width="2.2"></rect>
+          <path d="M-30,-73 h60" stroke="#F4C95D" stroke-width="5" stroke-linecap="round"></path>
+        </g>
+        <path d="M0,1420 Q200,1382 420,1402 Q620,1422 780,1392 L780,1600 L0,1600 Z" fill="#3E4C6B"></path>
+        <path d="M60,1470 q22,10 44,0 M200,1510 q22,10 44,0 M420,1480 q22,10 44,0 M600,1520 q22,10 44,0 M660,1450 q20,9 40,0 M120,1560 q22,10 44,0 M480,1560 q22,10 44,0" stroke="#C7BBD4" stroke-width="2.2" fill="none" opacity="0.5"></path>
+        <rect x="300" y="1390" width="180" height="26" rx="4" fill="#6B4A36"></rect>
+        <path d="M318,1390 V1416 M354,1390 V1416 M390,1390 V1416 M426,1390 V1416 M462,1390 V1416" stroke-width="1.6" opacity="0.5" fill="none"></path>
+        <g transform="translate(200,1470)">
+          <path d="M-44,0 Q-30,18 0,18 Q30,18 44,0 L-44,0 Z" fill="#8A6248"></path>
+          <line x1="0" y1="0" x2="0" y2="-52" stroke-width="4"></line>
+          <path d="M0,-52 L28,-14 L0,-14 Z" fill="#F2EDE0" stroke-width="2.5"></path>
+          <circle cx="34" cy="4" r="10" fill="url(#mGlow)" stroke="none"></circle>
+        </g>
+        <g transform="translate(560,1480)">
+          <path d="M-36,0 Q-24,14 0,14 Q24,14 36,0 L-36,0 Z" fill="#5C4A5C"></path>
+          <line x1="0" y1="0" x2="0" y2="-40" stroke-width="3.5"></line>
+          <path d="M0,-40 L-22,-10 L0,-10 Z" fill="#C7BBD4" stroke-width="2.2"></path>
+        </g>
+        <g transform="translate(330,1364)">
+          <rect x="-14" y="-14" width="28" height="28" rx="3" fill="#8A6248" stroke-width="2.2"></rect>
+          <rect x="16" y="-10" width="24" height="24" rx="3" fill="#8A6248" stroke-width="2.2"></rect>
+          <path d="M-14,-4 h28 M16,0 h24" stroke-width="1.4" opacity="0.5" fill="none"></path>
+        </g>
+      </g>
+      <g filter="url(#mBlur)" fill="#C7BBD4">
+        <ellipse cx="200" cy="480" rx="190" ry="20" opacity="0.30"></ellipse>
+        <ellipse cx="560" cy="620" rx="170" ry="18" opacity="0.26"></ellipse>
+        <ellipse cx="390" cy="950" rx="240" ry="22" opacity="0.26"></ellipse>
+        <ellipse cx="260" cy="1230" rx="200" ry="20" opacity="0.3"></ellipse>
+        <ellipse cx="540" cy="1330" rx="200" ry="20" opacity="0.26"></ellipse>
+      </g>
+      <g font-family="Fredoka, sans-serif" font-weight="600" text-anchor="middle">
+        <g transform="translate(195,510)">
+          <rect x="-86" y="-24" width="172" height="46" rx="14" fill="#FBF5E8" stroke="#2F2A45" stroke-width="2.5"></rect>
+          <text y="8" font-size="24" fill="#2F2A45">Le Manoir</text>
+          <use href="#mLock" transform="translate(102,-2) scale(0.9)"></use>
+        </g>
+        <g transform="translate(560,596)">
+          <rect x="-102" y="-24" width="204" height="46" rx="14" fill="#FBF5E8" stroke="#2F2A45" stroke-width="2.5"></rect>
+          <text y="8" font-size="23" fill="#2F2A45">Tour de l'horloge</text>
+        </g>
+        <g transform="translate(390,882)">
+          <rect x="-96" y="-2" width="192" height="46" rx="14" fill="#F4C95D" stroke="#2F2A45" stroke-width="2.5"></rect>
+          <text y="29" font-size="23" fill="#2F2A45">Grand-place ★</text>
+        </g>
+        <g transform="translate(170,1180)">
+          <rect x="-96" y="-24" width="192" height="46" rx="14" fill="#FBF5E8" stroke="#2F2A45" stroke-width="2.5"></rect>
+          <text y="8" font-size="23" fill="#2F2A45">Bibliothèque</text>
+        </g>
+        <g transform="translate(600,1220)">
+          <rect x="-88" y="-24" width="176" height="46" rx="14" fill="#FBF5E8" stroke="#2F2A45" stroke-width="2.5"></rect>
+          <text y="8" font-size="23" fill="#2F2A45">Vieux théâtre</text>
+          <use href="#mLock" transform="translate(104,-2) scale(0.9)"></use>
+        </g>
+        <g transform="translate(390,1524)">
+          <rect x="-62" y="-24" width="124" height="46" rx="14" fill="#FBF5E8" stroke="#2F2A45" stroke-width="2.5"></rect>
+          <text y="8" font-size="24" fill="#2F2A45">Le Port</text>
+        </g>
+      </g>
+    </svg>
+  </div>
+</section>
+
+</x-dc>
+</body>
+</html>

@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  body { margin: 0; background: #EFE5D2; font-family: 'Nunito', sans-serif; color: #2F2A45; }
+  a { color: #8A5A3F; } a:hover { color: #5F3D28; }
+</style>
+</helmet>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <g id="cat-det">
+      <path d="M-30,100 C-64,96 -72,60 -46,54 C-60,66 -54,88 -26,90 Z" fill="#6E7488"></path>
+      <ellipse cx="0" cy="95" rx="36" ry="42" fill="#8C93A8"></ellipse>
+      <path d="M-33,76 q10,4 7,14 q-4,-7 -11,-9 Z M-35,92 q10,4 7,14 q-4,-7 -11,-9 Z" fill="#6E7488" stroke="none"></path>
+      <ellipse cx="0" cy="106" rx="21" ry="29" fill="#F2EDE0"></ellipse>
+      <ellipse cx="-15" cy="135" rx="11" ry="7" fill="#6E7488"></ellipse>
+      <ellipse cx="15" cy="135" rx="11" ry="7" fill="#6E7488"></ellipse>
+      <path d="M-34,0 L-44,-24 L-14,-12 Z" fill="#8C93A8"></path>
+      <path d="M-32,-4 L-38,-18 L-20,-11 Z" fill="#E9AFBB" stroke="none"></path>
+      <path d="M34,0 L44,-24 L14,-12 Z" fill="#8C93A8"></path>
+      <path d="M32,-4 L38,-18 L20,-11 Z" fill="#E9AFBB" stroke="none"></path>
+      <circle cx="0" cy="28" r="36" fill="#8C93A8"></circle>
+      <path d="M-36,20 q8,1 12,5 q-8,1 -13,-1 Z M36,20 q-8,1 -12,5 q8,1 13,-1 Z" fill="#6E7488" stroke="none"></path>
+      <ellipse cx="0" cy="42" rx="17" ry="12" fill="#F2EDE0"></ellipse>
+      <circle cx="-14" cy="24" r="9.5" fill="#FFFDF5"></circle>
+      <circle cx="14" cy="24" r="9.5" fill="#FFFDF5"></circle>
+      <circle cx="-13" cy="25" r="5.8" fill="#2F2A45" stroke="none"></circle>
+      <circle cx="15" cy="25" r="5.8" fill="#2F2A45" stroke="none"></circle>
+      <circle cx="-11" cy="23" r="2" fill="#FFFFFF" stroke="none"></circle>
+      <circle cx="17" cy="23" r="2" fill="#FFFFFF" stroke="none"></circle>
+      <path d="M-4.5,35 L4.5,35 L0,40 Z" fill="#D96C5C" stroke="none"></path>
+      <path d="M0,40 Q0,45 -5,46 M0,40 Q0,45 5,46" fill="none" stroke="#2F2A45" stroke-width="1.6" stroke-linecap="round"></path>
+      <g stroke="#2F2A45" stroke-width="1.2" opacity="0.45" stroke-linecap="round">
+        <path d="M-19,37 L-34,34"></path><path d="M-19,42 L-33,43"></path>
+        <path d="M19,37 L34,34"></path><path d="M19,42 L33,43"></path>
+      </g>
+      <circle cx="-9" cy="36" r="1" fill="#6E7488" stroke="none"></circle>
+      <circle cx="9" cy="36" r="1" fill="#6E7488" stroke="none"></circle>
+      <ellipse cx="0" cy="6" rx="39" ry="8.5" fill="#75604B"></ellipse>
+      <path d="M-36,6 Q-38,-28 0,-31 Q38,-28 36,6 Q0,-4 -36,6 Z" fill="#8C7461"></path>
+      <path d="M-33,3 Q0,-7 33,3" fill="none" stroke="#F4C95D" stroke-width="4" stroke-linecap="round"></path>
+      <path d="M-26,56 Q0,72 26,56 L26,70 Q0,86 -26,70 Z" fill="#C4574E"></path>
+      <path d="M12,72 Q20,96 10,112 L-4,106 Q6,92 0,74 Z" fill="#C4574E"></path>
+      <path d="M10,112 L7,120 M2,109 L-1,117" stroke="#F4C95D" stroke-width="2.5" stroke-linecap="round" fill="none"></path>
+      <path d="M24,74 L50,56" stroke="#8C93A8" stroke-width="14" stroke-linecap="round" fill="none"></path>
+      <circle cx="52" cy="54" r="8.5" fill="#A6ACBF"></circle>
+      <path d="M54,50 L66,34" stroke="#6B4A36" stroke-width="6" stroke-linecap="round" fill="none"></path>
+      <circle cx="74" cy="24" r="17" fill="#CFE3EA" fill-opacity="0.55" stroke="#F4C95D" stroke-width="5"></circle>
+      <path d="M65,17 A13,13 0 0 1 74,11" fill="none" stroke="#FFFFFF" stroke-width="2.6" stroke-linecap="round" opacity="0.85"></path>
+    </g>
+    <g id="mouse-pal">
+      <path d="M17,26 Q42,32 44,12 Q45,-2 33,0" fill="none" stroke="#9D93B5" stroke-width="4" stroke-linecap="round"></path>
+      <ellipse cx="0" cy="16" rx="16" ry="20" fill="#B4AECB"></ellipse>
+      <ellipse cx="-2" cy="22" rx="9" ry="12" fill="#EDE6F2"></ellipse>
+      <circle cx="-11" cy="-15" r="9" fill="#B4AECB"></circle>
+      <circle cx="-11" cy="-15" r="5" fill="#F0B9C6" stroke="none"></circle>
+      <circle cx="11" cy="-15" r="9" fill="#B4AECB"></circle>
+      <circle cx="11" cy="-15" r="5" fill="#F0B9C6" stroke="none"></circle>
+      <circle cx="0" cy="-2" r="13" fill="#B4AECB"></circle>
+      <circle cx="-5" cy="-4" r="4.6" fill="#FFFDF5"></circle>
+      <circle cx="5" cy="-4" r="4.6" fill="#FFFDF5"></circle>
+      <circle cx="-4.4" cy="-3.6" r="2.8" fill="#2F2A45" stroke="none"></circle>
+      <circle cx="5.6" cy="-3.6" r="2.8" fill="#2F2A45" stroke="none"></circle>
+      <circle cx="-3.6" cy="-4.6" r="1" fill="#FFFFFF" stroke="none"></circle>
+      <circle cx="6.4" cy="-4.6" r="1" fill="#FFFFFF" stroke="none"></circle>
+      <circle cx="0" cy="3" r="2.6" fill="#E58BA0" stroke="none"></circle>
+      <path d="M-8,10 L8,10 L0,18 Z" fill="#F4C95D"></path>
+      <g transform="rotate(-10 10 18)">
+        <rect x="5" y="11" width="11" height="14" rx="2" fill="#F7EFDC" stroke="#2F2A45" stroke-width="1.5"></rect>
+        <path d="M8,16 L13,16 M8,19 L13,19" stroke="#2F2A45" stroke-width="1" opacity="0.5"></path>
+      </g>
+      <ellipse cx="-7" cy="35" rx="5" ry="3" fill="#9D93B5"></ellipse>
+      <ellipse cx="6" cy="35" rx="5" ry="3" fill="#9D93B5"></ellipse>
+    </g>
+    <path id="spark" d="M0,-8 L2.2,-2.2 8,0 2.2,2.2 0,8 -2.2,2.2 -8,0 -2.2,-2.2 Z" fill="#F4C95D"></path>
+  </defs>
+</svg>
+<section style="padding:56px 64px; display:flex; flex-direction:column; gap:28px;">
+  <header style="max-width:900px; display:flex; flex-direction:column; gap:8px;">
+    <div style="font-family:'Fredoka',sans-serif; font-weight:700; font-size:34px; color:#2F2A45;">Direction retenue — heure bleue encrée</div>
+    <p style="margin:0; font-size:17px; line-height:1.5; color:#5A5370;">La lumière de <a href="#1c">1c</a> + le trait d'encre de <a href="#1b">1b</a>.</p>
+  </header>
+  <div id="2a" style="width:920px; flex-shrink:0; display:flex; flex-direction:column; gap:14px;">
+    <div style="display:flex; align-items:baseline; gap:12px;">
+      <span style="font-family:'Fredoka',sans-serif; font-weight:600; font-size:14px; background:#2F2A45; color:#F4C95D; border-radius:999px; padding:4px 12px;">2a</span>
+      <span style="font-family:'Fredoka',sans-serif; font-weight:600; font-size:22px;">Heure bleue encrée</span>
+    </div>
+    <div style="background:#FBF5E8; border:1px solid #DECFB4; border-radius:20px; padding:14px; box-shadow:0 6px 24px rgba(47,42,69,0.10);">
+      <svg viewBox="0 0 900 620" width="100%" style="display:block; border-radius:10px;">
+        <defs>
+          <linearGradient id="dSky" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#2F2A45"></stop><stop offset="0.55" stop-color="#5A4A72"></stop><stop offset="0.85" stop-color="#C9776B"></stop>
+          </linearGradient>
+          <radialGradient id="dGlow"><stop offset="0" stop-color="#F4C95D" stop-opacity="0.9"></stop><stop offset="1" stop-color="#F4C95D" stop-opacity="0"></stop></radialGradient>
+          <linearGradient id="dGround" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4E4668"></stop><stop offset="1" stop-color="#37324E"></stop></linearGradient>
+          <linearGradient id="dWin" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FBE3A2"></stop><stop offset="1" stop-color="#F4C95D"></stop></linearGradient>
+          <g id="dW"><rect x="-3" y="-3" width="24" height="32" rx="5" fill="#F4C95D" opacity="0.28" stroke="none"></rect><rect x="0" y="0" width="18" height="26" rx="3" fill="url(#dWin)" stroke="#2F2A45" stroke-width="2"></rect><path d="M9,1 V25 M1,13 H17" stroke="#2F2A45" stroke-width="1.3" opacity="0.7"></path></g>
+          <filter id="dBlur" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="10"></feGaussianBlur></filter>
+        </defs>
+        <rect width="900" height="620" fill="url(#dSky)"></rect>
+        <g fill="#FBF0D4">
+          <circle cx="120" cy="80" r="2.2"></circle><circle cx="210" cy="140" r="1.6"></circle><circle cx="320" cy="66" r="1.8"></circle><circle cx="560" cy="90" r="2"></circle><circle cx="700" cy="60" r="1.6"></circle><circle cx="800" cy="130" r="2.2"></circle><circle cx="640" cy="150" r="1.4"></circle><circle cx="60" cy="180" r="1.6"></circle>
+          <circle cx="760" cy="88" r="8" opacity="0.9"></circle><circle cx="757" cy="85" r="7" fill="#5A4A72"></circle>
+        </g>
+        <path d="M0,330 L50,290 80,308 130,262 170,300 240,270 300,310 380,280 520,280 600,306 660,268 720,300 780,272 830,304 900,286 900,470 0,470 Z" fill="#3B3554"></path>
+        <g stroke="#2F2A45" stroke-width="3" stroke-linejoin="round">
+          <g>
+            <rect x="408" y="150" width="84" height="320" fill="#57506F"></rect>
+            <path d="M420,200 h14 M456,300 h20 M418,380 h16 M460,420 h18" stroke-width="1.6" opacity="0.5"></path>
+            <polygon points="396,152 450,70 504,152" fill="#3B3554"></polygon>
+            <path d="M414,140 L444,94 M430,146 L462,98 M452,144 L480,120" stroke-width="1.6" opacity="0.5" fill="none"></path>
+            <line x1="450" y1="70" x2="450" y2="50" stroke-width="3"></line>
+            <circle cx="450" cy="47" r="4.5" fill="#F4C95D"></circle>
+            <circle cx="450" cy="238" r="52" fill="url(#dGlow)" stroke="none"></circle>
+            <circle cx="450" cy="238" r="36" fill="#F4C95D"></circle>
+            <circle cx="450" cy="238" r="28" fill="#FBF0D4"></circle>
+            <path d="M450,238 L450,216 M450,238 L466,244" stroke-width="3.5" stroke-linecap="round"></path>
+            <circle cx="450" cy="238" r="3" fill="#2F2A45"></circle>
+            <rect x="441" y="170" width="18" height="26" rx="9" fill="url(#dWin)" stroke-width="2"></rect>
+            <use href="#dW" x="441" y="300"></use><use href="#dW" x="441" y="352"></use>
+            <path d="M430,470 v-28 a20,20 0 0 1 40,0 v28 Z" fill="#26223A"></path>
+          </g>
+          <g transform="rotate(1.4 110 470)">
+            <rect x="52" y="246" width="116" height="224" fill="#615878"></rect>
+            <polygon points="40,248 110,176 180,248" fill="#3B3554"></polygon>
+            <path d="M60,240 L102,192 M80,244 L120,198 M126,222 L152,244" stroke-width="1.6" opacity="0.5" fill="none"></path>
+            <g stroke-width="6"><path d="M58,246 V470 M162,246 V470 M52,320 H168 M52,392 H168"></path></g>
+            <path d="M62,320 L158,392 M158,320 L62,392" stroke-width="4.5"></path>
+            <use href="#dW" x="76" y="268"></use><use href="#dW" x="126" y="268"></use>
+            <use href="#dW" x="101" y="336"></use>
+            <use href="#dW" x="76" y="414"></use>
+          </g>
+          <g>
+            <rect x="168" y="262" width="114" height="208" fill="#6E5A6B"></rect>
+            <path d="M176,300 h14 M200,330 h14 M232,296 h14 M180,360 h14 M244,352 h14" stroke-width="1.6" opacity="0.5"></path>
+            <polygon points="160,264 225,210 290,264" fill="#3B3554"></polygon>
+            <rect x="236" y="176" width="17" height="40" fill="#5C4A5C"></rect>
+            <rect x="233" y="168" width="23" height="9" fill="#4A3C4C"></rect>
+            <path d="M244,160 q12,-16 -2,-28 q-13,-12 2,-26" fill="none" stroke="#C7BBD4" stroke-width="2.5" stroke-linecap="round" opacity="0.5"></path>
+            <use href="#dW" x="186" y="288"></use><use href="#dW" x="246" y="288"></use>
+            <use href="#dW" x="246" y="340"></use>
+            <rect x="180" y="392" width="90" height="78" rx="4" fill="#3A3048"></rect>
+            <rect x="188" y="402" width="74" height="60" rx="3" fill="url(#dWin)"></rect>
+            <ellipse cx="225" cy="486" rx="60" ry="12" fill="#F4C95D" opacity="0.22" stroke="none"></ellipse>
+            <path d="M198,424 q8,-8 16,0 q-8,8 -16,0 Z M228,438 q8,-8 16,0 q-8,8 -16,0 Z" fill="#8A6B3F" stroke-width="1.5"></path>
+            <text x="225" y="388" text-anchor="middle" font-family="Fredoka, sans-serif" font-size="11" font-weight="600" fill="#F4C95D" letter-spacing="1.5" stroke="none">POISSONNERIE</text>
+            <path d="M282,368 h30 M306,368 v14" stroke-width="3"></path>
+            <g transform="translate(306,398)">
+              <rect x="-22" y="-16" width="44" height="30" rx="5" fill="#4A3C50"></rect>
+              <path d="M-12,-1 q10,-9 22,0 q-10,9 -22,0 Z" fill="#F4C95D" stroke-width="2"></path><circle cx="6" cy="-3" r="1.5" fill="#2F2A45"></circle>
+            </g>
+          </g>
+          <g>
+            <rect x="290" y="292" width="96" height="178" fill="#57506F"></rect>
+            <polygon points="284,294 386,294 386,258 284,278" fill="#3B3554"></polygon>
+            <use href="#dW" x="312" y="316"></use>
+            <use href="#dW" x="330" y="372"></use>
+            <path d="M290,470 q4,-60 -2,-118 q22,26 16,58 q18,10 10,60 Z" fill="#3F5240"></path>
+            <circle cx="298" cy="380" r="7" fill="#4A5F49"></circle><circle cx="306" cy="416" r="8" fill="#4A5F49"></circle>
+            <path d="M328,470 v-24 a14,14 0 0 1 28,0 v24 Z" fill="#26223A"></path>
+          </g>
+          <g>
+            <rect x="514" y="286" width="96" height="184" fill="#615878"></rect>
+            <polygon points="508,288 610,288 610,252 508,270" fill="#3B3554"></polygon>
+            <use href="#dW" x="534" y="310"></use><use href="#dW" x="572" y="310"></use>
+            <rect x="524" y="396" width="76" height="74" rx="4" fill="#3A3048"></rect>
+            <rect x="531" y="405" width="62" height="57" rx="3" fill="url(#dWin)"></rect>
+            <ellipse cx="562" cy="484" rx="52" ry="11" fill="#F4C95D" opacity="0.22" stroke="none"></ellipse>
+            <g fill="#8A6B3F" stroke-width="1.5"><rect x="537" y="432" width="7" height="24"></rect><rect x="546" y="428" width="7" height="28"></rect><rect x="555" y="434" width="7" height="22"></rect><rect x="564" y="429" width="7" height="27"></rect><rect x="573" y="433" width="7" height="23"></rect></g>
+            <text x="562" y="391" text-anchor="middle" font-family="Fredoka, sans-serif" font-size="11" font-weight="600" fill="#F4C95D" letter-spacing="1.5" stroke="none">LIBRAIRIE</text>
+            <path d="M610,362 h28 M632,362 v14" stroke-width="3"></path>
+            <g transform="translate(632,392)">
+              <rect x="-21" y="-16" width="42" height="30" rx="5" fill="#4A3C50"></rect>
+              <path d="M-12,2 q10,-8 12,-2 q2,-6 12,2 l0,4 q-10,-6 -12,-1 q-2,-5 -12,1 Z" fill="#FBF0D4" stroke-width="2"></path>
+            </g>
+          </g>
+          <g transform="rotate(-1.4 668 470)">
+            <rect x="614" y="256" width="112" height="214" fill="#57506F"></rect>
+            <polygon points="602,258 670,190 738,258" fill="#3B3554"></polygon>
+            <path d="M622,250 L662,204 M642,254 L680,210 M688,232 L712,254" stroke-width="1.6" opacity="0.5" fill="none"></path>
+            <rect x="690" y="196" width="16" height="36" fill="#5C4A5C"></rect>
+            <path d="M698,188 q11,-15 -2,-26 q-12,-11 2,-24" fill="none" stroke="#C7BBD4" stroke-width="2.5" stroke-linecap="round" opacity="0.45"></path>
+            <g stroke-width="6"><path d="M620,256 V470 M720,256 V470 M614,330 H726 M614,398 H726"></path></g>
+            <path d="M624,330 L716,398 M716,330 L624,398" stroke-width="4.5"></path>
+            <use href="#dW" x="640" y="276"></use>
+            <use href="#dW" x="640" y="344"></use><use href="#dW" x="684" y="344"></use>
+            <use href="#dW" x="662" y="416"></use>
+          </g>
+          <g transform="rotate(-1.8 790 470)">
+            <rect x="730" y="240" width="126" height="230" fill="#6E5A6B"></rect>
+            <path d="M742,280 h14 M790,300 h14 M820,270 h14 M746,340 h14 M818,348 h14" stroke-width="1.6" opacity="0.5"></path>
+            <polygon points="722,242 793,182 864,242" fill="#3B3554"></polygon>
+            <use href="#dW" x="756" y="262"></use><use href="#dW" x="812" y="262"></use>
+            <use href="#dW" x="812" y="318"></use>
+            <rect x="744" y="394" width="98" height="76" rx="4" fill="#3A3048"></rect>
+            <rect x="752" y="404" width="82" height="58" rx="3" fill="url(#dWin)"></rect>
+            <ellipse cx="793" cy="484" rx="66" ry="12" fill="#F4C95D" opacity="0.22" stroke="none"></ellipse>
+            <circle cx="793" cy="432" r="16" fill="none" stroke-width="3"></circle>
+            <path d="M793,432 L793,422 M793,432 L800,436" stroke-width="2.5" stroke-linecap="round"></path>
+            <text x="793" y="389" text-anchor="middle" font-family="Fredoka, sans-serif" font-size="11" font-weight="600" fill="#F4C95D" letter-spacing="1.5" stroke="none">HORLOGERIE</text>
+            <path d="M730,362 h-28 M736,376 v-14 M708,362 v14" fill="none" stroke-width="3"></path>
+            <g transform="translate(708,404)">
+              <rect x="-20" y="-16" width="40" height="32" rx="5" fill="#4A3C50"></rect>
+              <circle cx="0" cy="0" r="10" fill="#F4C95D" stroke-width="2"></circle><path d="M0,0 L0,-6 M0,0 L5,2" stroke-width="2" stroke-linecap="round"></path>
+            </g>
+          </g>
+        </g>
+        <rect x="0" y="470" width="900" height="150" fill="url(#dGround)"></rect>
+        <path d="M0,470 H900" stroke="#2F2A45" stroke-width="3"></path>
+        <g stroke="#26223A" stroke-width="1.6" fill="none" opacity="0.5">
+          <path d="M40,500 q14,8 28,0 M120,516 q14,8 28,0 M230,498 q14,8 28,0 M340,522 q14,8 28,0 M620,504 q14,8 28,0 M730,522 q14,8 28,0 M840,502 q14,8 28,0"></path>
+          <path d="M80,560 q18,10 36,0 M220,584 q18,10 36,0 M600,566 q18,10 36,0 M760,592 q18,10 36,0 M410,606 q18,10 36,0"></path>
+        </g>
+        <path d="M300,590 Q450,555 600,586 L600,620 L300,620 Z" fill="#F4C95D" opacity="0.10"></path>
+        <ellipse cx="300" cy="586" rx="80" ry="18" fill="#F4C95D" opacity="0.25"></ellipse>
+        <ellipse cx="640" cy="578" rx="80" ry="18" fill="#F4C95D" opacity="0.25"></ellipse>
+        <g stroke="#2F2A45">
+          <path d="M300,575 V438 q0,-16 16,-16" fill="none" stroke-width="5" stroke-linecap="round"></path>
+          <rect x="292" y="570" width="16" height="10" rx="3" fill="#26223A" stroke-width="2.5"></rect>
+          <circle cx="322" cy="428" r="34" fill="url(#dGlow)" stroke="none"></circle>
+          <path d="M314,414 h16 l4,18 h-24 Z" fill="#F4C95D" stroke-width="3"></path>
+          <path d="M312,410 h20" stroke-width="4" stroke-linecap="round"></path>
+        </g>
+        <g stroke="#2F2A45">
+          <path d="M640,568 V432 q0,-16 -16,-16" fill="none" stroke-width="5" stroke-linecap="round"></path>
+          <rect x="632" y="563" width="16" height="10" rx="3" fill="#26223A" stroke-width="2.5"></rect>
+          <circle cx="618" cy="422" r="34" fill="url(#dGlow)" stroke="none"></circle>
+          <path d="M610,408 h16 l4,18 h-24 Z" fill="#F4C95D" stroke-width="3"></path>
+          <path d="M608,404 h20" stroke-width="4" stroke-linecap="round"></path>
+        </g>
+        <g filter="url(#dBlur)" fill="#C7BBD4">
+          <ellipse cx="180" cy="492" rx="160" ry="18" opacity="0.28"></ellipse>
+          <ellipse cx="620" cy="486" rx="190" ry="16" opacity="0.24"></ellipse>
+          <ellipse cx="420" cy="524" rx="240" ry="20" opacity="0.20"></ellipse>
+        </g>
+        <g stroke="#2F2A45" stroke-width="2.2" stroke-linejoin="round"><use href="#cat-det" transform="translate(430,448)"></use><use href="#mouse-pal" transform="translate(540,562)"></use></g>
+        <use href="#spark" transform="translate(516,452)"></use>
+        <use href="#spark" transform="translate(494,436) scale(0.6)"></use>
+        <use href="#spark" transform="translate(560,520) scale(0.7)"></use>
+        <use href="#spark" transform="translate(340,556) scale(0.55)"></use>
+      </svg>
+    </div>
+    <p style="margin:0; font-size:15px; line-height:1.55; color:#5A5370; max-width:820px;">Palette heure bleue de <a href="#1c">1c</a>, cerné du trait d'encre #2F2A45 de <a href="#1b">1b</a> : silhouettes d'ardoise dessinées, fenêtres dorées encadrées d'encre, halos et indices d'or.</p>
+  </div>
+</section>
+<section style="padding:56px 64px; display:flex; flex-direction:column; gap:28px;">
+  <header style="max-width:900px; display:flex; flex-direction:column; gap:8px;">
+    <div style="font-family:'Fredoka',sans-serif; font-weight:700; font-size:40px; color:#2F2A45;">Mystères à Chaville — la grand-place</div>
+    <p style="margin:0; font-size:17px; line-height:1.5; color:#5A5370;">Même scène, trois directions. <a href="#1a">1a</a> pose des aplats gouache sans traits, <a href="#1b">1b</a> assume le trait d'encre du carnet d'enquête, <a href="#1c">1c</a> plonge la place dans l'heure bleue.</p>
+  </header>
+  <div style="display:flex; gap:48px; align-items:flex-start;">
+
+    <div id="1a" style="width:920px; flex-shrink:0; display:flex; flex-direction:column; gap:14px;">
+      <div style="display:flex; align-items:baseline; gap:12px;">
+        <span style="font-family:'Fredoka',sans-serif; font-weight:600; font-size:14px; background:#2F2A45; color:#F4C95D; border-radius:999px; padding:4px 12px;">1a</span>
+        <span style="font-family:'Fredoka',sans-serif; font-weight:600; font-size:22px;">Gouache dorée</span>
+      </div>
+      <div style="background:#FBF5E8; border:1px solid #DECFB4; border-radius:20px; padding:14px; box-shadow:0 6px 24px rgba(47,42,69,0.10);">
+        <svg viewBox="0 0 900 620" width="100%" style="display:block; border-radius:10px;">
+          <defs>
+            <linearGradient id="aSky" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#7C6C99"></stop><stop offset="0.5" stop-color="#C98A7A"></stop><stop offset="0.85" stop-color="#F2C08A"></stop>
+            </linearGradient>
+            <radialGradient id="aGlow"><stop offset="0" stop-color="#F4C95D" stop-opacity="0.55"></stop><stop offset="1" stop-color="#F4C95D" stop-opacity="0"></stop></radialGradient>
+            <linearGradient id="aGround" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9C8AA0"></stop><stop offset="1" stop-color="#6E6480"></stop></linearGradient>
+            <linearGradient id="aWin" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FBE3A2"></stop><stop offset="1" stop-color="#F4C95D"></stop></linearGradient>
+            <g id="aW"><rect x="0" y="0" width="18" height="26" rx="3" fill="url(#aWin)"></rect><path d="M9,0 V26 M0,13 H18" stroke="#B98F3F" stroke-width="1.4"></path></g>
+            <filter id="aBlur" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="9"></feGaussianBlur></filter>
+          </defs>
+          <rect width="900" height="620" fill="url(#aSky)"></rect>
+          <circle cx="450" cy="400" r="300" fill="url(#aGlow)"></circle>
+          <path d="M0,330 L50,290 80,308 130,262 170,300 240,270 300,310 380,280 520,280 600,306 660,268 720,300 780,272 830,304 900,286 900,470 0,470 Z" fill="#8E7B96" opacity="0.55"></path>
+          <g>
+            <rect x="408" y="150" width="84" height="320" fill="#EDDCBB"></rect>
+            <path d="M408,150 h84 v320 h-10 V160 h-64 V470 h-10 Z" fill="#D9C29A"></path>
+            <polygon points="396,152 450,70 504,152" fill="#5E6E82"></polygon>
+            <path d="M450,70 L504,152 L488,152 L450,90 Z" fill="#71829A"></path>
+            <line x1="450" y1="70" x2="450" y2="50" stroke="#B98F3F" stroke-width="3"></line>
+            <circle cx="450" cy="48" r="4" fill="#F4C95D"></circle>
+            <circle cx="450" cy="238" r="36" fill="#F4C95D" stroke="#8A6B3F" stroke-width="4"></circle>
+            <circle cx="450" cy="238" r="29" fill="#FBE9BC"></circle>
+            <path d="M450,238 L450,216 M450,238 L466,244" stroke="#2F2A45" stroke-width="3.5" stroke-linecap="round"></path>
+            <circle cx="450" cy="238" r="3" fill="#2F2A45"></circle>
+            <rect x="441" y="170" width="18" height="26" rx="9" fill="url(#aWin)"></rect>
+            <use href="#aW" x="441" y="300"></use>
+            <use href="#aW" x="441" y="352"></use>
+            <path d="M430,470 v-28 a20,20 0 0 1 40,0 v28 Z" fill="#3E3352"></path>
+          </g>
+          <g transform="rotate(1.4 110 470)">
+            <rect x="52" y="246" width="116" height="224" fill="#F0E3CC"></rect>
+            <polygon points="40,248 110,176 180,248" fill="#5E6E82"></polygon>
+            <path d="M110,176 L180,248 L162,248 L110,196 Z" fill="#71829A"></path>
+            <g stroke="#4A3B33" stroke-width="7"><path d="M58,246 V470 M162,246 V470 M52,320 H168 M52,392 H168"></path></g>
+            <path d="M62,320 L158,392 M158,320 L62,392" stroke="#4A3B33" stroke-width="5" opacity="0.85"></path>
+            <use href="#aW" x="76" y="268"></use><use href="#aW" x="126" y="268"></use>
+            <use href="#aW" x="101" y="336"></use>
+            <use href="#aW" x="76" y="414"></use><use href="#aW" x="126" y="414"></use>
+          </g>
+          <g>
+            <rect x="168" y="262" width="114" height="208" fill="#B96A4B"></rect>
+            <path d="M168,262 h114 v208 h-8 V270 h-98 V470 h-8 Z" fill="#9E5238"></path>
+            <polygon points="160,264 225,210 290,264" fill="#59677A"></polygon>
+            <rect x="236" y="176" width="17" height="40" fill="#A05A44"></rect>
+            <rect x="233" y="170" width="23" height="8" fill="#8A4A38"></rect>
+            <path d="M244,162 q12,-16 -2,-28 q-13,-12 2,-26" fill="none" stroke="#F2E6EE" stroke-width="6" stroke-linecap="round" opacity="0.55"></path>
+            <use href="#aW" x="186" y="288"></use><use href="#aW" x="246" y="288"></use>
+            <use href="#aW" x="186" y="340"></use><use href="#aW" x="246" y="340"></use>
+            <rect x="180" y="392" width="90" height="78" rx="4" fill="#5A4433"></rect>
+            <rect x="188" y="402" width="74" height="60" rx="3" fill="url(#aWin)"></rect>
+            <path d="M198,424 q8,-8 16,0 q-8,8 -16,0 Z M228,438 q8,-8 16,0 q-8,8 -16,0 Z" fill="#8A6B3F" opacity="0.8"></path>
+            <text x="225" y="388" text-anchor="middle" font-family="Fredoka, sans-serif" font-size="11" font-weight="600" fill="#F0E3CC" letter-spacing="1.5">POISSONNERIE</text>
+            <path d="M282,368 h30 M306,368 v14" stroke="#3A3040" stroke-width="3"></path>
+            <g transform="translate(306,398)">
+              <rect x="-22" y="-16" width="44" height="30" rx="5" fill="#6B4A36" stroke="#4A3324" stroke-width="2"></rect>
+              <path d="M-12,-1 q10,-9 22,0 q-10,9 -22,0 Z" fill="#F4C95D"></path><circle cx="6" cy="-3" r="1.5" fill="#2F2A45"></circle>
+            </g>
+          </g>
+          <g>
+            <rect x="290" y="292" width="96" height="178" fill="#E3D2B4"></rect>
+            <polygon points="284,294 386,294 386,258 284,278" fill="#59677A"></polygon>
+            <use href="#aW" x="312" y="316"></use><use href="#aW" x="350" y="316"></use>
+            <use href="#aW" x="330" y="372"></use>
+            <path d="M290,470 q4,-60 -2,-118 q22,26 16,58 q18,10 10,60 Z" fill="#5F7A4E"></path>
+            <circle cx="298" cy="380" r="7" fill="#6E8A5B"></circle><circle cx="306" cy="416" r="8" fill="#6E8A5B"></circle><circle cx="295" cy="442" r="7" fill="#557046"></circle>
+            <path d="M328,470 v-24 a14,14 0 0 1 28,0 v24 Z" fill="#4A3B33"></path>
+          </g>
+          <g>
+            <rect x="514" y="286" width="96" height="184" fill="#F0E3CC"></rect>
+            <polygon points="508,288 610,288 610,252 508,270" fill="#5E6E82"></polygon>
+            <use href="#aW" x="534" y="310"></use><use href="#aW" x="572" y="310"></use>
+            <rect x="524" y="396" width="76" height="74" rx="4" fill="#5A4433"></rect>
+            <rect x="531" y="405" width="62" height="57" rx="3" fill="url(#aWin)"></rect>
+            <g fill="#8A6B3F" opacity="0.85"><rect x="537" y="432" width="7" height="24"></rect><rect x="546" y="428" width="7" height="28"></rect><rect x="555" y="434" width="7" height="22"></rect><rect x="564" y="429" width="7" height="27"></rect><rect x="573" y="433" width="7" height="23"></rect></g>
+            <text x="562" y="391" text-anchor="middle" font-family="Fredoka, sans-serif" font-size="11" font-weight="600" fill="#F0E3CC" letter-spacing="1.5">LIBRAIRIE</text>
+            <path d="M610,362 h28 M632,362 v14" stroke="#3A3040" stroke-width="3"></path>
+            <g transform="translate(632,392)">
+              <rect x="-21" y="-16" width="42" height="30" rx="5" fill="#6B4A36" stroke="#4A3324" stroke-width="2"></rect>
+              <path d="M-12,2 q10,-8 12,-2 q2,-6 12,2 l0,4 q-10,-6 -12,-1 q-2,-5 -12,1 Z" fill="#FBF0D8"></path>
+            </g>
+          </g>
+          <g transform="rotate(-1.4 668 470)">
+            <rect x="614" y="256" width="112" height="214" fill="#F0E3CC"></rect>
+            <polygon points="602,258 670,190 738,258" fill="#5E6E82"></polygon>
+            <path d="M670,190 L738,258 L720,258 L670,210 Z" fill="#71829A"></path>
+            <rect x="690" y="196" width="16" height="36" fill="#A05A44"></rect>
+            <path d="M698,188 q11,-15 -2,-26 q-12,-11 2,-24" fill="none" stroke="#F2E6EE" stroke-width="5" stroke-linecap="round" opacity="0.5"></path>
+            <g stroke="#4A3B33" stroke-width="7"><path d="M620,256 V470 M720,256 V470 M614,330 H726 M614,398 H726"></path></g>
+            <path d="M624,330 L716,398 M716,330 L624,398" stroke="#4A3B33" stroke-width="5" opacity="0.85"></path>
+            <use href="#aW" x="640" y="276"></use><use href="#aW" x="684" y="276"></use>
+            <use href="#aW" x="640" y="344"></use><use href="#aW" x="684" y="344"></use>
+            <use href="#aW" x="662" y="416"></use>
+          </g>
+          <g transform="rotate(-1.8 790 470)">
+            <rect x="730" y="240" width="126" height="230" fill="#B96A4B"></rect>
+            <path d="M730,240 h126 v230 h-9 V249 h-108 V470 h-9 Z" fill="#9E5238"></path>
+            <polygon points="722,242 793,182 864,242" fill="#59677A"></polygon>
+            <use href="#aW" x="756" y="262"></use><use href="#aW" x="812" y="262"></use>
+            <use href="#aW" x="756" y="318"></use><use href="#aW" x="812" y="318"></use>
+            <rect x="744" y="394" width="98" height="76" rx="4" fill="#5A4433"></rect>
+            <rect x="752" y="404" width="82" height="58" rx="3" fill="url(#aWin)"></rect>
+            <circle cx="793" cy="432" r="16" fill="none" stroke="#8A6B3F" stroke-width="3"></circle>
+            <path d="M793,432 L793,422 M793,432 L800,436" stroke="#8A6B3F" stroke-width="2.5" stroke-linecap="round"></path>
+            <text x="793" y="389" text-anchor="middle" font-family="Fredoka, sans-serif" font-size="11" font-weight="600" fill="#F0E3CC" letter-spacing="1.5">HORLOGERIE</text>
+            <path d="M730,362 h-28 M736,376 v-14 M708,362 v14" stroke="#3A3040" stroke-width="3" fill="none"></path>
+            <g transform="translate(708,404)">
+              <rect x="-20" y="-16" width="40" height="32" rx="5" fill="#6B4A36" stroke="#4A3324" stroke-width="2"></rect>
+              <circle cx="0" cy="0" r="10" fill="#F4C95D"></circle><path d="M0,0 L0,-6 M0,0 L5,2" stroke="#2F2A45" stroke-width="2" stroke-linecap="round"></path>
+            </g>
+          </g>
+          <rect x="0" y="470" width="900" height="150" fill="url(#aGround)"></rect>
+          <g fill="#FFFFFF" opacity="0.07">
+            <ellipse cx="80" cy="500" rx="26" ry="8"></ellipse><ellipse cx="150" cy="516" rx="30" ry="9"></ellipse><ellipse cx="260" cy="498" rx="24" ry="8"></ellipse><ellipse cx="360" cy="520" rx="30" ry="9"></ellipse><ellipse cx="640" cy="502" rx="26" ry="8"></ellipse><ellipse cx="740" cy="522" rx="30" ry="9"></ellipse><ellipse cx="850" cy="500" rx="24" ry="8"></ellipse>
+            <ellipse cx="110" cy="560" rx="38" ry="12"></ellipse><ellipse cx="240" cy="580" rx="42" ry="13"></ellipse><ellipse cx="620" cy="566" rx="40" ry="12"></ellipse><ellipse cx="780" cy="590" rx="44" ry="13"></ellipse><ellipse cx="420" cy="606" rx="46" ry="13"></ellipse>
+          </g>
+          <ellipse cx="300" cy="586" rx="70" ry="16" fill="#F4C95D" opacity="0.16"></ellipse>
+          <ellipse cx="640" cy="578" rx="70" ry="16" fill="#F4C95D" opacity="0.16"></ellipse>
+          <g>
+            <path d="M300,575 V438 q0,-16 16,-16" fill="none" stroke="#3A3040" stroke-width="5" stroke-linecap="round"></path>
+            <rect x="292" y="570" width="16" height="10" rx="3" fill="#3A3040"></rect>
+            <circle cx="322" cy="428" r="22" fill="#F4C95D" opacity="0.35"></circle>
+            <path d="M314,414 h16 l4,18 h-24 Z" fill="#F4C95D" stroke="#3A3040" stroke-width="3"></path>
+            <path d="M312,410 h20" stroke="#3A3040" stroke-width="4" stroke-linecap="round"></path>
+          </g>
+          <g>
+            <path d="M640,568 V432 q0,-16 -16,-16" fill="none" stroke="#3A3040" stroke-width="5" stroke-linecap="round"></path>
+            <rect x="632" y="563" width="16" height="10" rx="3" fill="#3A3040"></rect>
+            <circle cx="618" cy="422" r="22" fill="#F4C95D" opacity="0.35"></circle>
+            <path d="M610,408 h16 l4,18 h-24 Z" fill="#F4C95D" stroke="#3A3040" stroke-width="3"></path>
+            <path d="M608,404 h20" stroke="#3A3040" stroke-width="4" stroke-linecap="round"></path>
+          </g>
+          <g filter="url(#aBlur)" fill="#FFF8EC">
+            <ellipse cx="180" cy="492" rx="150" ry="16" opacity="0.20"></ellipse>
+            <ellipse cx="620" cy="486" rx="180" ry="14" opacity="0.16"></ellipse>
+            <ellipse cx="420" cy="522" rx="220" ry="18" opacity="0.14"></ellipse>
+          </g>
+          <g stroke="none"><use href="#cat-det" transform="translate(430,448)"></use><use href="#mouse-pal" transform="translate(540,562)"></use></g>
+          <use href="#spark" transform="translate(516,452)"></use>
+          <use href="#spark" transform="translate(494,436) scale(0.6)"></use>
+          <use href="#spark" transform="translate(560,520) scale(0.7)"></use>
+        </svg>
+      </div>
+      <p style="margin:0; font-size:15px; line-height:1.55; color:#5A5370; max-width:820px;">Aplats de gouache sans contours, ciel crépusculaire violet-pêche, lumière chaude qui baigne toute la place. La plus douce et enveloppante — le mystère par la lumière.</p>
+    </div>
+
+    <div id="1b" style="width:920px; flex-shrink:0; display:flex; flex-direction:column; gap:14px;">
+      <div style="display:flex; align-items:baseline; gap:12px;">
+        <span style="font-family:'Fredoka',sans-serif; font-weight:600; font-size:14px; background:#2F2A45; color:#F4C95D; border-radius:999px; padding:4px 12px;">1b</span>
+        <span style="font-family:'Fredoka',sans-serif; font-weight:600; font-size:22px;">Carnet d'enquête</span>
+      </div>
+      <div style="background:#FBF5E8; border:1px solid #DECFB4; border-radius:20px; padding:14px; box-shadow:0 6px 24px rgba(47,42,69,0.10);">
+        <svg viewBox="0 0 900 620" width="100%" style="display:block; border-radius:10px;">
+          <defs>
+            <linearGradient id="bSky" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#D9D2E4"></stop><stop offset="0.6" stop-color="#F0D9C2"></stop><stop offset="0.9" stop-color="#F6E3B8"></stop>
+            </linearGradient>
+            <linearGradient id="bWin" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FBE9B8"></stop><stop offset="1" stop-color="#F4C95D"></stop></linearGradient>
+            <g id="bW"><rect x="0" y="0" width="18" height="26" rx="3" fill="url(#bWin)" stroke="#2F2A45" stroke-width="2"></rect><path d="M9,1 V25 M1,13 H17" stroke="#2F2A45" stroke-width="1.3" opacity="0.7"></path></g>
+            <filter id="bBlur" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="9"></feGaussianBlur></filter>
+          </defs>
+          <rect width="900" height="620" fill="url(#bSky)"></rect>
+          <g stroke="#B9AFC6" stroke-width="2" fill="none" opacity="0.7">
+            <path d="M120,120 q10,-10 20,0 q10,-10 20,0"></path><path d="M700,96 q10,-10 20,0 q10,-10 20,0"></path><path d="M540,140 q8,-8 16,0"></path>
+          </g>
+          <path d="M0,330 L50,290 80,308 130,262 170,300 240,270 300,310 380,280 520,280 600,306 660,268 720,300 780,272 830,304 900,286 900,470 0,470 Z" fill="#CBBFD2" opacity="0.6"></path>
+          <g stroke="#2F2A45" stroke-width="3" stroke-linejoin="round">
+            <g>
+              <rect x="408" y="150" width="84" height="320" fill="#F2E4C6"></rect>
+              <path d="M420,200 h14 M456,300 h20 M418,380 h16 M460,420 h18" stroke-width="1.6" opacity="0.4"></path>
+              <polygon points="396,152 450,70 504,152" fill="#7C8DA3"></polygon>
+              <path d="M414,140 L444,94 M430,146 L462,98 M452,144 L480,120" stroke-width="1.6" opacity="0.5" fill="none"></path>
+              <line x1="450" y1="70" x2="450" y2="50" stroke-width="3"></line>
+              <circle cx="450" cy="47" r="4.5" fill="#F4C95D"></circle>
+              <circle cx="450" cy="238" r="36" fill="#F4C95D"></circle>
+              <circle cx="450" cy="238" r="28" fill="#FBF0D4"></circle>
+              <path d="M450,238 L450,216 M450,238 L466,244" stroke-width="3.5" stroke-linecap="round"></path>
+              <circle cx="450" cy="238" r="3" fill="#2F2A45"></circle>
+              <rect x="441" y="170" width="18" height="26" rx="9" fill="url(#bWin)"></rect>
+              <use href="#bW" x="441" y="300"></use><use href="#bW" x="441" y="352"></use>
+              <path d="M430,470 v-28 a20,20 0 0 1 40,0 v28 Z" fill="#4A4260"></path>
+            </g>
+            <g transform="rotate(1.4 110 470)">
+              <rect x="52" y="246" width="116" height="224" fill="#F6ECD6"></rect>
+              <polygon points="40,248 110,176 180,248" fill="#7C8DA3"></polygon>
+              <path d="M60,240 L102,192 M80,244 L120,198 M126,222 L152,244" stroke-width="1.6" opacity="0.5" fill="none"></path>
+              <g stroke-width="6"><path d="M58,246 V470 M162,246 V470 M52,320 H168 M52,392 H168"></path></g>
+              <path d="M62,320 L158,392 M158,320 L62,392" stroke-width="4.5"></path>
+              <use href="#bW" x="76" y="268"></use><use href="#bW" x="126" y="268"></use>
+              <use href="#bW" x="101" y="336"></use>
+              <use href="#bW" x="76" y="414"></use><use href="#bW" x="126" y="414"></use>
+            </g>
+            <g>
+              <rect x="168" y="262" width="114" height="208" fill="#D98A6A"></rect>
+              <path d="M176,300 h14 M200,330 h14 M232,296 h14 M180,360 h14 M244,352 h14" stroke-width="1.6" opacity="0.5"></path>
+              <polygon points="160,264 225,210 290,264" fill="#6E7E93"></polygon>
+              <rect x="236" y="176" width="17" height="40" fill="#C46A50"></rect>
+              <rect x="233" y="168" width="23" height="9" fill="#A85742"></rect>
+              <path d="M244,160 q12,-16 -2,-28 q-13,-12 2,-26" fill="none" stroke-width="2.5" stroke-linecap="round" opacity="0.5"></path>
+              <use href="#bW" x="186" y="288"></use><use href="#bW" x="246" y="288"></use>
+              <use href="#bW" x="186" y="340"></use><use href="#bW" x="246" y="340"></use>
+              <rect x="180" y="392" width="90" height="78" rx="4" fill="#6B4A36"></rect>
+              <rect x="188" y="402" width="74" height="60" rx="3" fill="url(#bWin)"></rect>
+              <path d="M198,424 q8,-8 16,0 q-8,8 -16,0 Z M228,438 q8,-8 16,0 q-8,8 -16,0 Z" fill="#8A6B3F" stroke-width="1.5"></path>
+              <text x="225" y="388" text-anchor="middle" font-family="Fredoka, sans-serif" font-size="11" font-weight="600" fill="#FBF0D4" letter-spacing="1.5" stroke="none">POISSONNERIE</text>
+              <path d="M282,368 h30 M306,368 v14" stroke-width="3"></path>
+              <g transform="translate(306,398)">
+                <rect x="-22" y="-16" width="44" height="30" rx="5" fill="#8A6248"></rect>
+                <path d="M-12,-1 q10,-9 22,0 q-10,9 -22,0 Z" fill="#F4C95D" stroke-width="2"></path><circle cx="6" cy="-3" r="1.5" fill="#2F2A45"></circle>
+              </g>
+            </g>
+            <g>
+              <rect x="290" y="292" width="96" height="178" fill="#EFE0BE"></rect>
+              <polygon points="284,294 386,294 386,258 284,278" fill="#6E7E93"></polygon>
+              <use href="#bW" x="312" y="316"></use><use href="#bW" x="350" y="316"></use>
+              <use href="#bW" x="330" y="372"></use>
+              <path d="M290,470 q4,-60 -2,-118 q22,26 16,58 q18,10 10,60 Z" fill="#7C9865"></path>
+              <circle cx="298" cy="380" r="7" fill="#8AA873"></circle><circle cx="306" cy="416" r="8" fill="#8AA873"></circle><circle cx="295" cy="442" r="7" fill="#6E8A5B"></circle>
+              <path d="M328,470 v-24 a14,14 0 0 1 28,0 v24 Z" fill="#5A4A3C"></path>
+            </g>
+            <g>
+              <rect x="514" y="286" width="96" height="184" fill="#F6ECD6"></rect>
+              <polygon points="508,288 610,288 610,252 508,270" fill="#7C8DA3"></polygon>
+              <use href="#bW" x="534" y="310"></use><use href="#bW" x="572" y="310"></use>
+              <rect x="524" y="396" width="76" height="74" rx="4" fill="#6B4A36"></rect>
+              <rect x="531" y="405" width="62" height="57" rx="3" fill="url(#bWin)"></rect>
+              <g fill="#8A6B3F" stroke-width="1.5"><rect x="537" y="432" width="7" height="24"></rect><rect x="546" y="428" width="7" height="28"></rect><rect x="555" y="434" width="7" height="22"></rect><rect x="564" y="429" width="7" height="27"></rect><rect x="573" y="433" width="7" height="23"></rect></g>
+              <text x="562" y="391" text-anchor="middle" font-family="Fredoka, sans-serif" font-size="11" font-weight="600" fill="#FBF0D4" letter-spacing="1.5" stroke="none">LIBRAIRIE</text>
+              <path d="M610,362 h28 M632,362 v14" stroke-width="3"></path>
+              <g transform="translate(632,392)">
+                <rect x="-21" y="-16" width="42" height="30" rx="5" fill="#8A6248"></rect>
+                <path d="M-12,2 q10,-8 12,-2 q2,-6 12,2 l0,4 q-10,-6 -12,-1 q-2,-5 -12,1 Z" fill="#FBF0D4" stroke-width="2"></path>
+              </g>
+            </g>
+            <g transform="rotate(-1.4 668 470)">
+              <rect x="614" y="256" width="112" height="214" fill="#F6ECD6"></rect>
+              <polygon points="602,258 670,190 738,258" fill="#7C8DA3"></polygon>
+              <path d="M622,250 L662,204 M642,254 L680,210 M688,232 L712,254" stroke-width="1.6" opacity="0.5" fill="none"></path>
+              <rect x="690" y="196" width="16" height="36" fill="#C46A50"></rect>
+              <path d="M698,188 q11,-15 -2,-26 q-12,-11 2,-24" fill="none" stroke-width="2.5" stroke-linecap="round" opacity="0.5"></path>
+              <g stroke-width="6"><path d="M620,256 V470 M720,256 V470 M614,330 H726 M614,398 H726"></path></g>
+              <path d="M624,330 L716,398 M716,330 L624,398" stroke-width="4.5"></path>
+              <use href="#bW" x="640" y="276"></use><use href="#bW" x="684" y="276"></use>
+              <use href="#bW" x="640" y="344"></use><use href="#bW" x="684" y="344"></use>
+              <use href="#bW" x="662" y="416"></use>
+            </g>
+            <g transform="rotate(-1.8 790 470)">
+              <rect x="730" y="240" width="126" height="230" fill="#D98A6A"></rect>
+              <path d="M742,280 h14 M790,300 h14 M820,270 h14 M746,340 h14 M818,348 h14" stroke-width="1.6" opacity="0.5"></path>
+              <polygon points="722,242 793,182 864,242" fill="#6E7E93"></polygon>
+              <use href="#bW" x="756" y="262"></use><use href="#bW" x="812" y="262"></use>
+              <use href="#bW" x="756" y="318"></use><use href="#bW" x="812" y="318"></use>
+              <rect x="744" y="394" width="98" height="76" rx="4" fill="#6B4A36"></rect>
+              <rect x="752" y="404" width="82" height="58" rx="3" fill="url(#bWin)"></rect>
+              <circle cx="793" cy="432" r="16" fill="none" stroke-width="3"></circle>
+              <path d="M793,432 L793,422 M793,432 L800,436" stroke-width="2.5" stroke-linecap="round"></path>
+              <text x="793" y="389" text-anchor="middle" font-family="Fredoka, sans-serif" font-size="11" font-weight="600" fill="#FBF0D4" letter-spacing="1.5" stroke="none">HORLOGERIE</text>
+              <path d="M730,362 h-28 M736,376 v-14 M708,362 v14" fill="none" stroke-width="3"></path>
+              <g transform="translate(708,404)">
+                <rect x="-20" y="-16" width="40" height="32" rx="5" fill="#8A6248"></rect>
+                <circle cx="0" cy="0" r="10" fill="#F4C95D" stroke-width="2"></circle><path d="M0,0 L0,-6 M0,0 L5,2" stroke-width="2" stroke-linecap="round"></path>
+              </g>
+            </g>
+          </g>
+          <rect x="0" y="470" width="900" height="150" fill="#C9BBA4"></rect>
+          <path d="M0,470 H900" stroke="#2F2A45" stroke-width="3"></path>
+          <g stroke="#2F2A45" stroke-width="1.6" fill="none" opacity="0.35">
+            <path d="M40,500 q14,8 28,0 M120,516 q14,8 28,0 M230,498 q14,8 28,0 M340,522 q14,8 28,0 M620,504 q14,8 28,0 M730,522 q14,8 28,0 M840,502 q14,8 28,0"></path>
+            <path d="M80,560 q18,10 36,0 M220,584 q18,10 36,0 M600,566 q18,10 36,0 M760,592 q18,10 36,0 M410,606 q18,10 36,0"></path>
+          </g>
+          <ellipse cx="300" cy="586" rx="70" ry="16" fill="#F4C95D" opacity="0.25"></ellipse>
+          <ellipse cx="640" cy="578" rx="70" ry="16" fill="#F4C95D" opacity="0.25"></ellipse>
+          <g stroke="#2F2A45">
+            <path d="M300,575 V438 q0,-16 16,-16" fill="none" stroke-width="5" stroke-linecap="round"></path>
+            <rect x="292" y="570" width="16" height="10" rx="3" fill="#4A4260" stroke-width="2.5"></rect>
+            <path d="M314,414 h16 l4,18 h-24 Z" fill="#F4C95D" stroke-width="3"></path>
+            <path d="M312,410 h20" stroke-width="4" stroke-linecap="round"></path>
+            <path d="M322,442 l-6,8 M322,442 l6,8 M322,444 v10" stroke-width="1.6" opacity="0.6"></path>
+          </g>
+          <g stroke="#2F2A45">
+            <path d="M640,568 V432 q0,-16 -16,-16" fill="none" stroke-width="5" stroke-linecap="round"></path>
+            <rect x="632" y="563" width="16" height="10" rx="3" fill="#4A4260" stroke-width="2.5"></rect>
+            <path d="M610,408 h16 l4,18 h-24 Z" fill="#F4C95D" stroke-width="3"></path>
+            <path d="M608,404 h20" stroke-width="4" stroke-linecap="round"></path>
+          </g>
+          <g filter="url(#bBlur)" fill="#FFFFFF">
+            <ellipse cx="180" cy="492" rx="150" ry="16" opacity="0.30"></ellipse>
+            <ellipse cx="620" cy="486" rx="180" ry="14" opacity="0.26"></ellipse>
+            <ellipse cx="420" cy="522" rx="220" ry="18" opacity="0.22"></ellipse>
+          </g>
+          <g stroke="#2F2A45" stroke-width="2.2" stroke-linejoin="round"><use href="#cat-det" transform="translate(430,448)"></use><use href="#mouse-pal" transform="translate(540,562)"></use></g>
+          <use href="#spark" transform="translate(516,452)"></use>
+          <use href="#spark" transform="translate(494,436) scale(0.6)"></use>
+          <use href="#spark" transform="translate(560,520) scale(0.7)"></use>
+        </svg>
+      </div>
+      <p style="margin:0; font-size:15px; line-height:1.55; color:#5A5370; max-width:820px;">Trait d'encre douce #2F2A45 partout, couleurs posées en aplats clairs comme une aquarelle de carnet. La plus « livre illustré » — parfaite si le jeu s'écrit comme un carnet de détective.</p>
+    </div>
+
+    <div id="1c" style="width:920px; flex-shrink:0; display:flex; flex-direction:column; gap:14px;">
+      <div style="display:flex; align-items:baseline; gap:12px;">
+        <span style="font-family:'Fredoka',sans-serif; font-weight:600; font-size:14px; background:#2F2A45; color:#F4C95D; border-radius:999px; padding:4px 12px;">1c</span>
+        <span style="font-family:'Fredoka',sans-serif; font-weight:600; font-size:22px;">Heure bleue</span>
+      </div>
+      <div style="background:#FBF5E8; border:1px solid #DECFB4; border-radius:20px; padding:14px; box-shadow:0 6px 24px rgba(47,42,69,0.10);">
+        <svg viewBox="0 0 900 620" width="100%" style="display:block; border-radius:10px;">
+          <defs>
+            <linearGradient id="cSky" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#2F2A45"></stop><stop offset="0.55" stop-color="#5A4A72"></stop><stop offset="0.85" stop-color="#C9776B"></stop>
+            </linearGradient>
+            <radialGradient id="cGlow"><stop offset="0" stop-color="#F4C95D" stop-opacity="0.9"></stop><stop offset="1" stop-color="#F4C95D" stop-opacity="0"></stop></radialGradient>
+            <linearGradient id="cGround" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4E4668"></stop><stop offset="1" stop-color="#37324E"></stop></linearGradient>
+            <linearGradient id="cWin" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FBE3A2"></stop><stop offset="1" stop-color="#F4C95D"></stop></linearGradient>
+            <g id="cW"><rect x="-3" y="-3" width="24" height="32" rx="5" fill="#F4C95D" opacity="0.28"></rect><rect x="0" y="0" width="18" height="26" rx="3" fill="url(#cWin)"></rect><path d="M9,0 V26 M0,13 H18" stroke="#C99B3E" stroke-width="1.4"></path></g>
+            <filter id="cBlur" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="10"></feGaussianBlur></filter>
+          </defs>
+          <rect width="900" height="620" fill="url(#cSky)"></rect>
+          <g fill="#FBF0D4">
+            <circle cx="120" cy="80" r="2.2"></circle><circle cx="210" cy="140" r="1.6"></circle><circle cx="320" cy="66" r="1.8"></circle><circle cx="560" cy="90" r="2"></circle><circle cx="700" cy="60" r="1.6"></circle><circle cx="800" cy="130" r="2.2"></circle><circle cx="640" cy="150" r="1.4"></circle><circle cx="60" cy="180" r="1.6"></circle>
+            <circle cx="760" cy="88" r="8" opacity="0.9"></circle><circle cx="757" cy="85" r="7" fill="#5A4A72"></circle>
+          </g>
+          <path d="M0,330 L50,290 80,308 130,262 170,300 240,270 300,310 380,280 520,280 600,306 660,268 720,300 780,272 830,304 900,286 900,470 0,470 Z" fill="#3B3554"></path>
+          <g>
+            <rect x="408" y="150" width="84" height="320" fill="#57506F"></rect>
+            <path d="M408,150 h84 v320 h-10 V160 h-64 V470 h-10 Z" fill="#494263"></path>
+            <polygon points="396,152 450,70 504,152" fill="#3B3554"></polygon>
+            <path d="M450,70 L504,152 L488,152 L450,90 Z" fill="#4A4364"></path>
+            <line x1="450" y1="70" x2="450" y2="50" stroke="#C99B3E" stroke-width="3"></line>
+            <circle cx="450" cy="48" r="4" fill="#F4C95D"></circle>
+            <circle cx="450" cy="238" r="52" fill="url(#cGlow)"></circle>
+            <circle cx="450" cy="238" r="36" fill="#F4C95D" stroke="#8A6B3F" stroke-width="4"></circle>
+            <circle cx="450" cy="238" r="29" fill="#FBE9BC"></circle>
+            <path d="M450,238 L450,216 M450,238 L466,244" stroke="#2F2A45" stroke-width="3.5" stroke-linecap="round"></path>
+            <circle cx="450" cy="238" r="3" fill="#2F2A45"></circle>
+            <rect x="441" y="170" width="18" height="26" rx="9" fill="url(#cWin)"></rect>
+            <use href="#cW" x="441" y="300"></use>
+            <use href="#cW" x="441" y="352"></use>
+            <path d="M430,470 v-28 a20,20 0 0 1 40,0 v28 Z" fill="#26223A"></path>
+          </g>
+          <g transform="rotate(1.4 110 470)">
+            <rect x="52" y="246" width="116" height="224" fill="#615878"></rect>
+            <polygon points="40,248 110,176 180,248" fill="#3B3554"></polygon>
+            <g stroke="#3A3450" stroke-width="7"><path d="M58,246 V470 M162,246 V470 M52,320 H168 M52,392 H168"></path></g>
+            <path d="M62,320 L158,392 M158,320 L62,392" stroke="#3A3450" stroke-width="5"></path>
+            <use href="#cW" x="76" y="268"></use><use href="#cW" x="126" y="268"></use>
+            <use href="#cW" x="101" y="336"></use>
+            <use href="#cW" x="76" y="414"></use>
+          </g>
+          <g>
+            <rect x="168" y="262" width="114" height="208" fill="#6E5A6B"></rect>
+            <path d="M168,262 h114 v208 h-8 V270 h-98 V470 h-8 Z" fill="#5C4A5C"></path>
+            <polygon points="160,264 225,210 290,264" fill="#3B3554"></polygon>
+            <rect x="236" y="176" width="17" height="40" fill="#5C4A5C"></rect>
+            <rect x="233" y="170" width="23" height="8" fill="#4A3C4C"></rect>
+            <path d="M244,162 q12,-16 -2,-28 q-13,-12 2,-26" fill="none" stroke="#C7BBD4" stroke-width="6" stroke-linecap="round" opacity="0.4"></path>
+            <use href="#cW" x="186" y="288"></use><use href="#cW" x="246" y="288"></use>
+            <use href="#cW" x="246" y="340"></use>
+            <rect x="180" y="392" width="90" height="78" rx="4" fill="#3A3048"></rect>
+            <rect x="188" y="402" width="74" height="60" rx="3" fill="url(#cWin)"></rect>
+            <ellipse cx="225" cy="486" rx="60" ry="12" fill="#F4C95D" opacity="0.22"></ellipse>
+            <path d="M198,424 q8,-8 16,0 q-8,8 -16,0 Z M228,438 q8,-8 16,0 q-8,8 -16,0 Z" fill="#8A6B3F" opacity="0.85"></path>
+            <text x="225" y="388" text-anchor="middle" font-family="Fredoka, sans-serif" font-size="11" font-weight="600" fill="#F4C95D" letter-spacing="1.5">POISSONNERIE</text>
+            <path d="M282,368 h30 M306,368 v14" stroke="#26223A" stroke-width="3"></path>
+            <g transform="translate(306,398)">
+              <rect x="-22" y="-16" width="44" height="30" rx="5" fill="#4A3C50" stroke="#332B3E" stroke-width="2"></rect>
+              <path d="M-12,-1 q10,-9 22,0 q-10,9 -22,0 Z" fill="#F4C95D"></path><circle cx="6" cy="-3" r="1.5" fill="#2F2A45"></circle>
+            </g>
+          </g>
+          <g>
+            <rect x="290" y="292" width="96" height="178" fill="#57506F"></rect>
+            <polygon points="284,294 386,294 386,258 284,278" fill="#3B3554"></polygon>
+            <use href="#cW" x="312" y="316"></use>
+            <use href="#cW" x="330" y="372"></use>
+            <path d="M290,470 q4,-60 -2,-118 q22,26 16,58 q18,10 10,60 Z" fill="#3F5240"></path>
+            <circle cx="298" cy="380" r="7" fill="#4A5F49"></circle><circle cx="306" cy="416" r="8" fill="#4A5F49"></circle>
+            <path d="M328,470 v-24 a14,14 0 0 1 28,0 v24 Z" fill="#26223A"></path>
+          </g>
+          <g>
+            <rect x="514" y="286" width="96" height="184" fill="#615878"></rect>
+            <polygon points="508,288 610,288 610,252 508,270" fill="#3B3554"></polygon>
+            <use href="#cW" x="534" y="310"></use><use href="#cW" x="572" y="310"></use>
+            <rect x="524" y="396" width="76" height="74" rx="4" fill="#3A3048"></rect>
+            <rect x="531" y="405" width="62" height="57" rx="3" fill="url(#cWin)"></rect>
+            <ellipse cx="562" cy="484" rx="52" ry="11" fill="#F4C95D" opacity="0.22"></ellipse>
+            <g fill="#8A6B3F" opacity="0.9"><rect x="537" y="432" width="7" height="24"></rect><rect x="546" y="428" width="7" height="28"></rect><rect x="555" y="434" width="7" height="22"></rect><rect x="564" y="429" width="7" height="27"></rect><rect x="573" y="433" width="7" height="23"></rect></g>
+            <text x="562" y="391" text-anchor="middle" font-family="Fredoka, sans-serif" font-size="11" font-weight="600" fill="#F4C95D" letter-spacing="1.5">LIBRAIRIE</text>
+            <path d="M610,362 h28 M632,362 v14" stroke="#26223A" stroke-width="3"></path>
+            <g transform="translate(632,392)">
+              <rect x="-21" y="-16" width="42" height="30" rx="5" fill="#4A3C50" stroke="#332B3E" stroke-width="2"></rect>
+              <path d="M-12,2 q10,-8 12,-2 q2,-6 12,2 l0,4 q-10,-6 -12,-1 q-2,-5 -12,1 Z" fill="#FBF0D4"></path>
+            </g>
+          </g>
+          <g transform="rotate(-1.4 668 470)">
+            <rect x="614" y="256" width="112" height="214" fill="#57506F"></rect>
+            <polygon points="602,258 670,190 738,258" fill="#3B3554"></polygon>
+            <rect x="690" y="196" width="16" height="36" fill="#5C4A5C"></rect>
+            <path d="M698,188 q11,-15 -2,-26 q-12,-11 2,-24" fill="none" stroke="#C7BBD4" stroke-width="5" stroke-linecap="round" opacity="0.35"></path>
+            <g stroke="#3A3450" stroke-width="7"><path d="M620,256 V470 M720,256 V470 M614,330 H726 M614,398 H726"></path></g>
+            <path d="M624,330 L716,398 M716,330 L624,398" stroke="#3A3450" stroke-width="5"></path>
+            <use href="#cW" x="640" y="276"></use>
+            <use href="#cW" x="640" y="344"></use><use href="#cW" x="684" y="344"></use>
+            <use href="#cW" x="662" y="416"></use>
+          </g>
+          <g transform="rotate(-1.8 790 470)">
+            <rect x="730" y="240" width="126" height="230" fill="#6E5A6B"></rect>
+            <path d="M730,240 h126 v230 h-9 V249 h-108 V470 h-9 Z" fill="#5C4A5C"></path>
+            <polygon points="722,242 793,182 864,242" fill="#3B3554"></polygon>
+            <use href="#cW" x="756" y="262"></use><use href="#cW" x="812" y="262"></use>
+            <use href="#cW" x="812" y="318"></use>
+            <rect x="744" y="394" width="98" height="76" rx="4" fill="#3A3048"></rect>
+            <rect x="752" y="404" width="82" height="58" rx="3" fill="url(#cWin)"></rect>
+            <ellipse cx="793" cy="484" rx="66" ry="12" fill="#F4C95D" opacity="0.22"></ellipse>
+            <circle cx="793" cy="432" r="16" fill="none" stroke="#8A6B3F" stroke-width="3"></circle>
+            <path d="M793,432 L793,422 M793,432 L800,436" stroke="#8A6B3F" stroke-width="2.5" stroke-linecap="round"></path>
+            <text x="793" y="389" text-anchor="middle" font-family="Fredoka, sans-serif" font-size="11" font-weight="600" fill="#F4C95D" letter-spacing="1.5">HORLOGERIE</text>
+            <path d="M730,362 h-28 M736,376 v-14 M708,362 v14" stroke="#26223A" stroke-width="3" fill="none"></path>
+            <g transform="translate(708,404)">
+              <rect x="-20" y="-16" width="40" height="32" rx="5" fill="#4A3C50" stroke="#332B3E" stroke-width="2"></rect>
+              <circle cx="0" cy="0" r="10" fill="#F4C95D"></circle><path d="M0,0 L0,-6 M0,0 L5,2" stroke="#2F2A45" stroke-width="2" stroke-linecap="round"></path>
+            </g>
+          </g>
+          <rect x="0" y="470" width="900" height="150" fill="url(#cGround)"></rect>
+          <g fill="#FFFFFF" opacity="0.05">
+            <ellipse cx="80" cy="500" rx="26" ry="8"></ellipse><ellipse cx="150" cy="516" rx="30" ry="9"></ellipse><ellipse cx="260" cy="498" rx="24" ry="8"></ellipse><ellipse cx="360" cy="520" rx="30" ry="9"></ellipse><ellipse cx="640" cy="502" rx="26" ry="8"></ellipse><ellipse cx="740" cy="522" rx="30" ry="9"></ellipse><ellipse cx="850" cy="500" rx="24" ry="8"></ellipse>
+            <ellipse cx="110" cy="560" rx="38" ry="12"></ellipse><ellipse cx="240" cy="580" rx="42" ry="13"></ellipse><ellipse cx="620" cy="566" rx="40" ry="12"></ellipse><ellipse cx="780" cy="590" rx="44" ry="13"></ellipse><ellipse cx="420" cy="606" rx="46" ry="13"></ellipse>
+          </g>
+          <path d="M300,590 Q450,555 600,586 L600,620 L300,620 Z" fill="#F4C95D" opacity="0.10"></path>
+          <ellipse cx="300" cy="586" rx="80" ry="18" fill="#F4C95D" opacity="0.25"></ellipse>
+          <ellipse cx="640" cy="578" rx="80" ry="18" fill="#F4C95D" opacity="0.25"></ellipse>
+          <g>
+            <path d="M300,575 V438 q0,-16 16,-16" fill="none" stroke="#26223A" stroke-width="5" stroke-linecap="round"></path>
+            <rect x="292" y="570" width="16" height="10" rx="3" fill="#26223A"></rect>
+            <circle cx="322" cy="428" r="34" fill="url(#cGlow)"></circle>
+            <path d="M314,414 h16 l4,18 h-24 Z" fill="#F4C95D" stroke="#26223A" stroke-width="3"></path>
+            <path d="M312,410 h20" stroke="#26223A" stroke-width="4" stroke-linecap="round"></path>
+          </g>
+          <g>
+            <path d="M640,568 V432 q0,-16 -16,-16" fill="none" stroke="#26223A" stroke-width="5" stroke-linecap="round"></path>
+            <rect x="632" y="563" width="16" height="10" rx="3" fill="#26223A"></rect>
+            <circle cx="618" cy="422" r="34" fill="url(#cGlow)"></circle>
+            <path d="M610,408 h16 l4,18 h-24 Z" fill="#F4C95D" stroke="#26223A" stroke-width="3"></path>
+            <path d="M608,404 h20" stroke="#26223A" stroke-width="4" stroke-linecap="round"></path>
+          </g>
+          <g filter="url(#cBlur)" fill="#C7BBD4">
+            <ellipse cx="180" cy="492" rx="160" ry="18" opacity="0.28"></ellipse>
+            <ellipse cx="620" cy="486" rx="190" ry="16" opacity="0.24"></ellipse>
+            <ellipse cx="420" cy="524" rx="240" ry="20" opacity="0.20"></ellipse>
+          </g>
+          <g stroke="none"><use href="#cat-det" transform="translate(430,448)"></use><use href="#mouse-pal" transform="translate(540,562)"></use></g>
+          <use href="#spark" transform="translate(516,452)"></use>
+          <use href="#spark" transform="translate(494,436) scale(0.6)"></use>
+          <use href="#spark" transform="translate(560,520) scale(0.7)"></use>
+          <use href="#spark" transform="translate(340,556) scale(0.55)"></use>
+        </svg>
+      </div>
+      <p style="margin:0; font-size:15px; line-height:1.55; color:#5A5370; max-width:820px;">La place bascule dans le bleu du soir : silhouettes d'ardoise, premières étoiles, et chaque fenêtre, lanterne et indice doré rayonne avec des halos. La plus « mystère » — l'or #F4C95D devient le langage des indices.</p>
+    </div>
+
+  </div>
+</section>
+
+</x-dc>
+</body>
+</html>
