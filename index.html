@@ -4,9 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#2b2350">
-<link rel="manifest" href="./manifest.json">
-<link rel="icon" href="./icon-192.png">
-<link rel="apple-touch-icon" href="./icon-192.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="icon" href="/icon-192.png">
+<link rel="apple-touch-icon" href="/icon-192.png">
 <title>Mystères à Chaville</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -40,7 +40,15 @@
     <p class="sub" style="margin-bottom:4px">🎓 L'Académie des Chats Détectives</p>
     <p class="sub">Observe 👀 · Déchiffre ✏️ · Calcule 🧮 · Déduis 🧠</p>
 
-    <a class="card" href="./academie.html">
+    <a class="card" href="/aventure.html">
+      <span class="em">🕯️</span>
+      <span>
+        <span class="t">L'aventure — Chaville de nuit</span>
+        <span class="s">Explore la Grand-Place et le port, ramasse les indices, remplis ton carnet</span>
+      </span>
+    </a>
+
+    <a class="card" href="/academie.html">
       <span class="em">🗺️</span>
       <span>
         <span class="t">Le jeu — la carte de Chaville</span>
@@ -48,7 +56,7 @@
       </span>
     </a>
 
-    <a class="card" href="./demo.html">
+    <a class="card" href="/demo.html">
       <span class="em">🎮</span>
       <span>
         <span class="t">Démo aventure — le marché</span>
@@ -60,7 +68,7 @@
   </div>
 <script>
 if ('serviceWorker' in navigator && location.protocol === 'https:') {
-  addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(() => {}));
+  addEventListener('load', () => navigator.serviceWorker.register('/sw.js').catch(() => {}));
 }
 </script>
 </body>

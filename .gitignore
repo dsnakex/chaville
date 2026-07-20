@@ -1,3 +1,6 @@
 .claude/
 node_modules/
 dist/
+
+# Artefacts de session (handoff Cowork) — ne pas versionner
+assets/*handoff*

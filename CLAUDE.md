@@ -3,12 +3,20 @@
 Jeu éducatif mobile (9–12 ans) : un jeune chat détective résout des enquêtes dans la ville de Chaville. Trois compétences travaillées en jouant : mémoire/observation, lecture/vocabulaire, maths/logique. Projet mené par Pascal ; la conception (scénario, décisions) se fait dans une session Claude Cowork séparée — ce fichier est la source de vérité côté code.
 
 ## Fichiers du dépôt
-- `index.html` — menu d'accueil (PWA start_url)
-- `academie.html` — jeu principal v2 : carte de Chaville, 6 enquêtes en mode « écrans » (observation chronométrée → questions → anagrammes → calculs → déduction)
-- `demo.html` — démo « aventure » : scène du marché explorable, tap-to-move, pixel art dessiné par le code, PNJ, indices, carnet du détective
-- `manifest.json`, `sw.js` — PWA installable et hors ligne. **À chaque déploiement, incrémenter le nom du cache dans `sw.js`** (`chaville-v2` → `chaville-v3`…), sinon les joueurs gardent l'ancienne version.
-- `icon-192.png`, `icon-512.png` — icône chat détective pixel art
-- Déploiement : Vercel importe ce dépôt ; chaque push sur `main` redéploie automatiquement.
+Depuis la migration Vite (session 2), la racine ne contient plus que les pages entrées du build ; tout ce qui doit être servi tel quel vit dans `public/`.
+- `index.html` — menu d'accueil (PWA start_url), entrée Vite
+- `aventure.html` + `src/` — **mode aventure v3** en TypeScript : moteur de scènes tap-to-move, décors PNG + personnages vectoriels, carnet persistant, mini-jeux. Entrée Vite.
+  - `src/engine/` — `game.ts` (orchestrateur, transitions), `scene-view.ts` (rendu + interactions), `actor.ts` (marche, profondeur), `geom.ts`
+  - `src/scenes/` — une scène = un fichier de données (`grand-place.ts`, `port.ts`)
+  - `src/minigames/` — observation, anagramme, calcul
+  - `src/art.ts` — symboles de la DA recopiés depuis `da/direction-artistique.html`
+- `public/academie.html` — jeu v2 : carte de Chaville, 6 enquêtes en mode « écrans ». Servi tel quel, hors bundler.
+- `public/demo.html` — démo pixel art v1, conservée en archive. Servie telle quelle.
+- `public/manifest.json`, `public/sw.js` — PWA installable et hors ligne. **À chaque déploiement, incrémenter le nom du cache dans `sw.js`** (`chaville-v3` → `chaville-v4`…), sinon les joueurs gardent l'ancienne version.
+- `public/icon-192.png`, `public/icon-512.png` — icône chat détective
+- `assets/decors/` — décors PNG. **Restent à la racine** (pas dans `public/`) : leur URL doit être stable (`/assets/decors/*.png`) pour le préchargement du service worker et les références relatives de `da/`. Recopiés dans `dist/` par un plugin de `vite.config.ts`.
+- `da/` — direction artistique (référence, non déployée)
+- Déploiement : Vercel importe ce dépôt et lance `npm run build` (`vercel.json`) ; chaque push sur `main` redéploie automatiquement.
 
 ## 🎨 Direction artistique « Heure bleue encrée » (validée le 19/07/2026 — canon officiel)
 Le pixel art des prototypes est ABANDONNÉ. Tout nouveau visuel suit la DA validée dans Claude Design, documentée dans `da/direction-artistique.html` (scène canon + palette + symboles réutilisables) et `da/maquette-marche.html` (transposition de la scène du marché).
@@ -25,7 +33,7 @@ Le pixel art des prototypes est ABANDONNÉ. Tout nouveau visuel suit la DA valid
 ## Contraintes techniques (à respecter)
 - **Stack** : les fichiers v1 (`academie.html`, `demo.html`) sont des HTML autonomes ; à partir de la session 2, le projet migre vers **TypeScript + Vite** (multi-fichiers, build automatique sur Vercel). Aucun framework lourd, aucun CDN externe.
 - **Graphisme — pipeline hybride** : les décors des lieux sont des images PNG (`assets/decors/`) ; TOUT le reste — personnages, PNJ, UI, effets, éléments interactifs — est dessiné par le code (SVG/Canvas) par-dessus ces fonds. L'ancienne règle « tout le graphisme est dessiné par le code » ne s'applique donc plus aux décors, uniquement au reste.
-- **Mobile-first** : boutons tactiles larges, portrait, le canvas doit toujours tenir dans l'écran (`max-height: calc(100dvh - …)`), `image-rendering: pixelated`.
+- **Mobile-first** : boutons tactiles larges, portrait, la scène doit toujours tenir dans l'écran (testé à 360 × 640). `image-rendering: pixelated` ne s'applique **qu'aux écrans pixel art hérités** (`public/demo.html`) : les décors peints ne doivent jamais être rendus en pixelated.
 - Tout le texte du jeu est en **français**, ton chaleureux, adapté aux 9–12 ans.
 - `localStorage` est autorisé (site déployé) — prévu pour la sauvegarde de progression.
 
@@ -41,14 +49,14 @@ Antagoniste fil rouge : le **Fantôme Gris**, maître voleur théâtral façon C
 
 ## Feuille de route (mode aventure = généraliser demo.html)
 1. ✅ Démo marché (tap-to-move, carnet, teaser F.G.)
-2. Moteur généralisé : sprites 4 directions, transitions de scènes, hub carte, scènes Manoir + Port
+2. 🟡 Moteur généralisé (session 2) : ✅ migration TypeScript + Vite, ✅ moteur de scènes tap-to-move avec profondeur, ✅ transitions de scènes, ✅ carnet persistant (`localStorage`), ✅ scènes Grand-Place + Port, ✅ mini-jeux observation/anagramme/calcul. Restent à faire : hub carte, scène Manoir, sprites 4 directions (les personnages n'ont pour l'instant qu'une pose, retournée gauche/droite), obstacles de décor (la zone marchable est un simple trapèze : on peut encore marcher « à travers » l'étal).
 3. Scènes Bibliothèque + Théâtre + Tour · carnet persistant inter-enquêtes (+ page F.G.) · dialogues à choix
 4. Fil rouge Fantôme Gris complet + enquête bonus des Toits + équilibrage
 5. Sons/musique (WebAudio), polish animations, sauvegarde (localStorage)
 6. Packaging Capacitor → APK Android (la PWA couvre déjà l'installation simple)
 
 ## Vérifications avant chaque push
-- Syntaxe JS : extraire le `<script>` et `node --check`
+- `npm run build` (lance `tsc --noEmit` puis le build Vite) ; pour les pages héritées de `public/`, extraire le `<script>` et `node --check`
 - Cohérence des enquêtes : coupable jamais éliminé par les indices, ≥ 2 suspects restants avant la déduction, anagrammes ≠ mot cible, réponses QCM valides
 - Tester l'affichage aux tailles téléphone (360×640) et desktop
 - Incrémenter la version du cache `sw.js`

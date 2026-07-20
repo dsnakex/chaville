@@ -1,0 +1,353 @@
+/* Mystères à Chaville — mode aventure. DA « Heure bleue encrée ». */
+
+:root {
+  --encre: #2f2a45;
+  --or: #f4c95d;
+  --or-clair: #fbe3a2;
+  --creme: #fbf0d4;
+  --brume: #c7bbd4;
+  --ardoise: #57506f;
+  --braise: #c9776b;
+  --nuit: #26223a;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html, body {
+  height: 100%;
+  background: var(--nuit);
+  color: var(--creme);
+  font-family: 'Trebuchet MS', 'Segoe UI', sans-serif;
+  overscroll-behavior: none;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  -webkit-tap-highlight-color: transparent;
+}
+
+#jeu {
+  width: 100%;
+  max-width: 480px;
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* --- Barre du haut ------------------------------------------------------ */
+
+.barre {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  min-height: 52px;
+}
+
+.titre-lieu {
+  flex: 1;
+  text-align: center;
+  font-size: 1.05rem;
+  font-weight: bold;
+  color: var(--or);
+  letter-spacing: 0.5px;
+}
+
+.bouton-barre {
+  position: relative;
+  flex: 0 0 auto;
+  min-width: 44px;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  line-height: 1;
+  color: var(--creme);
+  text-decoration: none;
+  background: rgba(255, 255, 255, 0.08);
+  border: 2px solid rgba(244, 201, 93, 0.35);
+  border-radius: 14px;
+  cursor: pointer;
+}
+
+.bouton-barre:active { background: rgba(255, 255, 255, 0.18); }
+
+.pastille {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  min-width: 21px;
+  height: 21px;
+  padding: 0 5px;
+  border-radius: 11px;
+  background: var(--or);
+  color: var(--encre);
+  font-size: 0.75rem;
+  font-weight: bold;
+  line-height: 21px;
+  text-align: center;
+}
+
+/* --- Plateau et scène --------------------------------------------------- */
+
+.plateau {
+  flex: 1 1 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 8px 10px;
+  min-height: 0;
+  transition: opacity 0.26s ease;
+}
+
+.plateau.fondu { opacity: 0; }
+
+.scene {
+  position: relative;
+  aspect-ratio: 768 / 1376;
+  max-height: 100%;
+  max-width: 100%;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 12px 44px rgba(0, 0, 0, 0.5);
+}
+
+/* Les décors sont peints, pas en pixel art : pas de rendu « pixelated ». */
+.scene .decor {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  user-select: none;
+}
+
+.scene .calque {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.marqueur { pointer-events: auto; }
+
+.scintille { animation: scintille 1.9s ease-in-out infinite; transform-box: fill-box; }
+
+@keyframes scintille {
+  0%, 100% { opacity: 0.25; }
+  50% { opacity: 1; }
+}
+
+@keyframes derive {
+  from { transform: translateX(-28px); }
+  to { transform: translateX(28px); }
+}
+
+/* --- Couches modales ---------------------------------------------------- */
+
+.couche {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 14px;
+  background: rgba(20, 17, 34, 0.72);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.couche.visible { opacity: 1; }
+
+.couche-jeu, .couche-carnet { align-items: center; }
+
+.panneau {
+  width: 100%;
+  max-width: 440px;
+  max-height: 88dvh;
+  overflow-y: auto;
+  transform: translateY(14px);
+  transition: transform 0.22s ease;
+}
+
+.couche.visible .panneau { transform: none; }
+
+.couche-jeu .panneau, .couche-carnet .panneau {
+  background: linear-gradient(165deg, #3a3357, #2b2643);
+  border: 2px solid rgba(244, 201, 93, 0.4);
+  border-radius: 22px;
+  padding: 18px;
+}
+
+.panneau h2 {
+  color: var(--or);
+  font-size: 1.15rem;
+  margin-bottom: 8px;
+}
+
+/* --- Dialogues ---------------------------------------------------------- */
+
+.bulle {
+  background: linear-gradient(165deg, #3a3357, #2b2643);
+  border: 2px solid rgba(244, 201, 93, 0.45);
+  border-radius: 20px;
+  padding: 14px 16px;
+}
+
+.bulle-tete { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+.bulle-tete .avatar { font-size: 1.5rem; }
+.bulle-tete .locuteur { color: var(--or); font-weight: bold; font-size: 0.92rem; }
+.bulle-griffe .locuteur { color: var(--brume); }
+.bulle .replique { font-size: 1rem; line-height: 1.5; }
+.bulle .suite { margin-top: 10px; font-size: 0.78rem; opacity: 0.6; text-align: right; }
+
+/* --- Mini-jeux ---------------------------------------------------------- */
+
+.consigne { font-size: 0.92rem; line-height: 1.45; opacity: 0.9; margin-bottom: 12px; }
+.corps-jeu { display: flex; flex-direction: column; gap: 12px; }
+
+.vue-observation {
+  width: 100%;
+  border-radius: 14px;
+  border: 2px solid rgba(244, 201, 93, 0.35);
+  background: var(--nuit);
+}
+
+.chrono {
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: var(--or);
+}
+
+.question { font-size: 1rem; line-height: 1.45; font-weight: bold; }
+.choix { display: flex; flex-direction: column; gap: 8px; }
+
+.bouton {
+  min-height: 48px;
+  padding: 12px 16px;
+  border: 2px solid rgba(244, 201, 93, 0.5);
+  border-radius: 14px;
+  background: rgba(244, 201, 93, 0.14);
+  color: var(--creme);
+  font-family: inherit;
+  font-size: 0.98rem;
+  cursor: pointer;
+}
+
+.bouton:active { background: rgba(244, 201, 93, 0.28); }
+.bouton:disabled { opacity: 0.4; cursor: default; }
+.bouton-choix { text-align: left; }
+.bouton.juste { background: rgba(126, 200, 140, 0.35); border-color: #7ec88c; }
+.bouton.faux { background: rgba(201, 119, 107, 0.3); border-color: var(--braise); }
+
+.bouton-discret {
+  background: transparent;
+  border-color: rgba(255, 255, 255, 0.22);
+  font-size: 0.88rem;
+  min-height: 42px;
+}
+
+.pied-jeu { display: flex; gap: 8px; justify-content: flex-end; margin-top: 14px; }
+
+.aide-pistache {
+  margin-top: 12px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: rgba(180, 174, 203, 0.18);
+  border: 1px solid rgba(180, 174, 203, 0.4);
+  font-size: 0.88rem;
+  line-height: 1.45;
+}
+
+.mot-en-cours {
+  min-height: 54px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  letter-spacing: 6px;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: var(--or);
+  border-bottom: 2px dashed rgba(244, 201, 93, 0.4);
+}
+
+.mot-en-cours.juste { color: #7ec88c; border-color: #7ec88c; }
+.mot-en-cours.faux { color: var(--braise); border-color: var(--braise); }
+
+.banque-lettres { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+
+.bouton-lettre {
+  min-width: 48px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  padding: 10px;
+}
+
+.enonce { font-size: 1rem; line-height: 1.5; }
+.ligne-reponse { display: flex; align-items: center; gap: 10px; }
+
+.champ-nombre {
+  flex: 1;
+  min-height: 52px;
+  padding: 10px 14px;
+  font-size: 1.3rem;
+  font-family: inherit;
+  color: var(--creme);
+  background: rgba(0, 0, 0, 0.25);
+  border: 2px solid rgba(244, 201, 93, 0.45);
+  border-radius: 14px;
+}
+
+.champ-nombre.juste { border-color: #7ec88c; }
+.champ-nombre.faux { border-color: var(--braise); }
+.unite { opacity: 0.75; }
+
+/* --- Carnet ------------------------------------------------------------- */
+
+.carnet-vide { font-size: 0.95rem; line-height: 1.55; opacity: 0.85; margin-bottom: 16px; }
+.carnet-liste { list-style: none; display: flex; flex-direction: column; gap: 12px; margin-bottom: 14px; }
+
+.carnet-liste li {
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: rgba(0, 0, 0, 0.22);
+  border-left: 4px solid var(--or);
+}
+
+.indice-titre { display: block; color: var(--or); font-weight: bold; font-size: 0.98rem; }
+.indice-lieu { display: block; font-size: 0.76rem; opacity: 0.6; margin-bottom: 6px; }
+.carnet-liste p { font-size: 0.9rem; line-height: 1.5; }
+.carnet-compte { font-size: 0.82rem; opacity: 0.65; margin-bottom: 14px; text-align: center; }
+.couche-carnet .bouton { width: 100%; }
+
+/* --- Bandeau ------------------------------------------------------------ */
+
+.bandeau {
+  position: fixed;
+  left: 50%;
+  bottom: 22px;
+  z-index: 30;
+  transform: translate(-50%, 16px);
+  max-width: min(92vw, 420px);
+  padding: 12px 18px;
+  border-radius: 16px;
+  background: rgba(20, 17, 34, 0.92);
+  border: 2px solid rgba(244, 201, 93, 0.45);
+  font-size: 0.9rem;
+  line-height: 1.45;
+  text-align: center;
+  opacity: 0;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  pointer-events: none;
+}
+
+.bandeau.visible { opacity: 1; transform: translate(-50%, 0); }
+
+@media (prefers-reduced-motion: reduce) {
+  .scintille, .brume ellipse { animation: none !important; }
+}
