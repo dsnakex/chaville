@@ -16,6 +16,10 @@ Jeu éducatif mobile (9–12 ans) : un jeune chat détective résout des enquêt
 - Tout le texte du jeu est en **français**, ton chaleureux, adapté aux 9–12 ans.
 - `localStorage` est autorisé (site déployé) — prévu pour la sauvegarde de progression.
 
+## Direction artistique
+
+Pipeline hybride (validé le 20/07/2026) : les décors des lieux sont des images générées par IA (assets/decors/, prompts archivés dans assets/prompts.md, référence de style : port.png). Tout le reste — personnages, UI, brume animée, indices scintillants, éléments interactifs — est dessiné en vectoriel par le code, PAR-DESSUS ces fonds. Les symboles #cat-det, #mouse-pal, #spark de da/direction-artistique.html sont la référence des personnages.
+
 ## Règles d'écriture (importantes)
 - **Signature narrative** : chaque affaire semble surnaturelle (bateau fantôme, grimoire ensorcelé…) mais la déduction révèle une explication rationnelle et attendrissante. La raison triomphe du « c'est magique ».
 - **Zéro violence, zéro punition cruelle.** Les petits coupables ont des motifs touchants.
