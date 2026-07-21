@@ -1,6 +1,16 @@
+import type { OptionsPortrait } from './art'
+
 export interface Point {
   x: number
   y: number
+}
+
+/** Rectangle de décor infranchissable (l'étal, une table…), en coord. de scène. */
+export interface Rect {
+  x: number
+  y: number
+  w: number
+  h: number
 }
 
 /** Zone marchable : un trapèze, plus large en bas (près) qu'en haut (loin). */
@@ -15,7 +25,7 @@ export interface ZoneMarche {
   echelleProche: number
 }
 
-export type SorteHotspot = 'indice' | 'pnj' | 'sortie' | 'jeu'
+export type SorteHotspot = 'indice' | 'pnj' | 'sortie' | 'jeu' | 'temoin' | 'deduction'
 
 export interface Hotspot {
   id: string
@@ -29,26 +39,41 @@ export interface Hotspot {
   /** Réplique(s) jouées à l'arrivée. */
   dialogue?: string[]
   /** Qui parle : change l'avatar et la couleur de la bulle. */
-  voix?: 'detective' | 'pistache' | 'griffe' | 'narrateur'
+  voix?: Voix
   /** Indice ajouté au carnet une fois le hotspot résolu. */
   indice?: { titre: string; texte: string }
   /** Mini-jeu à réussir avant d'obtenir l'indice. */
   jeu?: MiniJeu
+  /** Interrogatoire d'un témoin (dialogue à choix). */
+  interrogatoire?: Interrogatoire
   /** Pour les sorties : identifiant de la scène de destination. */
   vers?: string
   /** Marqueur discret (sortie) plutôt qu'étincelle dorée. */
   discret?: boolean
+  /** N'apparaît que si tous ces hotspots sont résolus (ex. la déduction finale). */
+  requiert?: string[]
 }
+
+/** Voix connues du moteur de dialogue (avatars + couleur de bulle). */
+export type Voix =
+  | 'detective' | 'pistache' | 'griffe' | 'narrateur'
+  | 'sardine' | 'moustache' | string
 
 export interface Scene {
   id: string
   nom: string
+  /** Identifiant du lieu sur la carte (pour la progression). */
+  lieu: string
+  /** Phrase d'objectif affichée dans le HUD. */
+  objectif: string
   /** URL stable du décor PNG. */
   decor: string
   largeur: number
   hauteur: number
   arrivee: Point
   zone: ZoneMarche
+  /** Rectangles infranchissables du décor. */
+  obstacles?: Rect[]
   /** Bandeau d'ambiance affiché à l'entrée dans la scène. */
   ambiance: string
   /** Bancs de brume dérivante, en coordonnées de scène. */
@@ -57,7 +82,29 @@ export interface Scene {
 }
 
 // ---------------------------------------------------------------------------
-// Mini-jeux pédagogiques (repris de la v1 : observation, vocabulaire, calcul)
+// Interrogatoires (dialogues à choix) et témoignages
+// ---------------------------------------------------------------------------
+
+export interface Suspect {
+  id: string
+  nom: string
+  /** Rôle affiché (« Cuisinier persan »). */
+  role: string
+  portrait: OptionsPortrait
+}
+
+export interface Interrogatoire {
+  suspect: Suspect
+  /** Répliques d'accueil du témoin avant les questions. */
+  intro: string[]
+  /** Questions à choix ; chaque réponse renvoie une réplique. */
+  questions: { question: string; options: { texte: string; reponse: string }[] }[]
+  /** Citation retenue dans le carnet (section Témoignages). */
+  temoignage: string
+}
+
+// ---------------------------------------------------------------------------
+// Mini-jeux : observation, message codé (multi-mots), calcul, déduction
 // ---------------------------------------------------------------------------
 
 export interface JeuObservation {
@@ -67,24 +114,41 @@ export interface JeuObservation {
   duree: number
   /** Zone du décor à observer, en coordonnées de scène. */
   cadre: { x: number; y: number; w: number; h: number }
-  question: string
-  reponses: string[]
-  bonne: number
+  /** Une ou plusieurs questions QCM. */
+  questions: { question: string; reponses: string[]; bonne: number }[]
 }
 
-export interface JeuAnagramme {
-  type: 'anagramme'
+/** Message codé « à trous » : une phrase gabarit + des mots à reconstituer. */
+export interface JeuMessage {
+  type: 'message'
   consigne: string
-  mot: string
-  indice: string
+  /** Gabarit avec des {0}, {1}… remplacés par les mots trouvés. */
+  gabarit: string
+  mots: { mot: string; indice: string }[]
 }
 
 export interface JeuCalcul {
   type: 'calcul'
   consigne: string
   enonce: string
-  reponse: number
-  unite?: string
+  reponses: string[]
+  bonne: number
+  /** Indice de raisonnement dévoilé après la bonne réponse. */
+  revelation?: string
 }
 
-export type MiniJeu = JeuObservation | JeuAnagramme | JeuCalcul
+export interface JeuDeduction {
+  type: 'deduction'
+  consigne: string
+  suspects: Suspect[]
+  /** Index (dans `suspects`) déjà écartés par les indices : grisés. */
+  ecartes: number[]
+  /** Index du coupable dans `suspects`. */
+  coupable: number
+  /** Aide de Pistache en cas de mauvaise accusation. */
+  aide: string
+  /** Récit final (motif touchant) après la bonne accusation. */
+  denouement: string[]
+}
+
+export type MiniJeu = JeuObservation | JeuMessage | JeuCalcul | JeuDeduction

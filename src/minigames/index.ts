@@ -1,28 +1,28 @@
-import type { JeuAnagramme, JeuCalcul, JeuObservation, MiniJeu } from '../types'
+import type {
+  JeuCalcul, JeuDeduction, JeuMessage, JeuObservation, MiniJeu, Suspect,
+} from '../types'
 import { ouvrirCouche } from '../ui/modal'
+import { portraitAvatar } from '../art'
 
 /**
- * Les trois compétences de la v1, rejouables depuis une scène :
- * observation/mémoire, lecture/vocabulaire, maths/logique.
- * Aucun échec définitif : on peut réessayer autant qu'on veut, Pistache aide.
+ * Mini-jeux pédagogiques : observation/mémoire, message codé (lecture/vocab),
+ * calcul (maths), et déduction finale. Aucun échec définitif : on réessaie
+ * autant qu'on veut, Pistache aide à chaque erreur.
  */
 export function lancerMiniJeu(jeu: MiniJeu, decor: string): Promise<boolean> {
   switch (jeu.type) {
-    case 'observation':
-      return jeuObservation(jeu, decor)
-    case 'anagramme':
-      return jeuAnagramme(jeu)
-    case 'calcul':
-      return jeuCalcul(jeu)
+    case 'observation': return jeuObservation(jeu, decor)
+    case 'message': return jeuMessage(jeu)
+    case 'calcul': return jeuCalcul(jeu)
+    case 'deduction': return jeuDeduction(jeu)
   }
 }
 
-/** Ossature commune : titre, consigne, zone de jeu, aide de Pistache, abandon. */
 function socle(
   panneau: HTMLDivElement,
   titre: string,
   consigne: string,
-): { corps: HTMLDivElement; aide: (texte: string) => void; piedDePage: HTMLDivElement } {
+): { corps: HTMLDivElement; aide: (t: string) => void; pied: HTMLDivElement } {
   const h = document.createElement('h2')
   h.textContent = titre
   const c = document.createElement('p')
@@ -30,21 +30,20 @@ function socle(
   c.textContent = consigne
   const corps = document.createElement('div')
   corps.className = 'corps-jeu'
-  const piedDePage = document.createElement('div')
-  piedDePage.className = 'pied-jeu'
-  panneau.append(h, c, corps, piedDePage)
+  const pied = document.createElement('div')
+  pied.className = 'pied-jeu'
+  panneau.append(h, c, corps, pied)
 
   let bulle: HTMLParagraphElement | null = null
-  const aide = (texte: string): void => {
+  const aide = (t: string): void => {
     if (!bulle) {
       bulle = document.createElement('p')
       bulle.className = 'aide-pistache'
-      panneau.insertBefore(bulle, piedDePage)
+      panneau.insertBefore(bulle, pied)
     }
-    bulle.textContent = `🐭 Pistache : ${texte}`
+    bulle.textContent = `🐭 Pistache : ${t}`
   }
-
-  return { corps, aide, piedDePage }
+  return { corps, aide, pied }
 }
 
 function boutonAbandon(pied: HTMLDivElement, action: () => void): void {
@@ -55,22 +54,22 @@ function boutonAbandon(pied: HTMLDivElement, action: () => void): void {
   pied.appendChild(b)
 }
 
-// --- Observation / mémoire ------------------------------------------------
+const SVG_NS = 'http://www.w3.org/2000/svg'
+
+// --- Observation / mémoire (une ou plusieurs questions) -------------------
 
 function jeuObservation(jeu: JeuObservation, decor: string): Promise<boolean> {
   return new Promise((resolve) => {
     const { panneau, fermer } = ouvrirCouche('couche-jeu')
-    const { corps, aide, piedDePage } = socle(panneau, '👀 Observe bien', jeu.consigne)
+    const { corps, aide, pied } = socle(panneau, '👀 Observe bien', jeu.consigne)
 
-    const vue = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
+    const vue = document.createElementNS(SVG_NS, 'svg')
     vue.setAttribute('viewBox', `${jeu.cadre.x} ${jeu.cadre.y} ${jeu.cadre.w} ${jeu.cadre.h}`)
     vue.classList.add('vue-observation')
-    const img = document.createElementNS('http://www.w3.org/2000/svg', 'image')
+    const img = document.createElementNS(SVG_NS, 'image')
     img.setAttribute('href', decor)
-    img.setAttribute('x', '0')
-    img.setAttribute('y', '0')
-    img.setAttribute('width', '768')
-    img.setAttribute('height', '1376')
+    img.setAttribute('x', '0'); img.setAttribute('y', '0')
+    img.setAttribute('width', '768'); img.setAttribute('height', '1376')
     vue.appendChild(img)
 
     const chrono = document.createElement('div')
@@ -79,66 +78,55 @@ function jeuObservation(jeu: JeuObservation, decor: string): Promise<boolean> {
 
     let restant = jeu.duree
     chrono.textContent = `${restant} s`
-
     const tic = setInterval(() => {
       restant -= 1
       chrono.textContent = `${restant} s`
-      if (restant <= 0) {
-        clearInterval(tic)
-        poserQuestion()
-      }
+      if (restant <= 0) { clearInterval(tic); questionSuivante(0) }
     }, 1000)
 
-    const poserQuestion = (): void => {
-      vue.remove()
-      chrono.remove()
-
-      const q = document.createElement('p')
-      q.className = 'question'
-      q.textContent = jeu.question
-      corps.appendChild(q)
-
+    const questionSuivante = (idx: number): void => {
+      corps.replaceChildren()
+      if (idx >= jeu.questions.length) {
+        fermer(); resolve(true); return
+      }
+      const q = jeu.questions[idx]!
+      const compteur = document.createElement('div')
+      compteur.className = 'jeu-etape'
+      compteur.textContent = `Question ${idx + 1} / ${jeu.questions.length}`
+      const enonce = document.createElement('p')
+      enonce.className = 'question'
+      enonce.textContent = q.question
       const choix = document.createElement('div')
       choix.className = 'choix'
-      jeu.reponses.forEach((texte, idx) => {
+      corps.append(compteur, enonce, choix)
+      q.reponses.forEach((texte, i) => {
         const b = document.createElement('button')
         b.className = 'bouton bouton-choix'
         b.textContent = texte
         b.addEventListener('click', () => {
-          if (idx === jeu.bonne) {
+          if (i === q.bonne) {
             b.classList.add('juste')
-            clearInterval(tic)
-            setTimeout(() => {
-              fermer()
-              resolve(true)
-            }, 550)
+            setTimeout(() => questionSuivante(idx + 1), 480)
           } else {
-            b.classList.add('faux')
-            b.disabled = true
-            aide("ce n'est pas ça. Ferme les yeux et revois la scène — il en reste d'autres à essayer !")
+            b.classList.add('faux'); b.disabled = true
+            aide("ce n'est pas ça. Ferme les yeux, revois la scène — il en reste d'autres à essayer !")
           }
         })
         choix.appendChild(b)
       })
-      corps.appendChild(choix)
     }
 
-    boutonAbandon(piedDePage, () => {
-      clearInterval(tic)
-      fermer()
-      resolve(false)
-    })
+    boutonAbandon(pied, () => { clearInterval(tic); fermer(); resolve(false) })
   })
 }
 
-// --- Lecture / vocabulaire ------------------------------------------------
+// --- Message codé : plusieurs mots à reconstituer -------------------------
 
-/** Mélange les lettres en garantissant un ordre différent du mot d'origine. */
 function melangerLettres(mot: string): string[] {
   const lettres = [...mot]
   if (lettres.length < 2) return lettres
-  let essai = 0
   let melange = [...lettres]
+  let essai = 0
   do {
     for (let i = melange.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1))
@@ -150,141 +138,176 @@ function melangerLettres(mot: string): string[] {
   return melange
 }
 
-function jeuAnagramme(jeu: JeuAnagramme): Promise<boolean> {
+function jeuMessage(jeu: JeuMessage): Promise<boolean> {
   return new Promise((resolve) => {
     const { panneau, fermer } = ouvrirCouche('couche-jeu')
-    const { corps, aide, piedDePage } = socle(panneau, '✏️ Remets les lettres en ordre', jeu.consigne)
+    const { corps, aide, pied } = socle(panneau, '✏️ Message codé', jeu.consigne)
 
-    const mot = jeu.mot.toUpperCase()
-    const proposition: number[] = []
-
-    const zone = document.createElement('div')
-    zone.className = 'mot-en-cours'
-    const banque = document.createElement('div')
-    banque.className = 'banque-lettres'
-    corps.append(zone, banque)
-
-    const lettres = melangerLettres(mot)
-    const boutons: HTMLButtonElement[] = []
-
-    const redessiner = (): void => {
-      zone.textContent = proposition.map((i) => lettres[i]).join(' ')
-      if (proposition.length === 0) zone.textContent = '· '.repeat(mot.length).trim()
+    const trouves: string[] = jeu.mots.map(() => '____')
+    const phrase = document.createElement('p')
+    phrase.className = 'message-phrase'
+    corps.appendChild(phrase)
+    const majPhrase = (): void => {
+      phrase.textContent = jeu.gabarit.replace(/\{(\d+)\}/g, (_, n) => trouves[Number(n)] ?? '____')
     }
+    majPhrase()
 
-    lettres.forEach((lettre, i) => {
-      const b = document.createElement('button')
-      b.className = 'bouton bouton-lettre'
-      b.textContent = lettre
-      b.addEventListener('click', () => {
-        if (b.disabled) return
-        b.disabled = true
-        proposition.push(i)
-        redessiner()
-        if (proposition.length === mot.length) verifier()
-      })
-      boutons.push(b)
-      banque.appendChild(b)
-    })
+    const jouerMot = (idx: number): void => {
+      if (idx >= jeu.mots.length) { setTimeout(() => { fermer(); resolve(true) }, 650); return }
+      const { mot, indice } = jeu.mots[idx]!
+      const cible = mot.toUpperCase()
 
-    const verifier = (): void => {
-      const essai = proposition.map((i) => lettres[i]).join('')
-      if (essai === mot) {
-        zone.classList.add('juste')
-        setTimeout(() => {
-          fermer()
-          resolve(true)
-        }, 650)
-      } else {
-        zone.classList.add('faux')
-        aide(jeu.indice)
-        setTimeout(() => {
-          zone.classList.remove('faux')
-          proposition.length = 0
-          for (const b of boutons) b.disabled = false
-          redessiner()
-        }, 900)
+      const bloc = document.createElement('div')
+      bloc.className = 'message-mot'
+      const consigneMot = document.createElement('p')
+      consigneMot.className = 'jeu-etape'
+      consigneMot.textContent = `Mot ${idx + 1} / ${jeu.mots.length} — indice : ${indice}`
+      const zone = document.createElement('div')
+      zone.className = 'mot-en-cours'
+      const banque = document.createElement('div')
+      banque.className = 'banque-lettres'
+      bloc.append(consigneMot, zone, banque)
+      corps.appendChild(bloc)
+
+      const lettres = melangerLettres(cible)
+      const proposition: number[] = []
+      const boutons: HTMLButtonElement[] = []
+      const redessiner = (): void => {
+        zone.textContent = proposition.length
+          ? proposition.map((i) => lettres[i]).join(' ')
+          : '· '.repeat(cible.length).trim()
       }
+      const verifier = (): void => {
+        const essai = proposition.map((i) => lettres[i]).join('')
+        if (essai === cible) {
+          zone.classList.add('juste')
+          trouves[idx] = cible
+          majPhrase()
+          setTimeout(() => { bloc.remove(); jouerMot(idx + 1) }, 700)
+        } else {
+          zone.classList.add('faux')
+          aide(indice)
+          setTimeout(() => {
+            zone.classList.remove('faux')
+            proposition.length = 0
+            for (const b of boutons) b.disabled = false
+            redessiner()
+          }, 850)
+        }
+      }
+      lettres.forEach((lettre, i) => {
+        const b = document.createElement('button')
+        b.className = 'bouton bouton-lettre'
+        b.textContent = lettre
+        b.addEventListener('click', () => {
+          if (b.disabled) return
+          b.disabled = true
+          proposition.push(i)
+          redessiner()
+          if (proposition.length === cible.length) verifier()
+        })
+        boutons.push(b)
+        banque.appendChild(b)
+      })
+      const recommencer = document.createElement('button')
+      recommencer.className = 'bouton bouton-discret'
+      recommencer.textContent = 'Recommencer ce mot'
+      recommencer.addEventListener('click', () => {
+        proposition.length = 0
+        for (const b of boutons) b.disabled = false
+        zone.classList.remove('faux')
+        redessiner()
+      })
+      bloc.appendChild(recommencer)
+      redessiner()
     }
 
-    const effacer = document.createElement('button')
-    effacer.className = 'bouton bouton-discret'
-    effacer.textContent = 'Recommencer'
-    effacer.addEventListener('click', () => {
-      proposition.length = 0
-      for (const b of boutons) b.disabled = false
-      redessiner()
-    })
-    piedDePage.appendChild(effacer)
-
-    redessiner()
-    boutonAbandon(piedDePage, () => {
-      fermer()
-      resolve(false)
-    })
+    jouerMot(0)
+    boutonAbandon(pied, () => { fermer(); resolve(false) })
   })
 }
 
-// --- Maths / logique ------------------------------------------------------
+// --- Calcul (QCM) ---------------------------------------------------------
 
 function jeuCalcul(jeu: JeuCalcul): Promise<boolean> {
   return new Promise((resolve) => {
     const { panneau, fermer } = ouvrirCouche('couche-jeu')
-    const { corps, aide, piedDePage } = socle(panneau, '🧮 À toi de calculer', jeu.consigne)
+    const { corps, aide, pied } = socle(panneau, '🧮 À toi de calculer', jeu.consigne)
 
     const enonce = document.createElement('p')
     enonce.className = 'enonce'
     enonce.textContent = jeu.enonce
-    corps.appendChild(enonce)
-
-    const ligne = document.createElement('div')
-    ligne.className = 'ligne-reponse'
-    const champ = document.createElement('input')
-    champ.type = 'number'
-    champ.inputMode = 'numeric'
-    champ.className = 'champ-nombre'
-    champ.setAttribute('aria-label', 'Ta réponse')
-    ligne.appendChild(champ)
-    if (jeu.unite) {
-      const u = document.createElement('span')
-      u.className = 'unite'
-      u.textContent = jeu.unite
-      ligne.appendChild(u)
-    }
-    corps.appendChild(ligne)
+    const choix = document.createElement('div')
+    choix.className = 'choix'
+    corps.append(enonce, choix)
 
     let essais = 0
-    const valider = document.createElement('button')
-    valider.className = 'bouton'
-    valider.textContent = 'Vérifier'
-    valider.addEventListener('click', () => {
-      if (champ.value.trim() === '') return
-      if (Number(champ.value) === jeu.reponse) {
-        champ.classList.add('juste')
-        setTimeout(() => {
-          fermer()
-          resolve(true)
-        }, 600)
-      } else {
-        essais += 1
-        champ.classList.add('faux')
-        setTimeout(() => champ.classList.remove('faux'), 700)
-        aide(
-          essais === 1
+    jeu.reponses.forEach((texte, i) => {
+      const b = document.createElement('button')
+      b.className = 'bouton bouton-choix'
+      b.textContent = texte
+      b.addEventListener('click', () => {
+        if (i === jeu.bonne) {
+          b.classList.add('juste')
+          if (jeu.revelation) aide(jeu.revelation.replace(/^🐭[^:]*:\s*/, ''))
+          setTimeout(() => { fermer(); resolve(true) }, jeu.revelation ? 1600 : 550)
+        } else {
+          essais += 1
+          b.classList.add('faux'); b.disabled = true
+          aide(essais === 1
             ? "relis bien l'énoncé, il y a peut-être deux étapes avant la réponse."
-            : 'pose l\'opération sur ton carnet, étape par étape. Tu y es presque !',
-        )
-      }
+            : 'pose l\'opération sur ton carnet, étape par étape. Tu y es presque !')
+        }
+      })
+      choix.appendChild(b)
     })
-    champ.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') valider.click()
-    })
-    corps.appendChild(valider)
 
-    boutonAbandon(piedDePage, () => {
-      fermer()
-      resolve(false)
+    boutonAbandon(pied, () => { fermer(); resolve(false) })
+  })
+}
+
+// --- Déduction finale : accuser un suspect --------------------------------
+
+function jeuDeduction(jeu: JeuDeduction): Promise<boolean> {
+  return new Promise((resolve) => {
+    const { panneau, fermer } = ouvrirCouche('couche-jeu couche-deduction')
+    const { corps, aide, pied } = socle(panneau, '🧠 Qui est le coupable ?', jeu.consigne)
+
+    const grille = document.createElement('div')
+    grille.className = 'grille-suspects'
+    corps.appendChild(grille)
+
+    jeu.suspects.forEach((s: Suspect, i) => {
+      const carte = document.createElement('button')
+      const ecarte = jeu.ecartes.includes(i)
+      carte.className = 'carte-suspect' + (ecarte ? ' ecarte' : '')
+      carte.disabled = ecarte
+      const av = document.createElement('span')
+      av.className = 'suspect-portrait'
+      av.innerHTML = portraitAvatar(s.portrait, 76)
+      const nom = document.createElement('span')
+      nom.className = 'suspect-nom'
+      nom.textContent = s.nom
+      const role = document.createElement('span')
+      role.className = 'suspect-role'
+      role.textContent = s.role
+      carte.append(av, nom, role)
+      if (!ecarte) {
+        carte.addEventListener('click', () => {
+          if (i === jeu.coupable) {
+            carte.classList.add('juste')
+            grille.querySelectorAll('button').forEach((b) => ((b as HTMLButtonElement).disabled = true))
+            setTimeout(() => { fermer(); resolve(true) }, 700)
+          } else {
+            carte.classList.add('faux')
+            aide(jeu.aide)
+            setTimeout(() => carte.classList.remove('faux'), 900)
+          }
+        })
+      }
+      grille.appendChild(carte)
     })
-    setTimeout(() => champ.focus(), 100)
+
+    boutonAbandon(pied, () => { fermer(); resolve(false) })
   })
 }

@@ -1,4 +1,4 @@
-import type { Point, ZoneMarche } from '../types'
+import type { Point, Rect, ZoneMarche } from '../types'
 
 export const clamp = (v: number, min: number, max: number): number =>
   v < min ? min : v > max ? max : v
@@ -23,3 +23,33 @@ export function contraindre(p: Point, z: ZoneMarche): Point {
 }
 
 export const distance = (a: Point, b: Point): number => Math.hypot(b.x - a.x, b.y - a.y)
+
+/** Le point (les pieds du personnage) est-il dans un obstacle de décor ? */
+export function dansObstacle(p: Point, obstacles?: readonly Rect[]): boolean {
+  if (!obstacles) return false
+  for (const o of obstacles) {
+    if (p.x >= o.x && p.x <= o.x + o.w && p.y >= o.y && p.y <= o.y + o.h) return true
+  }
+  return false
+}
+
+/** Repousse un point hors des obstacles vers le bord le plus proche. */
+export function pousserHors(p: Point, obstacles?: readonly Rect[]): Point {
+  if (!obstacles) return p
+  let out = p
+  for (const o of obstacles) {
+    if (out.x >= o.x && out.x <= o.x + o.w && out.y >= o.y && out.y <= o.y + o.h) {
+      // Distance à chacun des quatre bords ; on sort par le plus court.
+      const gauche = out.x - o.x
+      const droite = o.x + o.w - out.x
+      const haut = out.y - o.y
+      const bas = o.y + o.h - out.y
+      const min = Math.min(gauche, droite, haut, bas)
+      if (min === gauche) out = { x: o.x - 1, y: out.y }
+      else if (min === droite) out = { x: o.x + o.w + 1, y: out.y }
+      else if (min === haut) out = { x: out.x, y: o.y - 1 }
+      else out = { x: out.x, y: o.y + o.h + 1 }
+    }
+  }
+  return out
+}

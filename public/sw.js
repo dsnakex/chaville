@@ -1,4 +1,4 @@
-const CACHE = 'chaville-v4';
+const CACHE = 'chaville-v5';
 const ASSETS = [
   './',
   './index.html',
@@ -8,8 +8,16 @@ const ASSETS = [
   './manifest.json',
   './icon-192.png',
   './icon-512.png',
+  './fonts/fredoka.woff2',
+  './fonts/nunito.woff2',
+  './fonts/nunito-italic.woff2',
+  './assets/decors/carte.png',
   './assets/decors/place.png',
-  './assets/decors/port.png'
+  './assets/decors/port.png',
+  './assets/decors/manoir.png',
+  './assets/decors/bibliotheque.png',
+  './assets/decors/theatre.png',
+  './assets/decors/tour.png'
 ];
 
 self.addEventListener('install', e => {

@@ -1,15 +1,17 @@
 # Mystères à Chaville — instructions pour Claude Code
 
-Jeu éducatif mobile (9–12 ans) : un jeune chat détective résout des enquêtes dans la ville de Chaville. Trois compétences travaillées en jouant : mémoire/observation, lecture/vocabulaire, maths/logique. Projet mené par Pascal ; la conception (scénario, décisions) se fait dans une session Claude Cowork séparée — ce fichier est la source de vérité côté code.
+Jeu éducatif mobile (9–12 ans) : un jeune chat détective résout des enquêtes dans la ville de Chaville. Quatre compétences travaillées en jouant : mémoire/observation, lecture/vocabulaire, maths/logique, et raisonnement spatial (via les casse-têtes). Projet mené par Pascal ; la conception (scénario, décisions) se fait dans une session Claude Cowork séparée — ce fichier est la source de vérité côté code.
 
 ## Fichiers du dépôt
 Depuis la migration Vite (session 2), la racine ne contient plus que les pages entrées du build ; tout ce qui doit être servi tel quel vit dans `public/`.
 - `index.html` — menu d'accueil (PWA start_url), entrée Vite
 - `aventure.html` + `src/` — **mode aventure v3** en TypeScript : moteur de scènes tap-to-move, décors PNG + personnages vectoriels, carnet persistant, mini-jeux. Entrée Vite.
-  - `src/engine/` — `game.ts` (orchestrateur, transitions), `scene-view.ts` (rendu + interactions), `actor.ts` (marche, profondeur), `geom.ts`
-  - `src/scenes/` — une scène = un fichier de données (`grand-place.ts`, `port.ts`)
-  - `src/minigames/` — observation, anagramme, calcul
-  - `src/art.ts` — symboles de la DA recopiés depuis `da/direction-artistique.html`
+  - `src/engine/` — `game.ts` (orchestrateur, HUD, transitions), `hub.ts` (carte de Chaville, verrous/étoiles), `scene-view.ts` (rendu + interactions), `actor.ts` (marche, profondeur, 4 directions), `geom.ts` (trapèze + obstacles)
+  - `src/scenes/` — une scène = un fichier de données (`grand-place`, `port`, `manoir`, `bibliotheque`, `theatre`, `tour`)
+  - `src/minigames/` — observation, message codé, calcul, déduction
+  - `src/ui/` — `dialogue.ts` (bulles + interrogatoires à choix), `carnet.ts` (onglets Indices/Témoins/F.G.), `modal.ts`
+  - `src/art.ts` — symboles en pied (front/side/back) + `portraitSVG()` paramétrique ; vocabulaire des planches `da/planches/`
+  - `public/fonts/` — Fredoka + Nunito auto-hébergées (`.woff2`)
 - `public/academie.html` — jeu v2 : carte de Chaville, 6 enquêtes en mode « écrans ». Servi tel quel, hors bundler.
 - `public/demo.html` — démo pixel art v1, conservée en archive. Servie telle quelle.
 - `public/manifest.json`, `public/sw.js` — PWA installable et hors ligne. **À chaque déploiement, incrémenter le nom du cache dans `sw.js`** (`chaville-v3` → `chaville-v4`…), sinon les joueurs gardent l'ancienne version.
@@ -25,13 +27,13 @@ Le pixel art des prototypes est ABANDONNÉ. Tout nouveau visuel suit la DA valid
 - **Bâtiments** : ardoises #57506F / #615878 / prune #6E5A6B, toits #3B3554, légères rotations (±1,4–1,8°), hachures discrètes, colombages en traits d'encre épais.
 - **Lumière** : elle vient des fenêtres, enseignes, réverbères et indices — or #F4C95D (dégradé #FBE3A2→#F4C95D), halos radiaux, flaques de lumière au sol (ellipses or, opacité .22–.25).
 - **Enseignes** : lettrage or en Fredoka (letter-spacing 1.5) + panneau suspendu à pictogramme.
-- **Personnages** : construction ronde, grands yeux #FFFDF5 à pupilles d'encre et reflet, museau crème. Détective : pelage #A9744F, chapeau à bande or, écharpe #C4574E, loupe cerclée d'or. Pistache : #B4AECB, carnet à la patte. Symboles SVG prêts : `#cat-det`, `#mouse-pal`, `#dW` (fenêtre dorée), `#spark`.
+- **Personnages** : construction ronde, grands yeux #FFFDF5 à pupilles d'encre et reflet, museau crème. Détective : **chat gris tigré #8C93A8** (rayures/ombre #6E7488, ventre #F2EDE0, oreilles roses #E9AFBB — planche session 3 validée le 21/07/2026 ; abandon du brun #A9744F des prototypes), chapeau deerstalker #8C7461 à bande or, écharpe #C4574E, loupe cerclée d'or. Pistache : #B4AECB, foulard et carnet à la patte. Habitants : Griffe (chartreux #7C8698, képi), Madame Sardine (#8FA3B0, foulard à pois), Moustache (#A8A39B, casquette de tweed). Les personnages en pied vivent dans `src/art.ts` (poses front/side/back) et les portraits (bulles, interrogatoires, déduction) sont générés par `portraitSVG()` (chat/souris/hibou/écureuil/oiseau paramétrés).
 - **Brume** : ellipses #C7BBD4 floutées (blur 10, opacité .2–.28) au ras des pavés #4E4668→#37324E.
 - **Pipeline hybride (validé le 20/07/2026)** : les décors des lieux sont des images générées par IA (`assets/decors/`, prompts archivés dans `assets/prompts.md`, référence de style : `port.png`). Tout le reste — personnages, PNJ, UI, brume animée, indices scintillants, éléments interactifs — est dessiné en vectoriel par le code, PAR-DESSUS ces fonds (voir `da/test-composite-port.html` pour l'assemblage type). Les symboles `#cat-det`, `#mouse-pal`, `#dW`, `#spark` de `da/direction-artistique.html` sont la référence des personnages.
 - Les nouveaux personnages sont d'abord validés par Pascal dans Claude Design, puis intégrés en SVG dans ce vocabulaire ; les nouveaux décors sont générés par IA d'image avec `port.png` en référence et leur prompt est archivé dans `assets/prompts.md`.
 
 ## Contraintes techniques (à respecter)
-- **Stack** : les fichiers v1 (`academie.html`, `demo.html`) sont des HTML autonomes ; à partir de la session 2, le projet migre vers **TypeScript + Vite** (multi-fichiers, build automatique sur Vercel). Aucun framework lourd, aucun CDN externe.
+- **Stack** : les fichiers v1 (`academie.html`, `demo.html`) sont des HTML autonomes ; à partir de la session 2, le projet migre vers **TypeScript + Vite** (multi-fichiers, build automatique sur Vercel). Aucun framework lourd, aucun CDN externe. Les polices **Fredoka** (titres) et **Nunito** (corps) sont **auto-hébergées** en `.woff2` dans `public/fonts/` (jamais de lien Google Fonts).
 - **Graphisme — pipeline hybride** : les décors des lieux sont des images PNG (`assets/decors/`) ; TOUT le reste — personnages, PNJ, UI, effets, éléments interactifs — est dessiné par le code (SVG/Canvas) par-dessus ces fonds. L'ancienne règle « tout le graphisme est dessiné par le code » ne s'applique donc plus aux décors, uniquement au reste.
 - **Mobile-first** : boutons tactiles larges, portrait, la scène doit toujours tenir dans l'écran (testé à 360 × 640). `image-rendering: pixelated` ne s'applique **qu'aux écrans pixel art hérités** (`public/demo.html`) : les décors peints ne doivent jamais être rendus en pixelated.
 - Tout le texte du jeu est en **français**, ton chaleureux, adapté aux 9–12 ans.
@@ -44,15 +46,23 @@ Le pixel art des prototypes est ABANDONNÉ. Tout nouveau visuel suit la DA valid
 - Personnages fixes : le héros (jeune détective), le **commissaire Griffe** (chartreux bougon, « chaton »), **Pistache** (souris gourmande, acolyte — c'est elle qui donne les indices d'aide).
 - Difficulté progressive au fil de la carte : observation 25 s → 15 s, questions 3 → 4, mots 2 courts → 3 longs, calculs 1 → 2 étapes, suspects 5 → 7.
 
+## Casse-têtes (décision Cowork du 20/07/2026 — modèle Layton)
+Trois familles retenues (le « calcul malin » type allumettes reste en réserve) :
+- **Logique & déduction** : grilles logiques simples (« qui habite où », 3×3 avec icônes), pesées (trouver l'intrus en 2 pesées), suites à compléter
+- **Spatial** : taquin (images = décors ou cartes-personnages), labyrinthes (guider Pistache dans les ruelles), ombres/rotations (« quelle silhouette correspond au suspect ? » — raccord Fantôme Gris)
+- **Mots & codes** : messages en symboles à décoder, écriture miroir, devinettes à la Layton posées par les habitants
+Intégration : un framework commun dans `src/minigames/` (énoncé, plateau interactif, validation, aide de Pistache). Certains casse-têtes sont **tissés dans les enquêtes** (pour varier les mini-jeux répétitifs), d'autres sont **optionnels, proposés par les habitants** dans les scènes — récompensés en croquettes d'or et rejouables dans la salle des archives. Le déplacement reste un véhicule d'exploration, JAMAIS une épreuve d'adresse (pas de plateforme, décision ferme).
+
 ## ⚠️ SPOILERS — arc du Fantôme Gris (ne pas révéler dans l'interface avant l'enquête bonus)
 Antagoniste fil rouge : le **Fantôme Gris**, maître voleur théâtral façon Carmen Sandiego, jamais cruel. Carte de visite grise « F.G. » après chaque enquête, un fragment d'indice par affaire (fil de gant élégant au Manoir, connaissance des marées au Port, vol du livre « Les passages secrets de Chaville » à la Bibliothèque, loge « M. Gris » au Théâtre, plan déjoué à la Tour de l'Horloge). Identité révélée uniquement dans l'enquête bonus « Les Toits de Chaville » : **Balthazar**, ancien élève brillant de l'Académie et ex-coéquipier de Griffe. Il est coincé par la logique, se rend avec panache, promet de s'évader (ouverture saison 2).
 
 ## Feuille de route (mode aventure = généraliser demo.html)
 1. ✅ Démo marché (tap-to-move, carnet, teaser F.G.)
-2. 🟡 Moteur généralisé (session 2) : ✅ migration TypeScript + Vite, ✅ moteur de scènes tap-to-move avec profondeur, ✅ transitions de scènes, ✅ carnet persistant (`localStorage`), ✅ scènes Grand-Place + Port, ✅ mini-jeux observation/anagramme/calcul. Restent à faire : hub carte, scène Manoir, sprites 4 directions (les personnages n'ont pour l'instant qu'une pose, retournée gauche/droite), obstacles de décor (la zone marchable est un simple trapèze : on peut encore marcher « à travers » l'étal).
-3. Scènes Bibliothèque + Théâtre + Tour · carnet persistant inter-enquêtes (+ page F.G.) · dialogues à choix
-4. Fil rouge Fantôme Gris complet + enquête bonus des Toits + équilibrage
-5. Sons/musique (WebAudio), polish animations, sauvegarde (localStorage)
+2. ✅ Moteur généralisé (session 2) : migration TypeScript + Vite, moteur de scènes tap-to-move avec profondeur, transitions, carnet persistant (`localStorage`), scènes Grand-Place + Port, mini-jeux observation/message codé/calcul.
+   ✅ (session 3) hub carte (`src/engine/hub.ts`, cadenas/étoiles), obstacles de décor (rectangles, glissement), sprites 4 directions (front/side/back).
+3. ✅ Session 3 : scènes Manoir + Bibliothèque + Théâtre + Tour (enquêtes v2 portées depuis `public/academie.html`, mêmes coupables/indices), carnet persistant inter-enquêtes à onglets (Indices / Témoins / **page F.G.** vide jusqu'à la session 4), dialogues à choix (interrogatoires → témoignages), mini-jeu de **déduction** (accuser un suspect, écartés grisés). Personnages des planches intégrés en SVG.
+4. Fil rouge Fantôme Gris complet + enquête bonus des Toits + équilibrage · **étincelles cachées dans les décors** (3-4 par scène, non évidentes) donnant des **croquettes d'or**, monnaie contre laquelle Pistache vend ses indices (modèle « hint coins » de Layton) · premiers casse-têtes optionnels chez les habitants
+5. Sons/musique (WebAudio), polish animations, sauvegarde (localStorage) · **rejouabilité** : salle des archives (rejouer énigmes et casse-têtes, défis chronométrés), score de « flair » par enquête (baisse doucement à chaque erreur, ne bloque jamais), **album de cartes-personnages** à collectionner (illustrations : `da/planches/`), grades (chaton stagiaire → détective → inspecteur → commissaire). Jamais de streaks punitifs, de notifications de relance ni de compteurs qui expirent (public enfant).
 6. Packaging Capacitor → APK Android (la PWA couvre déjà l'installation simple)
 
 ## Vérifications avant chaque push

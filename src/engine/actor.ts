@@ -1,16 +1,25 @@
-import type { Point, ZoneMarche } from '../types'
-import { contraindre, distance, echelle } from './geom'
+import type { Point, Rect, ZoneMarche } from '../types'
+import { contraindre, dansObstacle, distance, echelle, pousserHors } from './geom'
 
 const SVG_NS = 'http://www.w3.org/2000/svg'
 
+/** Les trois poses dessinées ; « left » = « side » retourné horizontalement. */
+export interface JeuDeSprites {
+  front: string
+  side: string
+  back: string
+}
+
 interface OptionsActeur {
-  symbole: string
+  sprites: JeuDeSprites
   /** Ordonnée des pieds dans le repère du symbole, pour poser le personnage au sol. */
   ancrage: number
   /** Vitesse de marche, en unités de scène par seconde. */
   vitesse: number
   depart: Point
 }
+
+type Direction = 'front' | 'back' | 'side'
 
 /**
  * Personnage posé au sol, qui marche vers un point.
@@ -22,51 +31,85 @@ export class Acteur {
   private cible: Point
   private readonly ancrage: number
   private readonly vitesse: number
+  private readonly sprites: JeuDeSprites
+  private readonly use: SVGUseElement
   private sens = 1
   private phase = 0
+  private direction: Direction = 'front'
 
   constructor(o: OptionsActeur) {
     this.pos = { ...o.depart }
     this.cible = { ...o.depart }
     this.ancrage = o.ancrage
     this.vitesse = o.vitesse
+    this.sprites = o.sprites
 
     this.el = document.createElementNS(SVG_NS, 'g')
-    const use = document.createElementNS(SVG_NS, 'use')
-    use.setAttribute('href', o.symbole)
-    this.el.appendChild(use)
+    this.use = document.createElementNS(SVG_NS, 'use')
+    this.use.setAttribute('href', o.sprites.front)
+    this.el.appendChild(this.use)
+  }
+
+  /** Choisit la pose selon le vecteur de déplacement (front/back/side). */
+  private orienter(dx: number, dy: number): void {
+    let dir: Direction
+    if (Math.abs(dx) > Math.abs(dy) * 1.1) {
+      dir = 'side'
+      this.sens = dx >= 0 ? 1 : -1
+    } else {
+      dir = dy < 0 ? 'back' : 'front'
+    }
+    if (dir !== this.direction) {
+      this.direction = dir
+      this.use.setAttribute('href', this.sprites[dir])
+    }
   }
 
   get enMarche(): boolean {
     return distance(this.pos, this.cible) > 1.5
   }
 
-  allerVers(p: Point, zone: ZoneMarche): void {
-    this.cible = contraindre(p, zone)
+  allerVers(p: Point, zone: ZoneMarche, obstacles?: readonly Rect[]): void {
+    this.cible = pousserHors(contraindre(p, zone), obstacles)
   }
 
   /** Repositionne sans animation (entrée dans une scène). */
   placer(p: Point): void {
     this.pos = { ...p }
     this.cible = { ...p }
+    this.direction = 'front'
+    this.use.setAttribute('href', this.sprites.front)
   }
 
   regarder(p: Point): void {
-    if (Math.abs(p.x - this.pos.x) > 4) this.sens = p.x >= this.pos.x ? 1 : -1
+    this.orienter(p.x - this.pos.x, p.y - this.pos.y)
   }
 
   /** @param dt secondes écoulées. @returns true si le personnage vient d'arriver. */
-  maj(dt: number, zone: ZoneMarche): boolean {
+  maj(dt: number, zone: ZoneMarche, obstacles?: readonly Rect[]): boolean {
     const d = distance(this.pos, this.cible)
     let arrive = false
 
     if (d > 1.5) {
       const pas = Math.min(d, this.vitesse * dt)
-      const dx = (this.cible.x - this.pos.x) / d
-      const dy = (this.cible.y - this.pos.y) / d
-      if (Math.abs(this.cible.x - this.pos.x) > 4) this.sens = this.cible.x > this.pos.x ? 1 : -1
-      this.pos.x += dx * pas
-      this.pos.y += dy * pas
+      const ux = (this.cible.x - this.pos.x) / d
+      const uy = (this.cible.y - this.pos.y) / d
+      this.orienter(this.cible.x - this.pos.x, this.cible.y - this.pos.y)
+
+      // Glissement le long des obstacles : on tente le pas complet, puis
+      // seulement en x, puis seulement en y ; sinon on reste sur place.
+      const candidats: Point[] = [
+        { x: this.pos.x + ux * pas, y: this.pos.y + uy * pas },
+        { x: this.pos.x + ux * pas, y: this.pos.y },
+        { x: this.pos.x, y: this.pos.y + uy * pas },
+      ]
+      const libre = candidats.find((c) => !dansObstacle(c, obstacles))
+      if (libre) {
+        this.pos = libre
+      } else {
+        // Coincé : on abandonne la cible pour ne pas rester bloqué à pousser.
+        this.cible = { ...this.pos }
+      }
       this.phase += dt * 9
       arrive = distance(this.pos, this.cible) <= 1.5
     } else {

@@ -8,8 +8,9 @@ if (!hote) throw new Error('Conteneur #jeu introuvable')
 
 const jeu = new Jeu(hote, SCENES)
 
-// On reprend là où le joueur s'était arrêté.
-const depart = SCENES.has(carnet.derniereScene()) ? carnet.derniereScene() : 'grand-place'
+// On reprend là où le joueur s'était arrêté ; par défaut, la carte de Chaville.
+const derniere = carnet.derniereScene()
+const depart = derniere === 'hub' || SCENES.has(derniere) ? derniere : 'hub'
 void jeu.aller(depart)
 
 if ('serviceWorker' in navigator && location.protocol === 'https:') {
