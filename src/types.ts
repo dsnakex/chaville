@@ -52,6 +52,10 @@ export interface Hotspot {
   discret?: boolean
   /** N'apparaît que si tous ces hotspots sont résolus (ex. la déduction finale). */
   requiert?: string[]
+  /** Orientation soufflée par Pistache si le joueur cherche trop longtemps. */
+  astuce?: string
+  /** Portrait à dessiner sur place (PNJ). Par défaut : déduit de voix/interrogatoire. */
+  personnage?: OptionsPortrait
 }
 
 /** Voix connues du moteur de dialogue (avatars + couleur de bulle). */

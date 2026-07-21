@@ -75,6 +75,7 @@ export const grandPlace: Scene = {
     {
       id: 'gp-horloge', libelle: "L'horloge de la tour", sorte: 'jeu',
       at: { x: 519, y: 288 }, station: { x: 470, y: 1105 }, voix: 'detective',
+      astuce: "Et si on regardait l'horloge, là-haut ?",
       dialogue: ["L'horloge de la tour. Treize coups, ça ne veut rien dire… sauf si on compte vraiment ce qu'elle aurait dû sonner."],
       jeu: {
         type: 'calcul',

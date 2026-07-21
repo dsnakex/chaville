@@ -136,6 +136,7 @@ body {
   text-align: center;
 }
 
+.hud-rangee-compteur { justify-content: space-between; align-items: center; }
 .hud-compteur {
   display: inline-flex;
   align-items: center;
@@ -149,6 +150,24 @@ body {
   font-size: 0.95rem;
   font-weight: 600;
 }
+
+.hud-loupe {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border: 3px solid var(--encre);
+  border-radius: 999px;
+  background: var(--or);
+  color: var(--encre);
+  font-family: var(--titre);
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 4px 0 rgba(47, 42, 69, 0.4);
+}
+.hud-loupe:active { transform: translateY(3px); box-shadow: 0 1px 0 rgba(47, 42, 69, 0.4); }
+.hud-loupe-label { font-size: 0.82rem; }
 
 /* --- Plateau et scène --------------------------------------------------- */
 
@@ -180,7 +199,21 @@ body {
 .marqueur, .lieu-marqueur { pointer-events: auto; }
 .scintille { animation: scintille 1.9s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
 
+/* Halo pulsant lent (échelle + opacité) derrière les points interactifs. */
+.halo-pulse { animation: halo-pulse 2.8s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+
+/* Bouton loupe du HUD : révèle fortement les points restants ~2 s. */
+.marqueurs.reveler .marqueur { animation: reveler 0.66s ease-in-out 3; transform-box: fill-box; transform-origin: center; }
+
 @keyframes scintille { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
+@keyframes halo-pulse {
+  0%, 100% { transform: scale(0.8); opacity: 0.22; }
+  50% { transform: scale(1.18); opacity: 0.55; }
+}
+@keyframes reveler {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.45); }
+}
 @keyframes derive { from { transform: translateX(-28px); } to { transform: translateX(28px); } }
 
 /* Hub : secousse d'un lieu verrouillé. */

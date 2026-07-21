@@ -15,6 +15,7 @@ export class Jeu {
   private readonly objectifTexte: HTMLSpanElement
   private readonly pastilleCarnet: HTMLSpanElement
   private readonly compteurIndices: HTMLSpanElement
+  private readonly loupe: HTMLButtonElement
   private readonly retour: HTMLButtonElement
   private enTransition = false
 
@@ -66,7 +67,14 @@ export class Jeu {
     rangee2.className = 'hud-rangee hud-rangee-compteur'
     this.compteurIndices = document.createElement('span')
     this.compteurIndices.className = 'hud-compteur'
-    rangee2.appendChild(this.compteurIndices)
+
+    this.loupe = document.createElement('button')
+    this.loupe.className = 'hud-loupe'
+    this.loupe.setAttribute('aria-label', 'Repérer les indices')
+    this.loupe.innerHTML = '<span>🔍</span><span class="hud-loupe-label">Repérer</span>'
+    this.loupe.addEventListener('click', () => this.vue?.montrerIndices())
+
+    rangee2.append(this.compteurIndices, this.loupe)
 
     this.hud.append(rangee1, rangee2)
 
@@ -88,8 +96,10 @@ export class Jeu {
       const trouves = cibles.filter((h) => carnet.estResolu(h.id)).length
       this.compteurIndices.textContent = `🔎 ${trouves}/${cibles.length} indices`
       this.compteurIndices.style.display = cibles.length ? '' : 'none'
+      this.loupe.style.display = ''
     } else {
       this.compteurIndices.style.display = 'none'
+      this.loupe.style.display = 'none'
     }
   }
 

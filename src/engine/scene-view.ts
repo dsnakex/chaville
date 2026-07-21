@@ -5,7 +5,8 @@ import { carnet } from '../state'
 import { dialogue, dialogueChoix } from '../ui/dialogue'
 import { bandeau } from '../ui/modal'
 import { lancerMiniJeu } from '../minigames'
-import { SPRITES_DETECTIVE, SPRITES_PISTACHE } from '../art'
+import { SPRITES_DETECTIVE, SPRITES_PISTACHE, PORTRAITS, portraitSVG } from '../art'
+import type { OptionsPortrait } from '../art'
 
 const SVG_NS = 'http://www.w3.org/2000/svg'
 
@@ -33,6 +34,8 @@ export class VueScene {
   private dernierTemps = 0
   private occupe = false
   private enAttente: Hotspot | null = null
+  /** Temps écoulé sans que le joueur trouve un indice (astuce de Pistache). */
+  private inactif = 0
 
   constructor(
     private readonly scene: Scene,
@@ -103,20 +106,16 @@ export class VueScene {
     g.style.cursor = 'pointer'
 
     if (h.sorte === 'pnj' || h.sorte === 'temoin') {
-      const halo = el('circle', { cx: h.at.x, cy: h.at.y, r: 58, fill: 'url(#dGlow)', opacity: 0.5 })
-      const fen = el('use', { href: '#dW', transform: `translate(${h.at.x - 9} ${h.at.y - 13}) scale(1.3)` })
-      g.append(halo, fen)
+      this.dessinerPersonnage(g, h)
     } else if (h.sorte === 'deduction') {
-      const halo = el('circle', { cx: h.at.x, cy: h.at.y, r: 64, fill: 'url(#dGlow)', opacity: 0.7 })
+      const halo = el('circle', { cx: h.at.x, cy: h.at.y, r: 70, fill: 'url(#dGlow)' })
+      halo.classList.add('halo-pulse')
       const anneau = el('circle', {
         cx: h.at.x, cy: h.at.y, r: 30, fill: '#2F2A45', 'fill-opacity': 0.6,
         stroke: '#F4C95D', 'stroke-width': 3,
       })
-      const loupe = el('text', {
-        x: h.at.x, y: h.at.y + 11, 'text-anchor': 'middle', 'font-size': 30,
-      })
+      const loupe = el('text', { x: h.at.x, y: h.at.y + 11, 'text-anchor': 'middle', 'font-size': 30 })
       loupe.textContent = '🔍'
-      halo.classList.add('scintille')
       g.append(halo, anneau, loupe)
     } else if (h.sorte === 'sortie') {
       const pastille = el('circle', {
@@ -130,17 +129,86 @@ export class VueScene {
       })
       g.append(pastille, fleche)
     } else {
-      const taille = h.sorte === 'jeu' ? 1.7 : 1.3
-      const etincelle = el('use', { href: '#spark', transform: `translate(${h.at.x} ${h.at.y}) scale(${taille})` })
+      // Objet interactif (indice / mini-jeu) : halo pulsant + étincelle d'or
+      // cernée d'encre pour contraster même sur la brume claire.
+      const halo = el('circle', { cx: h.at.x, cy: h.at.y, r: 44, fill: 'url(#dGlow)' })
+      halo.classList.add('halo-pulse')
+      halo.style.animationDelay = `${(h.at.x % 5) * 0.31}s`
+      const taille = h.sorte === 'jeu' ? 1.8 : 1.4
+      const etincelle = el('use', {
+        href: '#spark', transform: `translate(${h.at.x} ${h.at.y}) scale(${taille})`,
+        stroke: '#2F2A45', 'stroke-width': 1.3, 'stroke-linejoin': 'round',
+      })
       etincelle.classList.add('scintille')
       etincelle.style.animationDelay = `${(h.at.x % 7) * 0.23}s`
-      g.appendChild(etincelle)
+      g.append(halo, etincelle)
     }
 
-    // Cible tactile large : les doigts de 9 ans ne visent pas au pixel près.
-    g.appendChild(el('circle', { cx: h.at.x, cy: h.at.y, r: 52, fill: 'transparent' }))
+    // Cible tactile ≥ 44 px : les doigts de 9 ans ne visent pas au pixel près.
+    g.appendChild(el('circle', { cx: h.at.x, cy: h.at.y, r: 56, fill: 'transparent' }))
     this.gMarqueurs.appendChild(g)
     this.marqueurs.set(h.id, g)
+  }
+
+  /** Portrait à dessiner pour un PNJ/témoin (rien de « zone invisible »). */
+  private portraitDe(h: Hotspot): OptionsPortrait | null {
+    if (h.personnage) return h.personnage
+    if (h.interrogatoire) return h.interrogatoire.suspect.portrait
+    if (h.voix && PORTRAITS[h.voix]) return PORTRAITS[h.voix]!
+    return null
+  }
+
+  /** Un PNJ interactif est DESSINÉ (sprite visible) + un signe « parle-moi ». */
+  private dessinerPersonnage(g: SVGGElement, h: Hotspot): void {
+    const opts = this.portraitDe(h)
+    const s = echelle(h.at.y, this.scene.zone)
+
+    const ombre = el('ellipse', { cx: h.at.x, cy: h.at.y + 2, rx: 34 * s, ry: 9 * s, fill: '#2F2A45', opacity: 0.3 })
+    const halo = el('circle', { cx: h.at.x, cy: h.at.y - 30 * s, r: 56 * s, fill: 'url(#dGlow)' })
+    halo.classList.add('halo-pulse')
+    g.append(ombre, halo)
+
+    if (opts) {
+      const perso = el('g')
+      perso.setAttribute('transform', `translate(${h.at.x} ${h.at.y}) scale(${s.toFixed(3)}) translate(0 -58)`)
+      perso.innerHTML = portraitSVG(opts)
+      g.appendChild(perso)
+    } else {
+      g.appendChild(el('use', { href: '#dW', transform: `translate(${h.at.x - 9} ${h.at.y - 13}) scale(1.3)` }))
+    }
+
+    // Bulle « parle-moi » pulsante au-dessus de la tête.
+    const bulle = el('g', { transform: `translate(${h.at.x} ${(h.at.y - 128 * s).toFixed(1)})` })
+    bulle.classList.add('scintille')
+    bulle.append(
+      el('circle', { cx: 0, cy: 0, r: 13, fill: '#F4C95D', stroke: '#2F2A45', 'stroke-width': 2 }),
+      el('path', { d: 'M-4,11 L0,18 L5,11 Z', fill: '#F4C95D', stroke: '#2F2A45', 'stroke-width': 2, 'stroke-linejoin': 'round' }),
+    )
+    const dots = el('g', { fill: '#2F2A45' })
+    for (const dx of [-5, 0, 5]) dots.appendChild(el('circle', { cx: dx, cy: 0, r: 1.6 }))
+    bulle.appendChild(dots)
+    g.appendChild(bulle)
+  }
+
+  /** Bouton loupe du HUD : fait scintiller fortement les points restants ~2 s. */
+  montrerIndices(): void {
+    this.gMarqueurs.classList.remove('reveler')
+    void this.gMarqueurs.getBoundingClientRect()
+    this.gMarqueurs.classList.add('reveler')
+    setTimeout(() => this.gMarqueurs.classList.remove('reveler'), 2100)
+  }
+
+  /** Pistache oriente le joueur vers un point interactif encore non trouvé. */
+  private soufflerAstuce(): void {
+    const cible = this.scene.hotspots.find(
+      (h) =>
+        this.marqueurs.has(h.id) &&
+        !carnet.estResolu(h.id) &&
+        (h.sorte === 'jeu' || h.sorte === 'indice' || h.sorte === 'pnj' || h.sorte === 'temoin'),
+    )
+    if (!cible) return
+    const phrase = cible.astuce ?? `Et si on allait voir ${cible.libelle.toLowerCase()} ?`
+    bandeau(`🐭 « ${phrase} »`, 3800)
   }
 
   /** Après chaque résolution : fait apparaître les hotspots devenus disponibles. */
@@ -152,6 +220,7 @@ export class VueScene {
 
   private surClic = (ev: MouseEvent): void => {
     if (this.occupe) return
+    this.inactif = 0
     const p = this.pointScene(ev)
     if (!p) return
     const cible = this.scene.hotspots.find((h) => this.marqueurs.has(h.id) && distance(p, h.at) < 60)
@@ -276,6 +345,18 @@ export class VueScene {
       const h = this.enAttente
       this.enAttente = null
       void this.interagir(h)
+    }
+
+    // Astuce spontanée de Pistache après ~35 s sans nouvel indice trouvé.
+    // Suspendue pendant une interaction ou quand un panneau est ouvert.
+    if (!this.occupe && !document.querySelector('.couche')) {
+      this.inactif += dt
+      if (this.inactif > 35) {
+        this.inactif = 0
+        this.soufflerAstuce()
+      }
+    } else {
+      this.inactif = 0
     }
 
     this.rafId = requestAnimationFrame(this.boucle)
