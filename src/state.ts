@@ -1,4 +1,4 @@
-const CLE = 'chaville.aventure.v2'
+const CLE = 'chaville.aventure.v3'
 
 export interface IndiceCarnet {
   id: string
@@ -23,8 +23,14 @@ interface Sauvegarde {
   resolus: string[]
   /** Lieux dont l'enquête est bouclée (déduction réussie). */
   enquetes: string[]
-  /** Fragments de l'arc « Fantôme Gris » (vide jusqu'à la session 4). */
+  /** Fragments de l'arc « Fantôme Gris », dans l'ordre d'obtention. */
   fg: string[]
+  /** Croquettes d'or : monnaie des indices de Pistache. */
+  croquettes: number
+  /** Étincelles cachées déjà ramassées (une seule fois chacune). */
+  etincelles: string[]
+  /** Casse-têtes des habitants déjà réussis. */
+  cassetetes: string[]
   derniereScene: string
 }
 
@@ -34,6 +40,9 @@ const vide = (): Sauvegarde => ({
   resolus: [],
   enquetes: [],
   fg: [],
+  croquettes: 0,
+  etincelles: [],
+  cassetetes: [],
   derniereScene: 'hub',
 })
 
@@ -49,6 +58,9 @@ function charger(): Sauvegarde {
       resolus: Array.isArray(s.resolus) ? s.resolus : d.resolus,
       enquetes: Array.isArray(s.enquetes) ? s.enquetes : d.enquetes,
       fg: Array.isArray(s.fg) ? s.fg : d.fg,
+      croquettes: typeof s.croquettes === 'number' ? s.croquettes : d.croquettes,
+      etincelles: Array.isArray(s.etincelles) ? s.etincelles : d.etincelles,
+      cassetetes: Array.isArray(s.cassetetes) ? s.cassetetes : d.cassetetes,
       derniereScene: typeof s.derniereScene === 'string' ? s.derniereScene : d.derniereScene,
     }
   } catch {
@@ -100,6 +112,51 @@ export const carnet = {
       etat.enquetes.push(lieu)
       persister()
     }
+  },
+
+  // --- Arc du Fantôme Gris ---
+
+  /** Ajoute un fragment (une seule fois). @returns true si c'est un nouveau. */
+  ajouterFragment(texte: string): boolean {
+    if (etat.fg.includes(texte)) return false
+    etat.fg.push(texte)
+    persister()
+    return true
+  },
+
+  // --- Croquettes d'or (monnaie des indices de Pistache) ---
+
+  croquettes: (): number => etat.croquettes,
+
+  ajouterCroquettes(n: number): void {
+    etat.croquettes += n
+    persister()
+  },
+
+  /** Dépense une croquette. @returns false si le solde est insuffisant. */
+  depenserCroquette(): boolean {
+    if (etat.croquettes < 1) return false
+    etat.croquettes -= 1
+    persister()
+    return true
+  },
+
+  etincelleRamassee: (id: string): boolean => etat.etincelles.includes(id),
+
+  ramasserEtincelle(id: string, valeur: number): void {
+    if (etat.etincelles.includes(id)) return
+    etat.etincelles.push(id)
+    etat.croquettes += valeur
+    persister()
+  },
+
+  cassetetereussi: (id: string): boolean => etat.cassetetes.includes(id),
+
+  marquerCassetete(id: string, recompense: number): void {
+    if (etat.cassetetes.includes(id)) return
+    etat.cassetetes.push(id)
+    etat.croquettes += recompense
+    persister()
   },
 
   derniereScene: (): string => etat.derniereScene,

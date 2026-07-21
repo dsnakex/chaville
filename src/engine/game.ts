@@ -15,6 +15,7 @@ export class Jeu {
   private readonly objectifTexte: HTMLSpanElement
   private readonly pastilleCarnet: HTMLSpanElement
   private readonly compteurIndices: HTMLSpanElement
+  private readonly croquettes: HTMLSpanElement
   private readonly loupe: HTMLButtonElement
   private readonly retour: HTMLButtonElement
   private enTransition = false
@@ -68,13 +69,17 @@ export class Jeu {
     this.compteurIndices = document.createElement('span')
     this.compteurIndices.className = 'hud-compteur'
 
+    this.croquettes = document.createElement('span')
+    this.croquettes.className = 'hud-croquettes'
+    this.croquettes.setAttribute('aria-label', 'Croquettes d’or')
+
     this.loupe = document.createElement('button')
     this.loupe.className = 'hud-loupe'
     this.loupe.setAttribute('aria-label', 'Repérer les indices')
     this.loupe.innerHTML = '<span>🔍</span><span class="hud-loupe-label">Repérer</span>'
     this.loupe.addEventListener('click', () => this.vue?.montrerIndices())
 
-    rangee2.append(this.compteurIndices, this.loupe)
+    rangee2.append(this.compteurIndices, this.croquettes, this.loupe)
 
     this.hud.append(rangee1, rangee2)
 
@@ -90,6 +95,9 @@ export class Jeu {
     const total = carnet.indices().length
     this.pastilleCarnet.textContent = total > 0 ? String(total) : ''
     this.pastilleCarnet.style.display = total > 0 ? '' : 'none'
+
+    // Solde de croquettes d'or, toujours visible (monnaie des indices).
+    this.croquettes.textContent = `🍪 ${carnet.croquettes()}`
 
     if (this.sceneCourante) {
       const cibles = this.sceneCourante.hotspots.filter((h) => h.indice)

@@ -112,6 +112,31 @@ export const bibliotheque: Scene = {
       },
     },
     {
+      id: 'bi-cassetete', libelle: 'Le livre à l’envers', sorte: 'cassetete',
+      at: { x: 660, y: 1120 }, station: { x: 600, y: 1190 }, voix: 'narrateur', recompense: 3,
+      personnage: GRIOTTE.portrait,
+      dialogue: [
+        'Griotte relève son béret : « Un poète s’amuse, détective. J’ai recopié une phrase à l’envers, comme Léonard. Sauras-tu la lire ? »',
+      ],
+      jeu: {
+        type: 'miroir',
+        consigne: 'Griotte écrit ses brouillons en miroir. Déchiffre-la.',
+        texteMiroir: 'LE SILENCE EST UNE PAGE BLANCHE',
+        question: 'Que dit la phrase de Griotte ?',
+        reponses: [
+          'Le silence est une page blanche',
+          'Le silence est une page noire',
+          'Le livre est une page blanche',
+          'Le silence est un long chemin',
+        ],
+        bonne: 0,
+      },
+    },
+    // --- Étincelles cachées ---
+    { id: 'bi-etincelle-1', libelle: 'un reflet sur le globe', sorte: 'etincelle', at: { x: 520, y: 1035 }, recompense: 1 },
+    { id: 'bi-etincelle-2', libelle: 'un éclat dans le poêle', sorte: 'etincelle', at: { x: 118, y: 905 }, recompense: 1 },
+    { id: 'bi-etincelle-3', libelle: 'une lueur sur l’échelle', sorte: 'etincelle', at: { x: 690, y: 620 }, recompense: 2 },
+    {
       id: 'bi-deduction', libelle: 'Accuser un suspect', sorte: 'deduction',
       at: { x: 384, y: 1080 }, station: { x: 384, y: 1170 }, voix: 'pistache',
       requiert: ['bi-obs', 'bi-note', 'bi-bougie', 'bi-echelle'],

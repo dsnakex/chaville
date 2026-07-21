@@ -8,7 +8,8 @@ Depuis la migration Vite (session 2), la racine ne contient plus que les pages e
 - `aventure.html` + `src/` — **mode aventure v3** en TypeScript : moteur de scènes tap-to-move, décors PNG + personnages vectoriels, carnet persistant, mini-jeux. Entrée Vite.
   - `src/engine/` — `game.ts` (orchestrateur, HUD, transitions), `hub.ts` (carte de Chaville, verrous/étoiles), `scene-view.ts` (rendu + interactions), `actor.ts` (marche, profondeur, 4 directions), `geom.ts` (trapèze + obstacles)
   - `src/scenes/` — une scène = un fichier de données (`grand-place`, `port`, `manoir`, `bibliotheque`, `theatre`, `tour`)
-  - `src/minigames/` — observation, message codé, calcul, déduction
+  - `src/minigames/` — `socle.ts` (ossature + achat d'indice en croquettes), enquête (observation, message codé, calcul, déduction), `puzzles.ts` (devinette, miroir, silhouette, grille, taquin), `confrontation.ts` (finale en 3 manches)
+  - `src/ui/carte-fg.ts` — les 6 cartes de visite du Fantôme Gris, **textes verbatim** du pack narratif
   - `src/ui/` — `dialogue.ts` (bulles + interrogatoires à choix), `carnet.ts` (onglets Indices/Témoins/F.G.), `modal.ts`
   - `src/art.ts` — symboles en pied (front/side/back) + `portraitSVG()` paramétrique ; vocabulaire des planches `da/planches/`
   - `public/fonts/` — Fredoka + Nunito auto-hébergées (`.woff2`)
@@ -60,7 +61,13 @@ Trois familles retenues (le « calcul malin » type allumettes reste en réserve
 - **Mots & codes** : messages en symboles à décoder, écriture miroir, devinettes à la Layton posées par les habitants
 Intégration : un framework commun dans `src/minigames/` (énoncé, plateau interactif, validation, aide de Pistache). Certains casse-têtes sont **tissés dans les enquêtes** (pour varier les mini-jeux répétitifs), d'autres sont **optionnels, proposés par les habitants** dans les scènes — récompensés en croquettes d'or et rejouables dans la salle des archives. Le déplacement reste un véhicule d'exploration, JAMAIS une épreuve d'adresse (pas de plateforme, décision ferme).
 
+## Économie des croquettes d'or (session 4)
+- **Étincelles cachées** : 3-4 par scène, discrètes (pas de halo, scintillement rare), placées HORS des hotspots d'enquête. Ramassées une seule fois → croquettes d'or.
+- **Indice de Pistache = 1 croquette**, proposé seulement après une erreur, jamais imposé. Le solde est affiché au HUD. **Réessayer reste toujours gratuit et illimité** : ne jamais rendre un mini-jeu bloquant faute de croquettes (règle « zéro punition cruelle »).
+- **Casse-têtes optionnels** : au moins un par scène, proposé par un habitant (marqueur 🧩), récompensé en croquettes. Piocher dans les 3 familles du CLAUDE.md.
+
 ## ⚠️ SPOILERS — arc du Fantôme Gris (ne pas révéler dans l'interface avant l'enquête bonus)
+**Pack narratif officiel : `da/session4-fantome-gris.md`** (rédigé par Cowork, validé par Pascal). Les 6 cartes, les fragments, les réactions et le déroulé de la finale y sont **VERBATIM** — ne jamais les réécrire. Le nom « Balthazar » ne doit apparaître nulle part avant la manche 3 de la confrontation (pas de fichier nommé d'après lui).
 Antagoniste fil rouge : le **Fantôme Gris**, maître voleur théâtral façon Carmen Sandiego, jamais cruel. Carte de visite grise « F.G. » après chaque enquête, un fragment d'indice par affaire (fil de gant élégant au Manoir, connaissance des marées au Port, vol du livre « Les passages secrets de Chaville » à la Bibliothèque, loge « M. Gris » au Théâtre, plan déjoué à la Tour de l'Horloge). Identité révélée uniquement dans l'enquête bonus « Les Toits de Chaville » : **Balthazar**, ancien élève brillant de l'Académie et ex-coéquipier de Griffe. Il est coincé par la logique, se rend avec panache, promet de s'évader (ouverture saison 2).
 
 ## Feuille de route (mode aventure = généraliser demo.html)
@@ -68,7 +75,7 @@ Antagoniste fil rouge : le **Fantôme Gris**, maître voleur théâtral façon C
 2. ✅ Moteur généralisé (session 2) : migration TypeScript + Vite, moteur de scènes tap-to-move avec profondeur, transitions, carnet persistant (`localStorage`), scènes Grand-Place + Port, mini-jeux observation/message codé/calcul.
    ✅ (session 3) hub carte (`src/engine/hub.ts`, cadenas/étoiles), obstacles de décor (rectangles, glissement), sprites 4 directions (front/side/back).
 3. ✅ Session 3 : scènes Manoir + Bibliothèque + Théâtre + Tour (enquêtes v2 portées depuis `public/academie.html`, mêmes coupables/indices), carnet persistant inter-enquêtes à onglets (Indices / Témoins / **page F.G.** vide jusqu'à la session 4), dialogues à choix (interrogatoires → témoignages), mini-jeu de **déduction** (accuser un suspect, écartés grisés). Personnages des planches intégrés en SVG.
-4. Fil rouge Fantôme Gris complet + enquête bonus des Toits + équilibrage · **étincelles cachées dans les décors** (3-4 par scène, non évidentes) donnant des **croquettes d'or**, monnaie contre laquelle Pistache vend ses indices (modèle « hint coins » de Layton) · premiers casse-têtes optionnels chez les habitants
+4. ✅ Session 4 — fil rouge du Fantôme Gris : les 6 cartes de visite VERBATIM (`src/ui/carte-fg.ts`, pack `da/session4-fantome-gris.md`) en modal après chaque déduction + réaction Griffe/Pistache ; page F.G. du carnet à silhouette progressive (6 niveaux) et auto-résumé ; enquête bonus **Les Toits** (`src/scenes/toits.ts` : piste en 3 étapes puis confrontation en 3 manches sans échec définitif, révélation, dénouement, écran « à suivre »), déverrouillée aux 6 fragments avec marqueur 🎭. Enquêtes Marché (Moustache) et Port (Lontra) portées depuis `public/academie.html` — les 6 enquêtes ont désormais une déduction. **Étincelles cachées** (3-4/scène) → **croquettes d'or** ; l'aide de Pistache s'achète 1 croquette (solde au HUD, réessai toujours gratuit) ; un **casse-tête optionnel par scène** (devinette, miroir, silhouette, grille logique, taquin).
 5. Sons/musique (WebAudio), polish animations, sauvegarde (localStorage) · **rejouabilité** : salle des archives (rejouer énigmes et casse-têtes, défis chronométrés), score de « flair » par enquête (baisse doucement à chaque erreur, ne bloque jamais), **album de cartes-personnages** à collectionner (illustrations : `da/planches/`), grades (chaton stagiaire → détective → inspecteur → commissaire). Jamais de streaks punitifs, de notifications de relance ni de compteurs qui expirent (public enfant).
 6. Packaging Capacitor → APK Android (la PWA couvre déjà l'installation simple)
 

@@ -8,6 +8,8 @@ const NOMS: Record<string, string> = {
   griffe: 'Commissaire Griffe',
   sardine: 'Madame Sardine',
   moustache: 'Moustache',
+  // N'apparaît qu'après la manche 3 de la confrontation finale.
+  demasque: 'Balthazar',
   narrateur: '',
 }
 
@@ -18,6 +20,7 @@ const FOND_AVATAR: Record<string, string> = {
   griffe: '#454E6B',
   sardine: '#4E5A6C',
   moustache: '#5B5442',
+  demasque: '#55506B',
 }
 
 function avatarHTML(voix: string, portrait?: OptionsPortrait): string {

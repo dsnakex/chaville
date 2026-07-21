@@ -3,8 +3,10 @@ import { Acteur, ANCRAGE_DETECTIVE, ANCRAGE_PISTACHE } from './actor'
 import { contraindre, dansObstacle, distance, echelle, pousserHors } from './geom'
 import { carnet } from '../state'
 import { dialogue, dialogueChoix } from '../ui/dialogue'
+import { montrerCarteFG } from '../ui/carte-fg'
 import { bandeau } from '../ui/modal'
 import { lancerMiniJeu } from '../minigames'
+import { lancerConfrontation } from '../minigames/confrontation'
 import { SPRITES_DETECTIVE, SPRITES_PISTACHE, PORTRAITS, portraitSVG } from '../art'
 import type { OptionsPortrait } from '../art'
 
@@ -97,16 +99,32 @@ export class VueScene {
     return true
   }
 
+  /** Un point déjà fait ne se redessine pas (indice, étincelle, casse-tête). */
+  private dejaFait(h: Hotspot): boolean {
+    if (h.sorte === 'etincelle') return carnet.etincelleRamassee(h.id)
+    if (h.sorte === 'cassetete') return carnet.cassetetereussi(h.id)
+    return carnet.estResolu(h.id)
+  }
+
   private dessinerMarqueur(h: Hotspot): void {
-    if (h.sorte !== 'sortie' && carnet.estResolu(h.id)) return
+    if (h.sorte !== 'sortie' && this.dejaFait(h)) return
     if (!this.estDisponible(h)) return
     if (this.marqueurs.has(h.id)) return
 
     const g = el('g', { class: 'marqueur', 'data-id': h.id })
     g.style.cursor = 'pointer'
 
-    if (h.sorte === 'pnj' || h.sorte === 'temoin') {
-      this.dessinerPersonnage(g, h)
+    if (h.sorte === 'pnj' || h.sorte === 'temoin' || h.sorte === 'cassetete') {
+      this.dessinerPersonnage(g, h, h.sorte === 'cassetete')
+    } else if (h.sorte === 'etincelle') {
+      // Étincelle cachée : discrète, sans halo — il faut la chercher.
+      const etincelle = el('use', {
+        href: '#spark', transform: `translate(${h.at.x} ${h.at.y}) scale(0.75)`,
+        opacity: 0.5, stroke: '#2F2A45', 'stroke-width': 1,
+      })
+      etincelle.classList.add('etincelle-cachee')
+      etincelle.style.animationDelay = `${(h.at.x % 11) * 0.4}s`
+      g.appendChild(etincelle)
     } else if (h.sorte === 'deduction') {
       const halo = el('circle', { cx: h.at.x, cy: h.at.y, r: 70, fill: 'url(#dGlow)' })
       halo.classList.add('halo-pulse')
@@ -159,7 +177,7 @@ export class VueScene {
   }
 
   /** Un PNJ interactif est DESSINÉ (sprite visible) + un signe « parle-moi ». */
-  private dessinerPersonnage(g: SVGGElement, h: Hotspot): void {
+  private dessinerPersonnage(g: SVGGElement, h: Hotspot, cassetete = false): void {
     const opts = this.portraitDe(h)
     const s = echelle(h.at.y, this.scene.zone)
 
@@ -177,16 +195,22 @@ export class VueScene {
       g.appendChild(el('use', { href: '#dW', transform: `translate(${h.at.x - 9} ${h.at.y - 13}) scale(1.3)` }))
     }
 
-    // Bulle « parle-moi » pulsante au-dessus de la tête.
+    // Bulle pulsante au-dessus de la tête : « parle-moi » ou « casse-tête ».
     const bulle = el('g', { transform: `translate(${h.at.x} ${(h.at.y - 128 * s).toFixed(1)})` })
     bulle.classList.add('scintille')
     bulle.append(
       el('circle', { cx: 0, cy: 0, r: 13, fill: '#F4C95D', stroke: '#2F2A45', 'stroke-width': 2 }),
       el('path', { d: 'M-4,11 L0,18 L5,11 Z', fill: '#F4C95D', stroke: '#2F2A45', 'stroke-width': 2, 'stroke-linejoin': 'round' }),
     )
-    const dots = el('g', { fill: '#2F2A45' })
-    for (const dx of [-5, 0, 5]) dots.appendChild(el('circle', { cx: dx, cy: 0, r: 1.6 }))
-    bulle.appendChild(dots)
+    if (cassetete) {
+      const piece = el('text', { x: 0, y: 5, 'text-anchor': 'middle', 'font-size': 14 })
+      piece.textContent = '🧩'
+      bulle.appendChild(piece)
+    } else {
+      const dots = el('g', { fill: '#2F2A45' })
+      for (const dx of [-5, 0, 5]) dots.appendChild(el('circle', { cx: dx, cy: 0, r: 1.6 }))
+      bulle.appendChild(dots)
+    }
     g.appendChild(bulle)
   }
 
@@ -256,6 +280,30 @@ export class VueScene {
       return
     }
 
+    if (h.sorte === 'etincelle') {
+      const gain = h.recompense ?? 1
+      carnet.ramasserEtincelle(h.id, gain)
+      this.retirerMarqueur(h.id)
+      bandeau(`✨ Une étincelle cachée ! +${gain} croquette${gain > 1 ? 's' : ''} d’or 🍪`)
+      this.occupe = false
+      return
+    }
+
+    if (h.sorte === 'cassetete' && h.jeu) {
+      if (h.dialogue?.length) await dialogue(h.dialogue, h.voix ?? 'narrateur')
+      const bon = await lancerMiniJeu(h.jeu, this.scene.decor)
+      if (bon) {
+        const gain = h.recompense ?? 2
+        carnet.marquerCassetete(h.id, gain)
+        this.retirerMarqueur(h.id)
+        bandeau(`🧩 Casse-tête résolu ! +${gain} croquettes d’or 🍪`)
+      } else {
+        bandeau('Le casse-tête t’attendra — reviens quand tu veux.', 2200)
+      }
+      this.occupe = false
+      return
+    }
+
     if (h.sorte === 'temoin' && h.interrogatoire) {
       const it = h.interrogatoire
       await dialogueChoix({
@@ -279,18 +327,26 @@ export class VueScene {
 
     if (h.dialogue?.length) await dialogue(h.dialogue, h.voix ?? 'narrateur')
 
+    if (h.sorte === 'confrontation') {
+      await lancerConfrontation()
+      carnet.marquerResolu(h.id)
+      carnet.marquerEnquete(this.scene.lieu)
+      this.retirerMarqueur(h.id)
+      this.occupe = false
+      this.surSortie('hub')
+      return
+    }
+
     if (h.sorte === 'deduction' && h.jeu?.type === 'deduction') {
       const bon = await lancerMiniJeu(h.jeu, this.scene.decor)
       if (bon) {
         carnet.marquerResolu(h.id)
         this.retirerMarqueur(h.id)
         await dialogue(h.jeu.denouement, 'narrateur')
-        await dialogue(
-          ['Sur le sol, une carte de visite grise. Trois lettres à l’encre : « F.G. ».',
-           'Encore lui… Le Fantôme Gris était là. Note-le dans ton carnet, chaton.'],
-          'griffe',
-        )
         carnet.marquerEnquete(this.scene.lieu)
+        // Carte de visite du Fantôme Gris (texte verbatim) + réaction.
+        // Ne se redéclenche pas si l'enquête est rejouée.
+        await montrerCarteFG(this.scene.lieu)
         this.occupe = false
         this.surSortie('hub')
       } else {

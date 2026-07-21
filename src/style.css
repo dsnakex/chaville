@@ -509,6 +509,244 @@ body {
 .fg-vide p { font-family: var(--corps); font-size: 0.95rem; line-height: 1.5; color: var(--encre); }
 .fg-note { color: var(--texte-2); font-style: italic; font-size: 0.85rem; }
 
+/* --- Croquettes d'or et offre d'indice ---------------------------------- */
+
+.hud-croquettes {
+  display: inline-flex;
+  align-items: center;
+  padding: 7px 14px;
+  border: 2.5px solid var(--or);
+  border-radius: 999px;
+  background: var(--encre);
+  color: var(--or);
+  font-family: var(--titre);
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.zone-aide { margin-top: 10px; }
+.offre-indice {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px;
+  border: 2px dashed var(--or-fonce);
+  border-radius: 14px;
+  background: rgba(180, 174, 203, 0.18);
+}
+.offre-texte { font-size: 0.92rem; line-height: 1.4; color: var(--encre); }
+.offre-libre { font-size: 0.82rem; font-style: italic; color: var(--texte-2); }
+.bouton-indice { background: var(--or); min-height: 46px; font-size: 0.92rem; }
+.revelation { border-style: solid; }
+
+/* --- Casse-têtes --------------------------------------------------------- */
+
+.texte-miroir {
+  transform: scaleX(-1);
+  text-align: center;
+  font-family: var(--titre);
+  font-size: 1.25rem;
+  font-weight: 600;
+  letter-spacing: 2px;
+  color: var(--encre);
+  padding: 14px 8px;
+  border: 3px solid var(--encre);
+  border-radius: 14px;
+  background: var(--creme-carte);
+}
+
+.grille-silhouettes { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+.carte-silhouette {
+  padding: 8px;
+  border: 3px solid var(--encre);
+  border-radius: 16px;
+  background: var(--creme-carte);
+  cursor: pointer;
+  box-shadow: 0 4px 0 rgba(47, 42, 69, 0.35);
+}
+.carte-silhouette:active { transform: translateY(3px); box-shadow: 0 1px 0 rgba(47, 42, 69, 0.35); }
+.carte-silhouette.juste { background: #a8dcae; border-color: #4f9a5e; }
+.carte-silhouette.faux { background: #e6a89f; border-color: var(--braise); }
+.mini-silhouette { width: 100%; height: 110px; }
+
+.indices-grille { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+.indices-grille li {
+  padding: 8px 12px;
+  border-left: 4px solid var(--or);
+  background: var(--creme-carte);
+  border-radius: 8px;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+.grille-logique { display: flex; flex-direction: column; gap: 8px; }
+.ligne-grille { display: flex; align-items: center; gap: 10px; }
+.grille-sujet { flex: 0 0 38%; font-family: var(--titre); font-weight: 600; font-size: 0.92rem; }
+.bouton-valeur { flex: 1; min-height: 46px; font-size: 0.88rem; }
+
+.taquin {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 3px;
+  aspect-ratio: 1;
+  padding: 4px;
+  border: 3px solid var(--encre);
+  border-radius: 14px;
+  background: var(--encre);
+}
+.taquin.juste { border-color: #4f9a5e; }
+.taquin-case {
+  border: none;
+  border-radius: 4px;
+  background-color: var(--ardoise);
+  background-repeat: no-repeat;
+  cursor: pointer;
+  padding: 0;
+}
+.taquin-case.vide { background: transparent; cursor: default; }
+
+/* --- Carte de visite du Fantôme Gris ------------------------------------ */
+
+.couche-carte-fg { align-items: center; }
+.couche-carte-fg .panneau { display: flex; flex-direction: column; gap: 14px; align-items: stretch; }
+
+.carte-fg {
+  position: relative;
+  transform: rotate(-2.5deg);
+  padding: 22px 20px 18px;
+  border: 4px solid var(--encre);
+  border-radius: 12px;
+  background: linear-gradient(160deg, #9a95a8, #837e93);
+  box-shadow: 0 10px 0 rgba(20, 17, 34, 0.45);
+}
+.carte-fg-texte {
+  font-family: var(--corps);
+  font-style: italic;
+  font-size: 1rem;
+  line-height: 1.55;
+  color: var(--creme);
+  text-shadow: 0 1px 0 rgba(47, 42, 69, 0.5);
+}
+.carte-fg-signature {
+  margin-top: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+  font-family: var(--titre);
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--creme);
+}
+.carte-fg-etincelle { color: var(--or); font-size: 1.1rem; }
+.carte-fg-fil { position: absolute; top: -14px; right: 18px; width: 60px; }
+.carte-fg-fil svg { width: 100%; height: auto; }
+.carte-fg-suite { align-self: stretch; }
+
+/* --- Page Fantôme Gris du carnet ---------------------------------------- */
+
+.fg-entete { display: flex; align-items: center; gap: 14px; margin-bottom: 12px; }
+.fg-silhouette {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  padding: 6px;
+  border: 2px dashed var(--tiret-beige);
+  border-radius: 14px;
+  background: rgba(47, 42, 69, 0.06);
+}
+.fg-silhouette svg { height: 120px; width: auto; }
+
+.carte-fragment {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 10px 14px;
+  border: 2px solid var(--encre);
+  border-radius: 14px;
+  background: var(--creme-carte);
+}
+.fragment-num {
+  flex: 0 0 auto;
+  width: 24px; height: 24px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 999px;
+  background: var(--encre);
+  color: var(--or);
+  font-family: var(--titre);
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+.carte-fragment p { font-size: 0.9rem; line-height: 1.45; color: var(--encre); }
+.fg-resume {
+  margin-top: 12px;
+  padding: 12px 14px;
+  border: 2px dashed var(--or-fonce);
+  border-radius: 14px;
+  background: rgba(244, 201, 93, 0.18);
+  font-family: var(--corps);
+  font-style: italic;
+  font-size: 0.92rem;
+  line-height: 1.5;
+  color: var(--encre);
+}
+
+/* --- Confrontation finale ------------------------------------------------ */
+
+.couche-confrontation { align-items: center; }
+.couche-confrontation .panneau {
+  background: linear-gradient(170deg, #2f2a45, #423a5e);
+  border: 3px solid var(--or);
+  border-radius: 22px;
+  padding: 18px;
+  color: var(--creme);
+  box-shadow: var(--ombre);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.confrontation-scene { display: flex; justify-content: center; }
+.confrontation-scene svg { height: 150px; width: auto; }
+.confrontation-texte {
+  font-family: var(--corps);
+  font-size: 1rem;
+  line-height: 1.5;
+  color: var(--creme);
+  text-align: center;
+  min-height: 3em;
+}
+.couche-confrontation .bouton { color: var(--encre); }
+.bouton-choix.selectionne { background: var(--or); border-color: var(--or-fonce); }
+
+/* --- Écran de fin -------------------------------------------------------- */
+
+.couche-fin { align-items: center; }
+.ecran-fin {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  padding: 28px 20px;
+  border: 3px solid var(--or);
+  border-radius: 26px;
+  background: linear-gradient(170deg, #2f2a45, #4a4066);
+  box-shadow: 0 8px 0 rgba(20, 17, 34, 0.5);
+  text-align: center;
+}
+.fin-medaille { font-size: 3rem; }
+.ecran-fin h2 {
+  font-family: var(--titre);
+  font-size: 1.4rem;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  color: var(--or);
+}
+.fin-asuivre { font-family: var(--corps); font-style: italic; font-size: 1.05rem; color: var(--brume); }
+
+/* --- Étincelle cachée ---------------------------------------------------- */
+
+.etincelle-cachee { animation: cachee 3.4s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+@keyframes cachee { 0%, 84%, 100% { opacity: 0.18; } 92% { opacity: 0.85; } }
+
 /* --- Bandeau ------------------------------------------------------------ */
 
 .bandeau {

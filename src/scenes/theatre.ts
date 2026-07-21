@@ -111,6 +111,30 @@ export const theatre: Scene = {
       },
     },
     {
+      id: 'th-cassetete', libelle: 'Les ombres chinoises', sorte: 'cassetete',
+      at: { x: 90, y: 1120 }, station: { x: 150, y: 1190 }, voix: 'narrateur', recompense: 3,
+      personnage: LUMIERE.portrait,
+      dialogue: [
+        'Lumière règle son projecteur : « Petit jeu de coulisses, détective. Je projette une ombre — retrouve celle qui correspond au personnage du spectacle : cape et haut-de-forme. »',
+      ],
+      jeu: {
+        type: 'silhouette',
+        consigne: 'Le personnage du spectacle porte une cape ET un haut-de-forme.',
+        question: 'Quelle ombre correspond au personnage ?',
+        options: [
+          { chapeau: true, cape: false, rot: -6 },
+          { chapeau: false, cape: false, rot: 5 },
+          { chapeau: true, cape: true, rot: -3 },
+          { chapeau: false, cape: true, rot: 7 },
+        ],
+        bonne: 2,
+      },
+    },
+    // --- Étincelles cachées ---
+    { id: 'th-etincelle-1', libelle: 'un reflet sur la rampe', sorte: 'etincelle', at: { x: 300, y: 830 }, recompense: 1 },
+    { id: 'th-etincelle-2', libelle: 'un éclat dans le rideau', sorte: 'etincelle', at: { x: 660, y: 560 }, recompense: 1 },
+    { id: 'th-etincelle-3', libelle: 'une lueur sur le parquet', sorte: 'etincelle', at: { x: 220, y: 1290 }, recompense: 2 },
+    {
       id: 'th-deduction', libelle: 'Accuser un suspect', sorte: 'deduction',
       at: { x: 400, y: 1080 }, station: { x: 400, y: 1170 }, voix: 'pistache',
       requiert: ['th-obs', 'th-note', 'th-heure', 'th-fils'],

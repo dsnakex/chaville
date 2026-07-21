@@ -353,6 +353,59 @@ export const PORTRAITS: Record<string, OptionsPortrait> = {
   griffe: { espece: 'chat', fourrure: '#7C8698', ventre: '#E8E4DA', accent: '#8A94A6', regard: 'severe', coiffe: 'kepi', habit: '#4A5470' },
   sardine: { espece: 'chat', fourrure: '#8FA3B0', ventre: '#F2EDE0', accent: '#A6B5C0', coiffe: 'foulard-pois', habit: '#59677A' },
   moustache: { espece: 'chat', fourrure: '#A8A39B', ventre: '#F2EDE0', accent: '#B8B3A9', coiffe: 'casquette', habit: '#8A7B5C' },
+  /** Visage révélé du Fantôme Gris — n'apparaît QU'APRÈS la manche 3. */
+  demasque: { espece: 'chat', fourrure: '#BFBCCE', ventre: '#E8E6EF', accent: '#A5A2BB', coiffe: 'haut-de-forme', habit: '#8E8AA6' },
+}
+
+// ---------------------------------------------------------------------------
+// Le Fantôme Gris (planche `da/planches/Planche Fantôme Gris.dc.html`).
+// Règle de la planche : JAMAIS de visage tant qu'il n'est pas démasqué —
+// silhouette gris perle, cape, haut-de-forme, gants. Repère : y=0 au sol,
+// sommet du chapeau à y=-176.
+// ---------------------------------------------------------------------------
+
+export const PALETTE_FG = {
+  perle: '#BFBCCE',
+  cape: '#8E8AA6',
+  chapeau: '#625D7A',
+  bord: '#55506B',
+  col: '#A5A2BB',
+  gants: '#E8E6EF',
+  argent: '#D8D5E4',
+} as const
+
+/**
+ * Silhouette du Fantôme Gris, de l'ombre d'encre au personnage complet.
+ * @param niveau 0 → 6 (nombre de fragments réunis) : la silhouette se précise.
+ */
+export function fantomeGrisSVG(niveau: number): string {
+  const n = Math.max(0, Math.min(6, niveau))
+  const encre = '#2F2A45'
+  // Jusqu'à 4 fragments : aplat d'encre. À 5 : la couleur monte. À 6 : complet.
+  const ombre = n < 5
+  const c = (couleur: string): string => (ombre ? encre : couleur)
+  const opacite = [0.14, 0.28, 0.42, 0.58, 0.75, 0.9, 1][n]!
+  const cerne = n >= 3 ? `stroke="${encre}" stroke-width="3" stroke-linejoin="round"` : 'stroke="none"'
+  const or = n >= 4 ? '#F4C95D' : c('#F4C95D')
+  const details = n >= 5
+
+  return `<g opacity="${opacite}" ${cerne} fill="none">
+    <path d="M28,-8 Q56,-4 60,-28 Q62,-44 48,-40" fill="none" stroke="${c(PALETTE_FG.perle)}" stroke-width="6" stroke-linecap="round"></path>
+    <path d="M0,-110 Q-30,-100 -38,-60 Q-46,-20 -34,0 L34,0 Q46,-20 38,-60 Q30,-100 0,-110 Z" fill="${c(PALETTE_FG.cape)}"></path>
+    ${details ? `<path d="M-30,-70 Q-34,-36 -28,-8" fill="none" stroke="${PALETTE_FG.argent}" stroke-width="2.5" opacity="0.7"></path>` : ''}
+    <path d="M-20,-106 Q0,-120 20,-106 L14,-94 Q0,-104 -14,-94 Z" fill="${c(PALETTE_FG.col)}"></path>
+    <circle cx="0" cy="-118" r="21" fill="${c(PALETTE_FG.perle)}"></circle>
+    <ellipse cx="0" cy="-134" rx="29" ry="6" fill="${c(PALETTE_FG.bord)}"></ellipse>
+    <rect x="-19" y="-176" width="38" height="42" rx="3" fill="${c(PALETTE_FG.chapeau)}"></rect>
+    <path d="M-19,-142 H19" stroke="${or}" stroke-width="3.5"></path>
+    <path d="M30,-78 Q48,-72 54,-60" fill="none" stroke="${c(PALETTE_FG.cape)}" stroke-width="10" stroke-linecap="round"></path>
+    <circle cx="57" cy="-57" r="7" fill="${c(PALETTE_FG.gants)}"></circle>
+  </g>`
+}
+
+/** Silhouette autonome (page F.G. du carnet, avatar de confrontation). */
+export function fantomeGrisAvatar(niveau: number, taille = 120): string {
+  return `<svg class="silhouette-fg" viewBox="-80 -190 160 200" width="${taille}" height="${taille * 1.25}" aria-hidden="true">${fantomeGrisSVG(niveau)}</svg>`
 }
 
 /** Rend un portrait complet dans un <svg> autonome (avatar de bulle, etc.). */

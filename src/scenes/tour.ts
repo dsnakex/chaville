@@ -112,6 +112,25 @@ export const tour: Scene = {
       },
     },
     {
+      id: 'to-cassetete', libelle: 'La devinette des jumeaux', sorte: 'cassetete',
+      at: { x: 660, y: 1150 }, station: { x: 600, y: 1215 }, voix: 'narrateur', recompense: 3,
+      personnage: TIC.portrait,
+      dialogue: [
+        'Tic et Tac lèvent le nez de leurs rouages, parfaitement synchronisés : « Une devinette d’horloger, détective. Si tu la trouves, les croquettes sont pour toi. »',
+      ],
+      jeu: {
+        type: 'devinette',
+        consigne: 'Les jumeaux horlogers te posent leur devinette favorite.',
+        enonce: 'Je tourne sans fin, j’ai deux aiguilles mais je ne couds jamais, et je dis toujours l’heure sans jamais parler. Qui suis-je ?',
+        reponses: ['Une horloge', 'Une boussole', 'Une aiguille de sapin', 'Un moulin'],
+        bonne: 0,
+      },
+    },
+    // --- Étincelles cachées ---
+    { id: 'to-etincelle-1', libelle: 'un reflet sur un rouage', sorte: 'etincelle', at: { x: 690, y: 760 }, recompense: 1 },
+    { id: 'to-etincelle-2', libelle: 'un éclat sous l’escalier', sorte: 'etincelle', at: { x: 110, y: 1230 }, recompense: 1 },
+    { id: 'to-etincelle-3', libelle: 'une lueur près de la cloche', sorte: 'etincelle', at: { x: 540, y: 120 }, recompense: 2 },
+    {
       id: 'to-deduction', libelle: 'Accuser un suspect', sorte: 'deduction',
       at: { x: 400, y: 1090 }, station: { x: 400, y: 1220 }, voix: 'pistache',
       requiert: ['to-obs', 'to-note', 'to-sonneries', 'to-nid'],

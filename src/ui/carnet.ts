@@ -1,6 +1,6 @@
 import { carnet } from '../state'
 import { ouvrirCouche } from './modal'
-import { PORTRAITS, portraitAvatar } from '../art'
+import { PORTRAITS, portraitAvatar, fantomeGrisAvatar } from '../art'
 
 type Onglet = 'indices' | 'temoignages' | 'fg'
 
@@ -126,32 +126,62 @@ function rendreTemoignages(corps: HTMLElement): void {
   corps.appendChild(liste)
 }
 
+const RESUME_FG =
+  'Serrures, gants fins, marées, passages secrets, premier en tout, la salle des trophées… Qui a pu apprendre TOUT cela au même endroit ?'
+
 function rendreFG(corps: HTMLElement): void {
   const fragments = carnet.fgFragments()
   const titre = document.createElement('div')
   titre.className = 'section-titre'
   titre.innerHTML = '<span>Le Fantôme Gris</span>'
+  const pastille = document.createElement('span')
+  pastille.className = 'pastille-compte'
+  pastille.textContent = `${fragments.length}/6`
+  titre.appendChild(pastille)
   corps.appendChild(titre)
 
+  // En-tête : la carte grise épinglée + la silhouette qui se précise.
+  const entete = document.createElement('div')
+  entete.className = 'fg-entete'
+  const carteEl = document.createElement('div')
+  carteEl.className = 'fg-carte'
+  carteEl.textContent = 'F.G.'
+  const silhouette = document.createElement('div')
+  silhouette.className = 'fg-silhouette'
+  silhouette.innerHTML = fantomeGrisAvatar(fragments.length, 96)
+  entete.append(carteEl, silhouette)
+  corps.appendChild(entete)
+
   if (fragments.length === 0) {
-    const bloc = document.createElement('div')
-    bloc.className = 'fg-vide'
-    bloc.innerHTML =
-      '<div class="fg-carte">F.G.</div>' +
-      '<p>Une carte de visite grise, signée « F.G. ». Un voleur élégant rôderait dans Chaville…</p>' +
-      '<p class="fg-note">Cette page se remplira au fil de tes enquêtes.</p>'
-    corps.appendChild(bloc)
+    const p = document.createElement('p')
+    p.className = 'carnet-vide'
+    p.textContent =
+      'Une carte de visite grise, signée « F.G. ». Un voleur élégant rôderait dans Chaville… Cette page se remplira au fil de tes enquêtes.'
+    corps.appendChild(p)
     return
   }
+
   const liste = document.createElement('ul')
   liste.className = 'liste-cartes'
-  for (const f of fragments) {
+  fragments.forEach((f, i) => {
     const li = document.createElement('li')
-    li.className = 'carte-indice'
-    li.textContent = f
+    li.className = 'carte-fragment'
+    const num = document.createElement('span')
+    num.className = 'fragment-num'
+    num.textContent = String(i + 1)
+    const txt = document.createElement('p')
+    txt.textContent = f
+    li.append(num, txt)
     liste.appendChild(li)
-  }
+  })
   corps.appendChild(liste)
+
+  if (fragments.length >= 6) {
+    const resume = document.createElement('p')
+    resume.className = 'fg-resume'
+    resume.textContent = RESUME_FG
+    corps.appendChild(resume)
+  }
 }
 
 function vide(texte: string): HTMLElement {

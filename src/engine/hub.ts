@@ -19,23 +19,27 @@ export interface LieuCarte {
   at: { x: number; y: number }
   /** Lieu dont l'enquête doit être bouclée pour déverrouiller celui-ci. */
   prereq?: string
-  /** Toujours verrouillé (bonus à venir). */
+  /** Enquête bonus : ouverte quand les 6 fragments F.G. sont réunis. */
   bonus?: boolean
 }
 
 /** Ordre narratif de Chaville, positionné sur assets/decors/carte.png (768×1376). */
+/** Ordre narratif : Marché → Manoir → Port → Bibliothèque → Théâtre → Tour. */
 export const LIEUX: LieuCarte[] = [
-  { lieu: 'place', scene: 'grand-place', nom: 'La Grand-Place', at: { x: 300, y: 980 } },
-  { lieu: 'port', scene: 'port', nom: 'Le Port', at: { x: 560, y: 1210 } },
-  { lieu: 'manoir', scene: 'manoir', nom: 'Le Manoir', at: { x: 560, y: 150 } },
-  { lieu: 'bibliotheque', scene: 'bibliotheque', nom: 'La Bibliothèque', at: { x: 505, y: 880 }, prereq: 'manoir' },
+  { lieu: 'place', scene: 'grand-place', nom: 'Le Marché', at: { x: 300, y: 980 } },
+  { lieu: 'manoir', scene: 'manoir', nom: 'Le Manoir', at: { x: 560, y: 150 }, prereq: 'place' },
+  { lieu: 'port', scene: 'port', nom: 'Le Port', at: { x: 560, y: 1210 }, prereq: 'manoir' },
+  { lieu: 'bibliotheque', scene: 'bibliotheque', nom: 'La Bibliothèque', at: { x: 505, y: 880 }, prereq: 'port' },
   { lieu: 'theatre', scene: 'theatre', nom: 'Le Théâtre', at: { x: 660, y: 900 }, prereq: 'bibliotheque' },
   { lieu: 'tour', scene: 'tour', nom: 'La Tour de l’Horloge', at: { x: 400, y: 470 }, prereq: 'theatre' },
   { lieu: 'toits', scene: 'toits', nom: 'Les Toits de Chaville', at: { x: 165, y: 620 }, bonus: true },
 ]
 
+/** Les six fragments du Fantôme Gris ouvrent « Les Toits de Chaville ». */
+export const FRAGMENTS_REQUIS = 6
+
 export function estDeverrouille(l: LieuCarte): boolean {
-  if (l.bonus) return false
+  if (l.bonus) return carnet.fgFragments().length >= FRAGMENTS_REQUIS
   if (!l.prereq) return true
   return carnet.enqueteResolue(l.prereq)
 }
@@ -85,15 +89,17 @@ export class Hub {
     })
     if (resolu) icone.textContent = '⭐'
     else if (!ouvert) icone.textContent = '🔒'
+    else if (l.bonus) icone.textContent = '🎭' // marqueur spécial de l'enquête bonus
     else { icone.textContent = ''; halo.classList.add('scintille') }
     g.appendChild(icone)
 
-    if (ouvert && !resolu) {
+    if (ouvert && !resolu && !l.bonus) {
       // Étincelle « à faire » pour les enquêtes ouvertes non résolues.
       const spark = el('use', { href: '#spark', transform: `translate(${l.at.x} ${l.at.y}) scale(1.5)` })
       spark.classList.add('scintille')
       g.appendChild(spark)
     }
+    if (ouvert && !resolu && l.bonus) halo.classList.add('halo-pulse')
 
     const etiquette = el('g', { class: 'lieu-etiquette' })
     const largeur = Math.max(96, l.nom.length * 12 + 24)

@@ -25,7 +25,14 @@ export interface ZoneMarche {
   echelleProche: number
 }
 
-export type SorteHotspot = 'indice' | 'pnj' | 'sortie' | 'jeu' | 'temoin' | 'deduction'
+export type SorteHotspot =
+  | 'indice' | 'pnj' | 'sortie' | 'jeu' | 'temoin' | 'deduction'
+  /** Étincelle cachée dans le décor : donne des croquettes d'or. */
+  | 'etincelle'
+  /** Casse-tête optionnel proposé par un habitant. */
+  | 'cassetete'
+  /** Confrontation finale (enquête bonus des Toits). */
+  | 'confrontation'
 
 export interface Hotspot {
   id: string
@@ -56,6 +63,8 @@ export interface Hotspot {
   astuce?: string
   /** Portrait à dessiner sur place (PNJ). Par défaut : déduit de voix/interrogatoire. */
   personnage?: OptionsPortrait
+  /** Croquettes d'or gagnées (étincelle cachée, casse-tête réussi). */
+  recompense?: number
 }
 
 /** Voix connues du moteur de dialogue (avatars + couleur de bulle). */
@@ -155,4 +164,57 @@ export interface JeuDeduction {
   denouement: string[]
 }
 
-export type MiniJeu = JeuObservation | JeuMessage | JeuCalcul | JeuDeduction
+// --- Casse-têtes optionnels (modèle Layton, 3 familles du CLAUDE.md) --------
+
+/** Mots & codes — devinette posée par un habitant. */
+export interface JeuDevinette {
+  type: 'devinette'
+  consigne: string
+  enonce: string
+  reponses: string[]
+  bonne: number
+}
+
+/** Mots & codes — écriture miroir. */
+export interface JeuMiroir {
+  type: 'miroir'
+  consigne: string
+  texteMiroir: string
+  question: string
+  reponses: string[]
+  bonne: number
+}
+
+/** Spatial — quelle silhouette correspond ? */
+export interface JeuSilhouette {
+  type: 'silhouette'
+  consigne: string
+  question: string
+  options: { chapeau: boolean; cape: boolean; rot: number }[]
+  bonne: number
+}
+
+/** Logique & déduction — grille « qui habite où » (3 sujets × 3 valeurs). */
+export interface JeuGrille {
+  type: 'grille'
+  consigne: string
+  indices: string[]
+  sujets: string[]
+  valeurs: string[]
+  /** solution[i] = index dans `valeurs` pour le sujet i. */
+  solution: number[]
+}
+
+/** Spatial — taquin 3×3 sur un morceau de décor. */
+export interface JeuTaquin {
+  type: 'taquin'
+  consigne: string
+  /** Image source (décor de la scène par défaut). */
+  image?: string
+  cadre: { x: number; y: number; w: number; h: number }
+}
+
+export type CasseTete = JeuDevinette | JeuMiroir | JeuSilhouette | JeuGrille | JeuTaquin
+
+export type MiniJeu =
+  | JeuObservation | JeuMessage | JeuCalcul | JeuDeduction | CasseTete

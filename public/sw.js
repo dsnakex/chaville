@@ -1,4 +1,4 @@
-const CACHE = 'chaville-v6';
+const CACHE = 'chaville-v7';
 const ASSETS = [
   './',
   './index.html',
@@ -17,7 +17,8 @@ const ASSETS = [
   './assets/decors/manoir.png',
   './assets/decors/bibliotheque.png',
   './assets/decors/theatre.png',
-  './assets/decors/tour.png'
+  './assets/decors/tour.png',
+  './assets/decors/toits.png'
 ];
 
 self.addEventListener('install', e => {

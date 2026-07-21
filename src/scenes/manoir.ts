@@ -110,6 +110,30 @@ export const manoir: Scene = {
       },
     },
     {
+      id: 'ma-cassetete', libelle: 'L’énigme du majordome', sorte: 'cassetete',
+      at: { x: 680, y: 1120 }, station: { x: 620, y: 1190 }, voix: 'narrateur', recompense: 3,
+      personnage: LEO.portrait,
+      dialogue: [
+        'Léo redresse son nœud papillon : « Puisque vous enquêtez, détective… La Duchesse a trois invités d’honneur et je ne sais plus qui loge où. Aidez-moi, je vous en prie. »',
+      ],
+      jeu: {
+        type: 'grille',
+        consigne: 'Trois invités, trois chambres. Range chacun à sa place.',
+        indices: [
+          'La Duchesse dort dans la chambre Bleue.',
+          'Le Baron n’aime pas le rouge — ce n’est donc pas la chambre Rouge.',
+          'La Comtesse a la chambre qui reste.',
+        ],
+        sujets: ['La Duchesse', 'Le Baron', 'La Comtesse'],
+        valeurs: ['Chambre Bleue', 'Chambre Verte', 'Chambre Rouge'],
+        solution: [0, 1, 2],
+      },
+    },
+    // --- Étincelles cachées ---
+    { id: 'ma-etincelle-1', libelle: 'un reflet sur le lustre', sorte: 'etincelle', at: { x: 384, y: 540 }, recompense: 1 },
+    { id: 'ma-etincelle-2', libelle: 'un éclat sous la rampe', sorte: 'etincelle', at: { x: 640, y: 1035 }, recompense: 1 },
+    { id: 'ma-etincelle-3', libelle: 'une lueur sur le parquet', sorte: 'etincelle', at: { x: 180, y: 1300 }, recompense: 2 },
+    {
       id: 'ma-deduction', libelle: 'Accuser un suspect', sorte: 'deduction',
       at: { x: 384, y: 1050 }, station: { x: 384, y: 1170 }, voix: 'pistache',
       requiert: ['ma-obs', 'ma-note', 'ma-alibis', 'ma-farine'],
