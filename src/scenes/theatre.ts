@@ -1,4 +1,5 @@
 import type { Scene, Suspect } from '../types'
+import { PORTRAITS } from '../art'
 
 const RIDEAU: Suspect = { id: 'rideau', nom: 'Rideau', role: 'Machiniste costaud', portrait: { espece: 'chat', fourrure: '#7C8698', ventre: '#E4E1D8', accent: '#5C6478', coiffe: 'casquette', habit: '#4A4058' } }
 const MELODIE: Suspect = { id: 'melodie', nom: 'Mélodie', role: 'Harpiste rêveuse', portrait: { espece: 'chat', fourrure: '#C7A9C0', ventre: '#F2EDE0', accent: '#9A7A94', coiffe: 'aucune', habit: '#8A6B9A' } }
@@ -32,6 +33,16 @@ export const theatre: Scene = {
         "La partition de la diva a disparu, remplacée par une feuille de signes étranges. Six personnes travaillaient en coulisses. Observe, décode, calcule — puis accuse.",
       ],
       indice: { titre: 'La partition volée', texte: "La partition de Madame Sopranino a disparu pendant l'essayage du costume, remplacée par des signes étranges. Six suspects en coulisses." },
+    },
+    {
+      id: 'th-sopranino', libelle: 'Madame Sopranino', sorte: 'pnj',
+      at: { x: 168, y: 1190 }, station: { x: 222, y: 1215 }, voix: 'narrateur',
+      personnage: PORTRAITS.sopranino!,
+      astuce: 'La diva fait les cent pas près des coulisses — va la voir.',
+      dialogue: [
+        'Madame Sopranino porte une patte à sa gorge : « Ma partition ! Envolée ! Et à la place, cette feuille couverte de signes… »',
+        '« On murmure que le théâtre est hanté. Moi je dis qu’on chante mal quand on n’a plus ses notes. Trouvez-la avant ce soir ! »',
+      ],
     },
     {
       id: 'th-obs', libelle: 'La scène', sorte: 'jeu',

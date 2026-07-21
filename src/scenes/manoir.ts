@@ -1,4 +1,5 @@
 import type { Scene, Suspect } from '../types'
+import { PORTRAITS } from '../art'
 
 // Suspects du bal (portés depuis academie.html, enquête « Le collier de la Duchesse »).
 const LEO: Suspect = { id: 'leo', nom: 'Léo', role: 'Majordome siamois', portrait: { espece: 'chat', fourrure: '#D8CDBA', ventre: '#F2EDE0', accent: '#6E5A4A', coiffe: 'noeud', habit: '#2B2740' } }
@@ -33,6 +34,16 @@ export const manoir: Scene = {
         "Observe la scène du bal, lis ce qui traîne, compte les alibis. Ensuite, tu accuseras.",
       ],
       indice: { titre: 'Le collier disparu', texte: "Le collier de la Duchesse a disparu vers 21 h 30, pendant le bal. Cinq employés étaient présents : Léo, Zoé, Barnabé, Filou, Luna." },
+    },
+    {
+      id: 'ma-duchesse', libelle: 'La Duchesse Angora', sorte: 'pnj',
+      at: { x: 150, y: 1190 }, station: { x: 210, y: 1215 }, voix: 'narrateur',
+      personnage: PORTRAITS.duchesse!,
+      astuce: 'La Duchesse est là, près de la table — elle a tout vu.',
+      dialogue: [
+        'La Duchesse Angora froisse son éventail : « Mon collier de perles, disparu en une soirée ! Il me vient de ma grand-mère, vous savez. »',
+        '« Je ne veux accuser personne… mais retrouvez-le, petit détective. Le bal ne reprendra qu’à ce prix. »',
+      ],
     },
     {
       id: 'ma-obs', libelle: 'La salle de bal', sorte: 'jeu',

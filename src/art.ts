@@ -198,6 +198,10 @@ export type Coiffe =
   | 'aucune' | 'deerstalker' | 'kepi' | 'foulard-pois' | 'casquette'
   | 'beret' | 'chef' | 'monocle' | 'noeud' | 'haut-de-forme'
 
+/** Tenues et accessoires : n'apparaissent que sur les corps entiers. */
+export type Tenue = 'aucune' | 'manteau' | 'tablier' | 'robe' | 'gilet' | 'echarpe'
+export type Accessoire = 'aucun' | 'carnet' | 'poisson' | 'livre' | 'canne' | 'eventail'
+
 export interface OptionsPortrait {
   espece: Espece
   fourrure: string
@@ -207,6 +211,10 @@ export interface OptionsPortrait {
   coiffe?: Coiffe
   /** Couleur du vêtement suggéré sur les épaules. */
   habit?: string
+  /** Corps entier : coupe du vêtement. */
+  tenue?: Tenue
+  /** Corps entier : objet tenu à la patte. */
+  accessoire?: Accessoire
 }
 
 const esc = (s: string): string => s.replace(/&/g, '&amp;').replace(/"/g, '&quot;')
@@ -323,36 +331,53 @@ function moustaches(): string {
     </g>`
 }
 
-/** Portrait buste complet, prêt à insérer dans un <svg viewBox="-60 -70 120 128">. */
-export function portraitSVG(o: OptionsPortrait): string {
+/**
+ * Assemblage de tête partagé par les portraits ET les corps entiers :
+ * oreilles → crâne → museau → yeux → coiffe. Repère : centre du crâne (0,-2).
+ * @param anime ajoute la classe de clignement (scènes seulement).
+ */
+function teteSVG(o: OptionsPortrait, anime = false): string {
   const fourrure = o.fourrure
   const ventre = o.ventre ?? '#F2EDE0'
   const accent = o.accent ?? '#E9AFBB'
-  const habit = o.habit ?? '#57506F'
   const grosse = o.coiffe === 'casquette' && o.espece === 'chat'
+  const yeuxSVG = yeux(o.regard ?? 'normal', fourrure)
+  return `${oreilles(o.espece, fourrure, accent)}
+    <circle cx="0" cy="-2" r="${grosse ? 38 : 34}" fill="${fourrure}"></circle>
+    ${museau(o.espece, ventre)}
+    ${o.espece === 'chat' && o.coiffe === 'casquette' ? moustaches() : ''}
+    ${anime ? `<g class="pnj-yeux">${yeuxSVG}</g>` : yeuxSVG}
+    ${coiffeSVG(o.coiffe ?? 'aucune')}`
+}
+
+/** Portrait buste complet, prêt à insérer dans un <svg viewBox="-60 -70 120 128">. */
+export function portraitSVG(o: OptionsPortrait): string {
+  const fourrure = o.fourrure
+  const habit = o.habit ?? '#57506F'
 
   const epaules = `<path d="M-46,58 Q-46,24 0,24 Q46,24 46,58 Z" fill="${habit}" stroke="#2F2A45" stroke-width="2.4" stroke-linejoin="round"></path>
     <ellipse cx="0" cy="28" rx="20" ry="10" fill="${fourrure}" stroke="none"></ellipse>`
 
   return `<g stroke="#2F2A45" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round">
     ${epaules}
-    ${oreilles(o.espece, fourrure, accent)}
-    <circle cx="0" cy="-2" r="${grosse ? 38 : 34}" fill="${fourrure}"></circle>
-    ${museau(o.espece, ventre)}
-    ${o.espece === 'chat' && o.coiffe === 'casquette' ? moustaches() : ''}
-    ${yeux(o.regard ?? 'normal', fourrure)}
-    ${coiffeSVG(o.coiffe ?? 'aucune')}
+    ${teteSVG(o)}
   </g>`
 }
 
 // --- Présets des personnages nommés (planches) -----------------------------
 
 export const PORTRAITS: Record<string, OptionsPortrait> = {
-  detective: { espece: 'chat', fourrure: '#8C93A8', ventre: '#F2EDE0', accent: '#E9AFBB', coiffe: 'deerstalker', habit: '#C4574E' },
-  pistache: { espece: 'souris', fourrure: '#B4AECB', ventre: '#EDE6F2', accent: '#F0B9C6', coiffe: 'aucune', habit: '#9D93B5' },
-  griffe: { espece: 'chat', fourrure: '#7C8698', ventre: '#E8E4DA', accent: '#8A94A6', regard: 'severe', coiffe: 'kepi', habit: '#4A5470' },
-  sardine: { espece: 'chat', fourrure: '#8FA3B0', ventre: '#F2EDE0', accent: '#A6B5C0', coiffe: 'foulard-pois', habit: '#59677A' },
-  moustache: { espece: 'chat', fourrure: '#A8A39B', ventre: '#F2EDE0', accent: '#B8B3A9', coiffe: 'casquette', habit: '#8A7B5C' },
+  detective: { espece: 'chat', fourrure: '#8C93A8', ventre: '#F2EDE0', accent: '#6E7488', coiffe: 'deerstalker', habit: '#C4574E', tenue: 'echarpe' },
+  pistache: { espece: 'souris', fourrure: '#B4AECB', ventre: '#EDE6F2', accent: '#9D93B5', coiffe: 'aucune', habit: '#F4C95D', accessoire: 'carnet' },
+  griffe: { espece: 'chat', fourrure: '#7C8698', ventre: '#E8E4DA', accent: '#5C6478', regard: 'severe', coiffe: 'kepi', habit: '#4A5470', tenue: 'manteau' },
+  sardine: { espece: 'chat', fourrure: '#8FA3B0', ventre: '#F2EDE0', accent: '#7C8A99', coiffe: 'foulard-pois', habit: '#F2EDE0', tenue: 'tablier', accessoire: 'poisson' },
+  moustache: { espece: 'chat', fourrure: '#A8A39B', ventre: '#F2EDE0', accent: '#8C877E', coiffe: 'casquette', habit: '#8A7B5C', tenue: 'gilet' },
+  /** Maîtresse du bal (Manoir). */
+  duchesse: { espece: 'chat', fourrure: '#EFEAE0', ventre: '#F7F3EA', accent: '#C9BFAE', coiffe: 'noeud', habit: '#7A4E86', tenue: 'robe', accessoire: 'eventail' },
+  /** Bibliothécaire (Bibliothèque). */
+  plume: { espece: 'chat', fourrure: '#C2B6A6', ventre: '#F2EDE0', accent: '#9A8C7C', coiffe: 'monocle', habit: '#5A6A80', tenue: 'robe', accessoire: 'livre' },
+  /** La diva (Théâtre). */
+  sopranino: { espece: 'chat', fourrure: '#E7DCC8', ventre: '#F7F3EA', accent: '#C9B79C', coiffe: 'noeud', habit: '#A8433B', tenue: 'robe', accessoire: 'eventail' },
   /** Visage révélé du Fantôme Gris — n'apparaît QU'APRÈS la manche 3. */
   demasque: { espece: 'chat', fourrure: '#BFBCCE', ventre: '#E8E6EF', accent: '#A5A2BB', coiffe: 'haut-de-forme', habit: '#8E8AA6' },
 }
@@ -412,5 +437,120 @@ export function fantomeGrisAvatar(niveau: number, taille = 120): string {
 export function portraitAvatar(o: OptionsPortrait, taille = 84): string {
   return `<svg class="portrait" viewBox="-60 -70 120 128" width="${taille}" height="${taille}" aria-hidden="true">${portraitSVG(o)}</svg>`
 }
+
+// ---------------------------------------------------------------------------
+// CORPS ENTIERS des PNJ — même traitement que le héros.
+// Repère commun aux personnages en pied : pieds à y=138 (ANCRAGE_DETECTIVE),
+// crâne centré vers y=28. La tête est celle des portraits, simplement
+// retransformée : un seul vocabulaire pour les deux registres.
+// ---------------------------------------------------------------------------
+
+/** Queue selon l'espèce, dessinée derrière le corps (balancement lent). */
+function queue(espece: Espece, fourrure: string, ombre: string): string {
+  switch (espece) {
+    case 'souris':
+      return `<path class="pnj-queue" d="M30,120 Q62,116 66,92 Q68,74 54,72" fill="none" stroke="${ombre}" stroke-width="5" stroke-linecap="round"></path>`
+    case 'ecureuil':
+      return `<path class="pnj-queue" d="M34,120 Q76,110 74,66 Q72,34 40,40 Q62,52 60,80 Q58,104 30,106 Z" fill="${fourrure}"></path>`
+    case 'hibou':
+    case 'oiseau':
+      return `<path d="M-32,96 Q-46,118 -30,134 Q-22,120 -24,102 Z" fill="${ombre}"></path>`
+    case 'chat':
+    default:
+      return `<path class="pnj-queue" d="M30,118 C64,112 72,74 46,66 C60,80 54,100 26,104 Z" fill="${ombre}"></path>`
+  }
+}
+
+/** Vêtement porté par-dessus le corps. */
+function tenueSVG(tenue: Tenue, habit: string): string {
+  switch (tenue) {
+    case 'manteau':
+      return `<path d="M-33,66 Q0,54 33,66 L37,132 Q0,140 -37,132 Z" fill="${habit}"></path>
+        <path d="M0,58 V134" stroke="#2F2A45" stroke-width="1.6" opacity="0.5"></path>
+        <circle cx="-9" cy="86" r="3" fill="#F4C95D" stroke="none"></circle>
+        <circle cx="-9" cy="104" r="3" fill="#F4C95D" stroke="none"></circle>`
+    case 'tablier':
+      return `<path d="M-24,64 Q0,58 24,64 L28,128 Q0,134 -28,128 Z" fill="${habit}"></path>
+        <path d="M-24,72 H24" stroke="#2F2A45" stroke-width="1.4" opacity="0.4"></path>`
+    case 'robe':
+      return `<path d="M-28,68 Q0,58 28,68 L44,134 Q0,144 -44,134 Z" fill="${habit}"></path>
+        <path d="M-30,110 Q0,118 30,110" fill="none" stroke="#2F2A45" stroke-width="1.4" opacity="0.35"></path>`
+    case 'gilet':
+      return `<path d="M-32,64 Q-20,58 -12,62 L-14,126 Q-26,128 -34,124 Z" fill="${habit}"></path>
+        <path d="M32,64 Q20,58 12,62 L14,126 Q26,128 34,124 Z" fill="${habit}"></path>`
+    case 'echarpe':
+      return `<path d="M-26,58 Q0,74 26,58 L26,72 Q0,88 -26,72 Z" fill="${habit}"></path>
+        <path d="M12,74 Q20,98 10,114 L-4,108 Q6,94 0,76 Z" fill="${habit}"></path>`
+    case 'aucune':
+    default:
+      return ''
+  }
+}
+
+/** Objet tenu à la patte droite. */
+function accessoireSVG(accessoire: Accessoire): string {
+  switch (accessoire) {
+    case 'carnet':
+      return `<g transform="rotate(-8 46 96)">
+        <rect x="36" y="84" width="22" height="26" rx="3" fill="#F7EFDC"></rect>
+        <path d="M41,92 H53 M41,99 H53" stroke="#2F2A45" stroke-width="1.2" opacity="0.5"></path></g>`
+    case 'poisson':
+      return `<g transform="translate(52 98)">
+        <ellipse cx="0" cy="0" rx="16" ry="8" fill="#9FB3C8"></ellipse>
+        <path d="M14,0 L24,-7 L24,7 Z" fill="#9FB3C8"></path>
+        <circle cx="-7" cy="-2" r="1.8" fill="#2F2A45" stroke="none"></circle></g>`
+    case 'livre':
+      return `<g transform="rotate(6 48 98)">
+        <rect x="34" y="84" width="28" height="22" rx="2" fill="#8A5A3F"></rect>
+        <rect x="37" y="87" width="22" height="16" rx="1" fill="#F7EFDC" stroke="none"></rect></g>`
+    case 'canne':
+      return `<path d="M50,60 V128" stroke="#6B4A36" stroke-width="4" stroke-linecap="round"></path>
+        <path d="M50,60 Q60,54 58,66" fill="none" stroke="#F4C95D" stroke-width="4" stroke-linecap="round"></path>`
+    case 'eventail':
+      return `<g transform="rotate(-14 50 92)">
+        <path d="M50,104 L30,74 Q50,62 70,74 Z" fill="#F4C95D"></path>
+        <path d="M50,104 L40,80 M50,104 L50,74 M50,104 L60,80" stroke="#2F2A45" stroke-width="1.2" opacity="0.5"></path></g>`
+    case 'aucun':
+    default:
+      return ''
+  }
+}
+
+/**
+ * Personnage EN PIED dans le vocabulaire de la DA (trait d'encre 2.2,
+ * construction ronde, grands yeux). @param anime micro-animations d'attente.
+ */
+export function corpsSVG(o: OptionsPortrait, anime = true): string {
+  const fourrure = o.fourrure
+  const ventre = o.ventre ?? '#F2EDE0'
+  const ombre = o.accent ?? '#6E7488'
+  const habit = o.habit ?? '#57506F'
+  const aile = o.espece === 'hibou' || o.espece === 'oiseau'
+
+  const corps = `
+    <ellipse cx="-15" cy="135" rx="11" ry="7" fill="${ombre}"></ellipse>
+    <ellipse cx="15" cy="135" rx="11" ry="7" fill="${ombre}"></ellipse>
+    <ellipse cx="0" cy="95" rx="35" ry="42" fill="${fourrure}"></ellipse>
+    <ellipse cx="0" cy="106" rx="20" ry="28" fill="${ventre}"></ellipse>
+    ${tenueSVG(o.tenue ?? 'aucune', habit)}
+    ${aile
+      ? `<path d="M-30,74 Q-46,100 -32,124 Q-24,104 -22,80 Z" fill="${ombre}"></path>
+         <path d="M30,74 Q46,100 32,124 Q24,104 22,80 Z" fill="${ombre}"></path>`
+      : `<path d="M-30,76 Q-42,96 -34,112" fill="none" stroke="${fourrure}" stroke-width="12" stroke-linecap="round"></path>
+         <path d="M30,76 Q42,96 34,112" fill="none" stroke="${fourrure}" stroke-width="12" stroke-linecap="round"></path>`}
+    ${accessoireSVG(o.accessoire ?? 'aucun')}`
+
+  return `<g stroke="#2F2A45" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round">
+    ${queue(o.espece, fourrure, ombre)}
+    <g class="${anime ? 'pnj-corps' : ''}">${corps}</g>
+    <g transform="translate(0 30) scale(1.06)">${teteSVG(o, anime)}</g>
+  </g>`
+}
+
+/**
+ * Hauteur d'un personnage en pied (pieds y=142, sommet de coiffe y≈-35),
+ * plus un peu d'air : sert à poser la bulle « parle-moi » au-dessus de la tête.
+ */
+export const HAUTEUR_CORPS = 188
 
 export { esc }

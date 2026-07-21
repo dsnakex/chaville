@@ -7,7 +7,7 @@ import { montrerCarteFG } from '../ui/carte-fg'
 import { bandeau } from '../ui/modal'
 import { lancerMiniJeu } from '../minigames'
 import { lancerConfrontation } from '../minigames/confrontation'
-import { SPRITES_DETECTIVE, SPRITES_PISTACHE, PORTRAITS, portraitSVG } from '../art'
+import { SPRITES_DETECTIVE, SPRITES_PISTACHE, PORTRAITS, corpsSVG, HAUTEUR_CORPS } from '../art'
 import type { OptionsPortrait } from '../art'
 
 const SVG_NS = 'http://www.w3.org/2000/svg'
@@ -21,6 +21,17 @@ const el = <K extends keyof SVGElementTagNameMap>(
   return e
 }
 
+/**
+ * Décalage d'animation propre à chaque PNJ (0 → 3,9 s), dérivé de son id.
+ * Les coordonnées sont souvent des multiples de 10 : un hash sur la position
+ * les ferait respirer à l'unisson. Le hash sur l'identifiant les désynchronise.
+ */
+function decalageAnimation(id: string): string {
+  let hash = 7
+  for (let i = 0; i < id.length; i++) hash = (hash * 31 + id.charCodeAt(i)) % 997
+  return `${((hash % 40) / 10).toFixed(2)}s`
+}
+
 /** Position par défaut où le détective se plante pour interagir. */
 const stationDe = (h: Hotspot, scene: Scene): Point =>
   pousserHors(contraindre(h.station ?? { x: h.at.x, y: h.at.y + 90 }, scene.zone), scene.obstacles)
@@ -29,6 +40,9 @@ export class VueScene {
   readonly racine: HTMLDivElement
   private readonly svg: SVGSVGElement
   private readonly gMarqueurs: SVGGElement
+  /** Calque des PNJ déjà rencontrés : dessinés, mais non interactifs. */
+  private readonly gStatiques: SVGGElement
+  private readonly statiques = new Set<string>()
   private readonly detective: Acteur
   private readonly pistache: Acteur
   private readonly marqueurs = new Map<string, SVGGElement>()
@@ -66,6 +80,9 @@ export class VueScene {
       gBrume.appendChild(e)
     }
     this.svg.appendChild(gBrume)
+
+    this.gStatiques = el('g', { class: 'pnj-statiques' })
+    this.svg.appendChild(this.gStatiques)
 
     this.gMarqueurs = el('g', { class: 'marqueurs' })
     this.svg.appendChild(this.gMarqueurs)
@@ -106,8 +123,34 @@ export class VueScene {
     return carnet.estResolu(h.id)
   }
 
+  /** Les PNJ restent en scène une fois qu'on leur a parlé (habitants du lieu). */
+  private estPersonnage(h: Hotspot): boolean {
+    return h.sorte === 'pnj' || h.sorte === 'temoin' || h.sorte === 'cassetete'
+  }
+
+  /** Version « décor » d'un PNJ : toujours dessiné, mais plus interactif. */
+  private poserPnjStatique(h: Hotspot): void {
+    if (this.statiques.has(h.id)) return
+    const opts = this.portraitDe(h)
+    if (!opts) return
+    const s = echelle(h.at.y, this.scene.zone)
+    const g = el('g', { class: 'pnj-statique', 'data-id': h.id })
+    g.append(el('ellipse', { cx: h.at.x, cy: h.at.y + 2, rx: 30 * s, ry: 8 * s, fill: '#2F2A45', opacity: 0.28 }))
+    const perso = el('g')
+    perso.setAttribute('transform', `translate(${h.at.x} ${h.at.y}) scale(${s.toFixed(3)}) translate(0 -138)`)
+    perso.innerHTML = corpsSVG(opts)
+    perso.style.setProperty('--pnj-decalage', decalageAnimation(h.id))
+    g.appendChild(perso)
+    this.gStatiques.appendChild(g)
+    this.statiques.add(h.id)
+  }
+
   private dessinerMarqueur(h: Hotspot): void {
-    if (h.sorte !== 'sortie' && this.dejaFait(h)) return
+    if (h.sorte !== 'sortie' && this.dejaFait(h)) {
+      // Un habitant déjà rencontré continue d'occuper son poste.
+      if (this.estPersonnage(h)) this.poserPnjStatique(h)
+      return
+    }
     if (!this.estDisponible(h)) return
     if (this.marqueurs.has(h.id)) return
 
@@ -176,27 +219,35 @@ export class VueScene {
     return null
   }
 
-  /** Un PNJ interactif est DESSINÉ (sprite visible) + un signe « parle-moi ». */
+  /**
+   * Un PNJ interactif est DESSINÉ EN PIED (même traitement que le héros) :
+   * corps entier du vocabulaire de `art.ts`, posé au sol, à l'échelle de sa
+   * profondeur, avec ses micro-animations d'attente.
+   */
   private dessinerPersonnage(g: SVGGElement, h: Hotspot, cassetete = false): void {
     const opts = this.portraitDe(h)
     const s = echelle(h.at.y, this.scene.zone)
 
-    const ombre = el('ellipse', { cx: h.at.x, cy: h.at.y + 2, rx: 34 * s, ry: 9 * s, fill: '#2F2A45', opacity: 0.3 })
-    const halo = el('circle', { cx: h.at.x, cy: h.at.y - 30 * s, r: 56 * s, fill: 'url(#dGlow)' })
+    const ombre = el('ellipse', { cx: h.at.x, cy: h.at.y + 2, rx: 30 * s, ry: 8 * s, fill: '#2F2A45', opacity: 0.3 })
+    const halo = el('circle', { cx: h.at.x, cy: h.at.y - 70 * s, r: 62 * s, fill: 'url(#dGlow)' })
     halo.classList.add('halo-pulse')
     g.append(ombre, halo)
 
     if (opts) {
-      const perso = el('g')
-      perso.setAttribute('transform', `translate(${h.at.x} ${h.at.y}) scale(${s.toFixed(3)}) translate(0 -58)`)
-      perso.innerHTML = portraitSVG(opts)
+      const perso = el('g', { class: 'pnj-corps-groupe' })
+      // Pieds du personnage posés sur `at` (repère corps : pieds à y=138).
+      perso.setAttribute('transform', `translate(${h.at.x} ${h.at.y}) scale(${s.toFixed(3)}) translate(0 -138)`)
+      perso.innerHTML = corpsSVG(opts)
+      // Décalage propre à chaque PNJ : personne ne respire à l'unisson.
+      perso.style.setProperty('--pnj-decalage', decalageAnimation(h.id))
       g.appendChild(perso)
     } else {
       g.appendChild(el('use', { href: '#dW', transform: `translate(${h.at.x - 9} ${h.at.y - 13}) scale(1.3)` }))
     }
 
     // Bulle pulsante au-dessus de la tête : « parle-moi » ou « casse-tête ».
-    const bulle = el('g', { transform: `translate(${h.at.x} ${(h.at.y - 128 * s).toFixed(1)})` })
+    const hauteur = opts ? HAUTEUR_CORPS : 128
+    const bulle = el('g', { transform: `translate(${h.at.x} ${(h.at.y - hauteur * s).toFixed(1)})` })
     bulle.classList.add('scintille')
     bulle.append(
       el('circle', { cx: 0, cy: 0, r: 13, fill: '#F4C95D', stroke: '#2F2A45', 'stroke-width': 2 }),
@@ -267,6 +318,9 @@ export class VueScene {
   private retirerMarqueur(id: string): void {
     this.marqueurs.get(id)?.remove()
     this.marqueurs.delete(id)
+    // Un habitant ne disparaît pas de la scène : il reste à son poste.
+    const h = this.scene.hotspots.find((x) => x.id === id)
+    if (h && this.estPersonnage(h)) this.poserPnjStatique(h)
   }
 
   private async interagir(h: Hotspot): Promise<void> {

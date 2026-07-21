@@ -742,6 +742,50 @@ body {
 }
 .fin-asuivre { font-family: var(--corps); font-style: italic; font-size: 1.05rem; color: var(--brume); }
 
+/* --- PNJ en pied : micro-animations d'attente ---------------------------- */
+/* Subtil et lent : respiration, balancement de queue, clignement rare.
+   `--pnj-decalage` est posé par scene-view pour désynchroniser les habitants. */
+
+.pnj-corps {
+  animation: pnj-respire 4.6s ease-in-out infinite;
+  animation-delay: var(--pnj-decalage, 0s);
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+}
+@keyframes pnj-respire {
+  0%, 100% { transform: scaleY(1) scaleX(1); }
+  50% { transform: scaleY(1.022) scaleX(0.995); }
+}
+
+.pnj-queue {
+  animation: pnj-queue 5.4s ease-in-out infinite alternate;
+  animation-delay: var(--pnj-decalage, 0s);
+  transform-box: fill-box;
+  transform-origin: 0% 100%;
+}
+@keyframes pnj-queue {
+  from { transform: rotate(-3.5deg); }
+  to { transform: rotate(3.5deg); }
+}
+
+.pnj-yeux {
+  animation: pnj-cligne 7.5s ease-in-out infinite;
+  animation-delay: var(--pnj-decalage, 0s);
+  transform-box: fill-box;
+  transform-origin: 50% 50%;
+}
+@keyframes pnj-cligne {
+  0%, 92%, 100% { transform: scaleY(1); }
+  95% { transform: scaleY(0.08); }
+}
+
+/* Un habitant déjà rencontré reste en scène, simplement plus discret. */
+.pnj-statique { opacity: 0.92; }
+
+@media (prefers-reduced-motion: reduce) {
+  .pnj-corps, .pnj-queue, .pnj-yeux { animation: none !important; }
+}
+
 /* --- Étincelle cachée ---------------------------------------------------- */
 
 .etincelle-cachee { animation: cachee 3.4s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }

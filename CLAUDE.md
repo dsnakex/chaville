@@ -11,7 +11,7 @@ Depuis la migration Vite (session 2), la racine ne contient plus que les pages e
   - `src/minigames/` — `socle.ts` (ossature + achat d'indice en croquettes), enquête (observation, message codé, calcul, déduction), `puzzles.ts` (devinette, miroir, silhouette, grille, taquin), `confrontation.ts` (finale en 3 manches)
   - `src/ui/carte-fg.ts` — les 6 cartes de visite du Fantôme Gris, **textes verbatim** du pack narratif
   - `src/ui/` — `dialogue.ts` (bulles + interrogatoires à choix), `carnet.ts` (onglets Indices/Témoins/F.G.), `modal.ts`
-  - `src/art.ts` — symboles en pied (front/side/back) + `portraitSVG()` paramétrique ; vocabulaire des planches `da/planches/`
+  - `src/art.ts` — sprites du héros (front/side/back), `corpsSVG()` (PNJ en pied, tenue + accessoire) et `portraitSVG()` (bustes : avatars de dialogue, déduction) ; la tête est partagée par les deux registres. Vocabulaire des planches `da/planches/`
   - `public/fonts/` — Fredoka + Nunito auto-hébergées (`.woff2`)
 - `public/academie.html` — jeu v2 : carte de Chaville, 6 enquêtes en mode « écrans ». Servi tel quel, hors bundler.
 - `public/demo.html` — démo pixel art v1, conservée en archive. Servie telle quelle.
@@ -35,7 +35,10 @@ Le pixel art des prototypes est ABANDONNÉ. Tout nouveau visuel suit la DA valid
 
 ## Règles d'affordance (playtest Pascal — s'appliquent à TOUTES les scènes)
 Retour de playtest validé le 21/07/2026. Toute nouvelle scène doit les respecter (implémentées dans `src/engine/scene-view.ts` + `game.ts`).
-1. **Aucune zone interactive invisible.** Chaque PNJ interactif est **dessiné** (sprite/portrait SVG visible, y compris le commissaire Griffe s'il est dans la scène) via `portraitDe()` ; chaque objet interactif (horloge, caisses…) porte un **signal permanent** (étincelle d'or).
+1. **Aucune zone interactive invisible.** Chaque PNJ interactif est **dessiné EN PIED** — corps entier généré par `corpsSVG()` (`src/art.ts`), au même niveau de traitement que le héros : proportions rondes, trait d'encre 2.2, grands yeux, **tenue et accessoire distinctifs** (`tenue` : manteau/tablier/robe/gilet/écharpe · `accessoire` : carnet/poisson/livre/canne/éventail). Repère commun : pieds à y=138, tête réutilisée de `portraitSVG()`. Chaque objet interactif (horloge, caisses…) porte un **signal permanent** (étincelle d'or). Les **portraits en buste restent réservés** aux avatars de dialogue et aux alignements de suspects de la déduction.
+   - **Micro-animations d'attente** (subtiles, jamais de gesticulation) : respiration lente (`.pnj-corps`), balancement de queue (`.pnj-queue`), clignement occasionnel (`.pnj-yeux`), désynchronisées par `--pnj-decalage` (hash de l'id du hotspot — pas de sa position, souvent multiple de 10).
+   - Un PNJ déjà rencontré **reste à son poste** (calque `.pnj-statique`) : les habitants ne disparaissent pas de la scène.
+   - PNJ nommés attendus à leur poste : Griffe, Madame Sardine, Moustache, la Duchesse (Manoir), Mademoiselle Plume (Bibliothèque), Madame Sopranino (Théâtre), et chaque témoin d'enquête.
 2. **Affordance renforcée des indices** : halo pulsant large (`.halo-pulse`, échelle + opacité lentes), étincelle d'or **cerclée d'un trait d'encre #2F2A45** pour contraster sur les zones claires (brume), cible tactile **≥ 44 px** (cercle transparent r=56 en coord. scène).
 3. **Bouton loupe 🔍 au HUD** (`hud-loupe`) : pressé, il fait scintiller fortement (~2 s) tous les points interactifs restants de la scène (`VueScene.montrerIndices()`).
 4. **Coup de pouce de Pistache** : après ~35 s sans nouvel indice trouvé (et hors interaction/panneau), Pistache souffle spontanément une orientation en une phrase (`soufflerAstuce()`). Chaque hotspot peut définir une `astuce` ; sinon une phrase est générée depuis son `libelle`.

@@ -1,4 +1,5 @@
 import type { Scene, Suspect } from '../types'
+import { PORTRAITS } from '../art'
 
 const ARCHIBALD: Suspect = { id: 'archibald', nom: 'Archibald', role: 'Vieux savant au monocle', portrait: { espece: 'chat', fourrure: '#9AA0A8', ventre: '#E8E4DA', accent: '#7C828C', coiffe: 'monocle', habit: '#5A5370', regard: 'severe' } }
 const GRIOTTE: Suspect = { id: 'griotte', nom: 'Griotte', role: 'Grande poétesse au béret', portrait: { espece: 'chat', fourrure: '#B98A96', ventre: '#F2EDE0', accent: '#8A5A66', coiffe: 'beret', habit: '#7A4E86' } }
@@ -33,6 +34,16 @@ export const bibliotheque: Scene = {
         "Chaque matin, de nouveaux livres aux pages toutes blanches. Sept habitués fréquentent la salle. Observe, lis, compte — puis accuse.",
       ],
       indice: { titre: 'Les pages blanches', texte: "Chaque nuit, des livres se vident de leurs mots. Sept habitués fréquentent la bibliothèque de Mademoiselle Plume." },
+    },
+    {
+      id: 'bi-plume', libelle: 'Mademoiselle Plume', sorte: 'pnj',
+      at: { x: 160, y: 1195 }, station: { x: 215, y: 1220 }, voix: 'narrateur',
+      personnage: PORTRAITS.plume!,
+      astuce: 'Mademoiselle Plume est près de son bureau — commence par elle.',
+      dialogue: [
+        'Mademoiselle Plume serre un livre contre elle : « Chaque matin, de nouveaux ouvrages aux pages toutes blanches. Toutes blanches ! »',
+        '« On me parle de grimoire ensorcelé. Moi, je crois surtout qu’on me vole mes contes. Aidez-moi, je vous en prie. »',
+      ],
     },
     {
       id: 'bi-obs', libelle: 'La salle de lecture', sorte: 'jeu',
