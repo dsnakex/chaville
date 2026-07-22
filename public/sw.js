@@ -1,4 +1,4 @@
-const CACHE = 'chaville-v8';
+const CACHE = 'chaville-v9';
 const ASSETS = [
   './',
   './index.html',
