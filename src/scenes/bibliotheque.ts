@@ -27,7 +27,7 @@ export const bibliotheque: Scene = {
   brume: [{ x: 384, y: 1150, rx: 240, ry: 24, opacite: 0.12, duree: 22 }],
   hotspots: [
     {
-      id: 'bi-griffe', libelle: 'Mademoiselle Plume', sorte: 'pnj',
+      id: 'bi-griffe', libelle: 'Le commissaire Griffe', sorte: 'pnj',
       at: { x: 384, y: 830 }, station: { x: 384, y: 1180 }, voix: 'griffe',
       dialogue: [
         "Des mots qui s'effacent tout seuls ? Il y a forcément un truc, chaton. Trouve-le.",

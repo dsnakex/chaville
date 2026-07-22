@@ -121,11 +121,13 @@ export const manoir: Scene = {
       },
     },
     {
-      id: 'ma-cassetete', libelle: 'L’énigme du majordome', sorte: 'cassetete',
+      // Posé par Filou, PAS par Léo : le majordome est déjà en scène comme
+      // témoin (ma-leo) et apparaîtrait en double.
+      id: 'ma-cassetete', libelle: 'L’énigme du magicien', sorte: 'cassetete',
       at: { x: 680, y: 1120 }, station: { x: 620, y: 1190 }, voix: 'narrateur', recompense: 3,
-      personnage: LEO.portrait,
+      personnage: FILOU.portrait,
       dialogue: [
-        'Léo redresse son nœud papillon : « Puisque vous enquêtez, détective… La Duchesse a trois invités d’honneur et je ne sais plus qui loge où. Aidez-moi, je vous en prie. »',
+        'Filou fait tourner son haut-de-forme : « Un tour de magie, détective ? Non ? Alors une énigme. La Duchesse a trois invités d’honneur et personne ne sait plus qui loge où. »',
       ],
       jeu: {
         type: 'grille',

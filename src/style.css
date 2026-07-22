@@ -202,8 +202,14 @@ body {
 /* Halo pulsant lent (échelle + opacité) derrière les points interactifs. */
 .halo-pulse { animation: halo-pulse 2.8s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
 
-/* Bouton loupe du HUD : révèle fortement les points restants ~2 s. */
-.marqueurs.reveler .marqueur { animation: reveler 0.66s ease-in-out 3; transform-box: fill-box; transform-origin: center; }
+/* Bouton loupe du HUD : révèle fortement les points d'enquête restants ~2 s.
+   Les étincelles cachées en sont EXCLUES — elles doivent rester à chercher,
+   sinon la loupe court-circuite la fouille. */
+.marqueurs.reveler .marqueur:not(.marqueur-etincelle) {
+  animation: reveler 0.66s ease-in-out 3;
+  transform-box: fill-box;
+  transform-origin: center;
+}
 
 @keyframes scintille { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
 @keyframes halo-pulse {

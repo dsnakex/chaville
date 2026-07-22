@@ -139,13 +139,15 @@ export const grandPlace: Scene = {
       },
     },
     {
+      // Le casse-tête est posé par Tigrou, PAS par Madame Sardine : elle tient
+      // déjà son stand un peu plus loin (gp-sardine) et se retrouverait en double.
       id: 'gp-cassetete', libelle: 'La devinette du marché', sorte: 'cassetete',
-      at: { x: 640, y: 1120 }, station: { x: 600, y: 1190 }, voix: 'sardine', recompense: 2,
-      personnage: PORTRAITS.sardine!,
-      dialogue: ['Pendant que tu es là, petit détective… J’ai une devinette qui traîne depuis ce matin. Tu me la résous ?'],
+      at: { x: 640, y: 1120 }, station: { x: 600, y: 1190 }, voix: 'narrateur', recompense: 2,
+      personnage: TIGROU.portrait,
+      dialogue: ['Tigrou relève ses lunettes : « Pendant que tu es là, petit détective… J’ai une devinette qui me trotte dans la tête depuis ce matin. Tu me la résous ? »'],
       jeu: {
         type: 'devinette',
-        consigne: 'Madame Sardine te pose une devinette.',
+        consigne: 'Tigrou te pose une devinette.',
         enonce: 'Il est à toi, pourtant ce sont les autres qui s’en servent bien plus souvent que toi. Qu’est-ce que c’est ?',
         reponses: ['Ton nom', 'Ton chapeau', 'Ton ombre', 'Ta maison'],
         bonne: 0,

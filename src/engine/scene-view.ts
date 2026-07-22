@@ -128,16 +128,30 @@ export class VueScene {
     return h.sorte === 'pnj' || h.sorte === 'temoin' || h.sorte === 'cassetete'
   }
 
+  /**
+   * Point d'ancrage d'un hotspot.
+   *
+   * `at` est le point du MARQUEUR, souvent posé en hauteur sur le décor (une
+   * fenêtre éclairée, un cadran d'horloge). Un personnage, lui, doit se tenir
+   * DEBOUT SUR LE SOL : on l'ancre donc au point de station — celui où le
+   * détective vient déjà se planter pour lui parler, garanti dans la zone
+   * marchable. Les objets (étincelle, jeu, déduction, sortie) restent sur `at`.
+   */
+  private ancrageDe(h: Hotspot): Point {
+    return this.estPersonnage(h) ? stationDe(h, this.scene) : h.at
+  }
+
   /** Version « décor » d'un PNJ : toujours dessiné, mais plus interactif. */
   private poserPnjStatique(h: Hotspot): void {
     if (this.statiques.has(h.id)) return
     const opts = this.portraitDe(h)
     if (!opts) return
-    const s = echelle(h.at.y, this.scene.zone)
+    const sol = this.ancrageDe(h)
+    const s = echelle(sol.y, this.scene.zone)
     const g = el('g', { class: 'pnj-statique', 'data-id': h.id })
-    g.append(el('ellipse', { cx: h.at.x, cy: h.at.y + 2, rx: 30 * s, ry: 8 * s, fill: '#2F2A45', opacity: 0.28 }))
+    g.append(el('ellipse', { cx: sol.x, cy: sol.y + 2, rx: 30 * s, ry: 8 * s, fill: '#2F2A45', opacity: 0.28 }))
     const perso = el('g')
-    perso.setAttribute('transform', `translate(${h.at.x} ${h.at.y}) scale(${s.toFixed(3)}) translate(0 -138)`)
+    perso.setAttribute('transform', `translate(${sol.x} ${sol.y}) scale(${s.toFixed(3)}) translate(0 -138)`)
     perso.innerHTML = corpsSVG(opts)
     perso.style.setProperty('--pnj-decalage', decalageAnimation(h.id))
     g.appendChild(perso)
@@ -161,6 +175,8 @@ export class VueScene {
       this.dessinerPersonnage(g, h, h.sorte === 'cassetete')
     } else if (h.sorte === 'etincelle') {
       // Étincelle cachée : discrète, sans halo — il faut la chercher.
+      // Classe à part : le bouton loupe ne doit PAS la révéler (voir CSS).
+      g.classList.add('marqueur-etincelle')
       const etincelle = el('use', {
         href: '#spark', transform: `translate(${h.at.x} ${h.at.y}) scale(0.75)`,
         opacity: 0.5, stroke: '#2F2A45', 'stroke-width': 1,
@@ -205,8 +221,10 @@ export class VueScene {
       g.append(halo, etincelle)
     }
 
-    // Cible tactile ≥ 44 px : les doigts de 9 ans ne visent pas au pixel près.
-    g.appendChild(el('circle', { cx: h.at.x, cy: h.at.y, r: 56, fill: 'transparent' }))
+    // Cible tactile ≥ 44 px, posée sur le point d'ancrage : pour un personnage
+    // le tap tombe donc sur son corps, pas sur le point du marqueur en hauteur.
+    const cible = this.ancrageDe(h)
+    g.appendChild(el('circle', { cx: cible.x, cy: cible.y, r: 56, fill: 'transparent' }))
     this.gMarqueurs.appendChild(g)
     this.marqueurs.set(h.id, g)
   }
@@ -226,28 +244,30 @@ export class VueScene {
    */
   private dessinerPersonnage(g: SVGGElement, h: Hotspot, cassetete = false): void {
     const opts = this.portraitDe(h)
-    const s = echelle(h.at.y, this.scene.zone)
+    // Le personnage est debout sur le sol, pas accroché au point du marqueur.
+    const sol = this.ancrageDe(h)
+    const s = echelle(sol.y, this.scene.zone)
 
-    const ombre = el('ellipse', { cx: h.at.x, cy: h.at.y + 2, rx: 30 * s, ry: 8 * s, fill: '#2F2A45', opacity: 0.3 })
-    const halo = el('circle', { cx: h.at.x, cy: h.at.y - 70 * s, r: 62 * s, fill: 'url(#dGlow)' })
+    const ombre = el('ellipse', { cx: sol.x, cy: sol.y + 2, rx: 30 * s, ry: 8 * s, fill: '#2F2A45', opacity: 0.3 })
+    const halo = el('circle', { cx: sol.x, cy: sol.y - 70 * s, r: 62 * s, fill: 'url(#dGlow)' })
     halo.classList.add('halo-pulse')
     g.append(ombre, halo)
 
     if (opts) {
       const perso = el('g', { class: 'pnj-corps-groupe' })
-      // Pieds du personnage posés sur `at` (repère corps : pieds à y=138).
-      perso.setAttribute('transform', `translate(${h.at.x} ${h.at.y}) scale(${s.toFixed(3)}) translate(0 -138)`)
+      // Pieds posés sur le point au sol (repère corps : pieds à y=138).
+      perso.setAttribute('transform', `translate(${sol.x} ${sol.y}) scale(${s.toFixed(3)}) translate(0 -138)`)
       perso.innerHTML = corpsSVG(opts)
       // Décalage propre à chaque PNJ : personne ne respire à l'unisson.
       perso.style.setProperty('--pnj-decalage', decalageAnimation(h.id))
       g.appendChild(perso)
     } else {
-      g.appendChild(el('use', { href: '#dW', transform: `translate(${h.at.x - 9} ${h.at.y - 13}) scale(1.3)` }))
+      g.appendChild(el('use', { href: '#dW', transform: `translate(${sol.x - 9} ${sol.y - 13}) scale(1.3)` }))
     }
 
     // Bulle pulsante au-dessus de la tête : « parle-moi » ou « casse-tête ».
     const hauteur = opts ? HAUTEUR_CORPS : 128
-    const bulle = el('g', { transform: `translate(${h.at.x} ${(h.at.y - hauteur * s).toFixed(1)})` })
+    const bulle = el('g', { transform: `translate(${sol.x} ${(sol.y - hauteur * s).toFixed(1)})` })
     bulle.classList.add('scintille')
     bulle.append(
       el('circle', { cx: 0, cy: 0, r: 13, fill: '#F4C95D', stroke: '#2F2A45', 'stroke-width': 2 }),
@@ -298,7 +318,10 @@ export class VueScene {
     this.inactif = 0
     const p = this.pointScene(ev)
     if (!p) return
-    const cible = this.scene.hotspots.find((h) => this.marqueurs.has(h.id) && distance(p, h.at) < 60)
+    // Pour un personnage, on vise son corps au sol — pas le point du marqueur.
+    const cible = this.scene.hotspots.find(
+      (h) => this.marqueurs.has(h.id) && distance(p, this.ancrageDe(h)) < 60,
+    )
     if (cible) {
       this.enAttente = cible
       this.detective.allerVers(stationDe(cible, this.scene), this.scene.zone, this.scene.obstacles)
