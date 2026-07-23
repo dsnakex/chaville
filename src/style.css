@@ -98,6 +98,9 @@ body {
 
 .hud-retour { min-height: 52px; }
 
+.hud-muet { min-height: 52px; min-width: 52px; font-size: 1.3rem; }
+.hud-muet.actif-muet { background: rgba(251, 240, 212, 0.55); color: var(--texte-2); }
+
 .hud-carnet { position: relative; background: var(--or); min-width: 68px; }
 .hud-carnet-icone { font-size: 1.5rem; line-height: 1; }
 .hud-carnet-label { font-size: 0.62rem; font-weight: 600; letter-spacing: 0.5px; }

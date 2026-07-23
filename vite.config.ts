@@ -1,5 +1,5 @@
 import { defineConfig, type Plugin } from 'vite'
-import { cpSync } from 'node:fs'
+import { cpSync, rmSync } from 'node:fs'
 import { resolve } from 'node:path'
 
 /**
@@ -18,9 +18,27 @@ function copierDecors(): Plugin {
   }
 }
 
+/**
+ * Les prototypes v1/v2 (`academie.html`, `demo.html`) restent dans `public/`
+ * comme archives versionnées, mais NE SONT PAS déployés : on les retire de
+ * `dist/` après le build pour qu'aucune URL publique n'y mène. Le seul jeu
+ * accessible en ligne est le mode aventure v3 (`aventure.html`).
+ */
+function exclureArchives(): Plugin {
+  return {
+    name: 'chaville-exclure-archives',
+    apply: 'build',
+    closeBundle() {
+      for (const f of ['academie.html', 'demo.html']) {
+        rmSync(resolve('dist', f), { force: true })
+      }
+    },
+  }
+}
+
 export default defineConfig({
   base: '/',
-  plugins: [copierDecors()],
+  plugins: [copierDecors(), exclureArchives()],
   build: {
     // Les bundles vont dans dist/build/ pour ne pas entrer en collision
     // avec dist/assets/decors/ recopié à l'identique.

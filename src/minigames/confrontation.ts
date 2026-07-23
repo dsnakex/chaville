@@ -2,6 +2,7 @@ import { ouvrirCouche } from '../ui/modal'
 import { dialogue } from '../ui/dialogue'
 import { fantomeGrisAvatar } from '../art'
 import { carnet } from '../state'
+import { audio } from '../audio'
 
 /**
  * « La dernière danse » — confrontation finale en 3 manches.
@@ -255,6 +256,7 @@ export async function lancerConfrontation(): Promise<boolean> {
      'Il salue bas comme au théâtre, et tend les pattes à Griffe : « Escorte-moi, vieux frère. Pour la forme. »'],
     'demasque',
   )
+  audio.jouer('victoire')
   await dialogue(
     ['Devant la ville rassemblée, Griffe te remet la Médaille d’Or de l’Académie.',
      '« Pas mal, chaton. Non — mieux que ça. Mieux que nous deux. »'],

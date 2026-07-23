@@ -2,8 +2,10 @@ import type { Scene } from '../types'
 import { VueScene } from './scene-view'
 import { Hub } from './hub'
 import { carnet } from '../state'
+import { audio } from '../audio'
 import { ouvrirCarnet } from '../ui/carnet'
 import { bandeau } from '../ui/modal'
+import { lancerOnboarding } from '../ui/onboarding'
 import { DEFS } from '../art'
 
 export class Jeu {
@@ -17,6 +19,7 @@ export class Jeu {
   private readonly compteurIndices: HTMLSpanElement
   private readonly croquettes: HTMLSpanElement
   private readonly loupe: HTMLButtonElement
+  private readonly muet: HTMLButtonElement
   private readonly retour: HTMLButtonElement
   private enTransition = false
 
@@ -53,6 +56,10 @@ export class Jeu {
     this.objectifTexte.className = 'hud-objectif-texte'
     objectif.append(label, this.objectifTexte)
 
+    this.muet = document.createElement('button')
+    this.muet.className = 'hud-bouton hud-muet'
+    this.muet.addEventListener('click', () => this.basculerSon())
+
     const btnCarnet = document.createElement('button')
     btnCarnet.className = 'hud-bouton hud-carnet'
     btnCarnet.setAttribute('aria-label', 'Ouvrir le carnet')
@@ -62,7 +69,11 @@ export class Jeu {
     btnCarnet.appendChild(this.pastilleCarnet)
     btnCarnet.addEventListener('click', () => ouvrirCarnet())
 
-    rangee1.append(this.retour, objectif, btnCarnet)
+    rangee1.append(this.retour, objectif, this.muet, btnCarnet)
+    this.refletMuet()
+
+    // Le son ne peut démarrer qu'après un geste : on réveille l'audio au 1er clic.
+    this.hote.addEventListener('pointerdown', () => audio.reveiller(), { once: true })
 
     const rangee2 = document.createElement('div')
     rangee2.className = 'hud-rangee hud-rangee-compteur'
@@ -109,6 +120,18 @@ export class Jeu {
       this.compteurIndices.style.display = 'none'
       this.loupe.style.display = 'none'
     }
+  }
+
+  private basculerSon(): void {
+    audio.basculer()
+    this.refletMuet()
+  }
+
+  private refletMuet(): void {
+    const muet = audio.estMuet()
+    this.muet.textContent = muet ? '🔇' : '🔊'
+    this.muet.setAttribute('aria-label', muet ? 'Activer le son' : 'Couper le son')
+    this.muet.classList.toggle('actif-muet', muet)
   }
 
   private surRetour(): void {
@@ -158,7 +181,14 @@ export class Jeu {
     await attendre(60)
     this.enTransition = false
     this.majHud()
-    bandeau(scene.ambiance, 3400)
+
+    // Onboarding de la première minute : à la 1re entrée dans la Grand-Place,
+    // Pistache guide (et le bandeau d'ambiance cède la place à ses bulles).
+    if (scene.id === 'grand-place' && !carnet.onboardingVu()) {
+      void lancerOnboarding()
+    } else {
+      bandeau(scene.ambiance, 3400)
+    }
   }
 }
 

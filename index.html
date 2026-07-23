@@ -2,74 +2,187 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#2b2350">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#26223A">
 <link rel="manifest" href="/manifest.json">
 <link rel="icon" href="/icon-192.png">
 <link rel="apple-touch-icon" href="/icon-192.png">
 <title>Mystères à Chaville</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --encre: #2f2a45; --or: #f4c95d; --creme: #fbf0d4; --brume: #c7bbd4;
+    --nuit: #26223a;
+  }
   body {
-    font-family: 'Trebuchet MS', 'Comic Sans MS', sans-serif;
-    background: linear-gradient(160deg, #2b2350 0%, #3a2f6b 60%, #4a3d85 100%);
-    color: #fff; min-height: 100dvh;
+    font-family: 'Trebuchet MS', 'Segoe UI', system-ui, sans-serif;
+    background: linear-gradient(165deg, #26223a 0%, #3a2f6b 60%, #4a3d85 100%);
+    color: var(--creme); min-height: 100dvh;
     display: flex; justify-content: center; align-items: center;
+    -webkit-tap-highlight-color: transparent;
   }
   .box { width: 100%; max-width: 440px; padding: 24px; text-align: center; }
-  .logo { font-size: 4rem; }
-  h1 { color: #feca57; font-size: 1.6rem; line-height: 1.3; margin: 8px 0 4px; text-shadow: 0 2px 0 rgba(0,0,0,.3); }
-  p.sub { opacity: .85; font-size: .95rem; margin-bottom: 26px; }
-  a.card {
-    display: flex; align-items: center; gap: 14px; text-align: left;
-    background: rgba(255,255,255,.12); border: 2px solid rgba(255,255,255,.2);
-    border-radius: 20px; padding: 16px; margin-top: 14px;
-    color: #fff; text-decoration: none;
+  .logo { font-size: 4rem; line-height: 1; }
+  h1 { color: var(--or); font-size: 1.7rem; line-height: 1.2; margin: 10px 0 6px; text-shadow: 0 2px 0 rgba(0,0,0,.3); }
+  p.sub { opacity: .88; font-size: .95rem; margin-bottom: 24px; line-height: 1.45; }
+
+  a.jouer, button.jouer {
+    display: flex; align-items: center; gap: 16px; text-align: left; width: 100%;
+    background: var(--or); color: var(--encre);
+    border: 3px solid var(--encre); border-radius: 22px; padding: 18px 20px;
+    text-decoration: none; cursor: pointer; font-family: inherit;
+    box-shadow: 0 6px 0 rgba(47,42,69,.45);
   }
-  a.card:active { background: rgba(255,255,255,.22); }
-  a.card .em { font-size: 2.2rem; }
-  a.card .t { font-weight: bold; font-size: 1.05rem; }
-  a.card .s { font-size: .82rem; opacity: .85; margin-top: 3px; line-height: 1.35; }
-  .foot { margin-top: 30px; font-size: .75rem; opacity: .55; line-height: 1.5; }
+  a.jouer:active { transform: translateY(3px); box-shadow: 0 3px 0 rgba(47,42,69,.45); }
+  a.jouer .em { font-size: 2.4rem; }
+  a.jouer .t { font-weight: bold; font-size: 1.2rem; display: block; }
+  a.jouer .s { font-size: .82rem; opacity: .8; margin-top: 2px; display: block; line-height: 1.35; }
+
+  .secondaire {
+    margin-top: 16px; display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;
+  }
+  .lien {
+    background: transparent; border: none; cursor: pointer;
+    color: var(--brume); font-family: inherit; font-size: .85rem;
+    text-decoration: underline; text-underline-offset: 3px; padding: 8px;
+  }
+  .lien:active { color: var(--creme); }
+
+  .foot { margin-top: 26px; font-size: .74rem; opacity: .5; line-height: 1.5; }
+
+  /* Overlays (nouvelle partie, parents) */
+  .voile {
+    position: fixed; inset: 0; z-index: 10; display: none;
+    align-items: center; justify-content: center; padding: 18px;
+    background: rgba(20,17,34,.75);
+  }
+  .voile.ouvert { display: flex; }
+  .carte {
+    width: 100%; max-width: 400px; text-align: left;
+    background: var(--creme); color: var(--encre);
+    border: 3px solid var(--encre); border-radius: 22px; padding: 22px;
+    box-shadow: 0 8px 0 rgba(47,42,69,.5); max-height: 88dvh; overflow-y: auto;
+  }
+  .carte h2 { color: #8a6b3f; font-size: 1.2rem; margin-bottom: 12px; }
+  .carte p { font-size: .95rem; line-height: 1.55; margin-bottom: 12px; }
+  .carte .actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 8px; flex-wrap: wrap; }
+  .btn {
+    min-height: 48px; padding: 12px 18px; border-radius: 14px;
+    border: 3px solid var(--encre); font-family: inherit; font-size: 1rem; font-weight: bold;
+    cursor: pointer; box-shadow: 0 4px 0 rgba(47,42,69,.4);
+  }
+  .btn:active { transform: translateY(3px); box-shadow: 0 1px 0 rgba(47,42,69,.4); }
+  .btn-annuler { background: #f3e6c4; color: var(--encre); }
+  .btn-danger { background: #c9776b; color: #fff; }
+  .carte .note { font-size: .8rem; opacity: .7; }
 </style>
 </head>
 <body>
   <div class="box">
     <div class="logo">🐱🔍</div>
     <h1>Mystères à Chaville</h1>
-    <p class="sub" style="margin-bottom:4px">🎓 L'Académie des Chats Détectives</p>
-    <p class="sub">Observe 👀 · Déchiffre ✏️ · Calcule 🧮 · Déduis 🧠</p>
+    <p class="sub">Explore la ville de nuit, mène les 6 enquêtes et démasque le Fantôme Gris.<br>Observe 👀 · Déchiffre ✏️ · Calcule 🧮 · Déduis 🧠</p>
 
-    <a class="card" href="/aventure.html">
+    <a class="jouer" id="jouer" href="/aventure.html">
       <span class="em">🕯️</span>
       <span>
-        <span class="t">L'aventure — Chaville de nuit</span>
-        <span class="s">Explore la Grand-Place et le port, ramasse les indices, remplis ton carnet</span>
+        <span class="t">Jouer</span>
+        <span class="s">Le jeu d'enquêtes de Chaville</span>
       </span>
     </a>
 
-    <a class="card" href="/academie.html">
-      <span class="em">🗺️</span>
-      <span>
-        <span class="t">Le jeu — la carte de Chaville</span>
-        <span class="s">6 enquêtes à débloquer, avec le commissaire Griffe et Pistache</span>
-      </span>
-    </a>
+    <div class="secondaire">
+      <button class="lien" id="lien-nouvelle" type="button" hidden>Nouvelle partie</button>
+      <button class="lien" id="lien-parents" type="button">Pour les parents</button>
+    </div>
 
-    <a class="card" href="/demo.html">
-      <span class="em">🎮</span>
-      <span>
-        <span class="t">Démo aventure — le marché</span>
-        <span class="s">Déplace le détective en pixel art, interroge les suspects, ramasse les indices…</span>
-      </span>
-    </a>
-
-    <p class="foot">Astuce : dans Chrome sur Android, menu ⋮ → « Ajouter à l'écran d'accueil »<br>pour installer le jeu comme une vraie application.</p>
+    <p class="foot">Astuce : sur Android (Chrome), menu ⋮ → « Ajouter à l'écran d'accueil »<br>pour installer le jeu comme une vraie application.</p>
   </div>
+
+  <!-- Nouvelle partie : double confirmation -->
+  <div class="voile" id="voile-nouvelle">
+    <div class="carte">
+      <h2>Nouvelle partie</h2>
+      <p id="np-texte">Tout effacer et recommencer depuis le début ?</p>
+      <p class="note">Ta progression, tes indices et tes croquettes seront perdus.</p>
+      <div class="actions">
+        <button class="btn btn-annuler" id="np-annuler" type="button">Annuler</button>
+        <button class="btn btn-danger" id="np-ok" type="button">Tout effacer</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pour les parents / crédits / confidentialité -->
+  <div class="voile" id="voile-parents">
+    <div class="carte">
+      <h2>Pour les parents</h2>
+      <p><strong>Mystères à Chaville</strong> est un petit jeu d'enquêtes pour les 9–12 ans : un jeune chat détective résout des mystères en observant, lisant, calculant et raisonnant.</p>
+      <p>🎁 <strong>Gratuit, sans publicité, sans achat.</strong> Aucun bouton ne coûte d'argent, jamais.</p>
+      <p>🔒 <strong>Confidentialité :</strong> aucune donnée n'est collectée. Toute la progression reste sur cet appareil (stockage local du navigateur). Aucun compte, aucune inscription, aucun traçage, aucune connexion à un serveur.</p>
+      <p class="note">Le jeu fonctionne hors ligne une fois chargé.</p>
+      <div class="actions">
+        <button class="btn btn-annuler" id="pa-fermer" type="button">Fermer</button>
+      </div>
+    </div>
+  </div>
+
 <script>
-if ('serviceWorker' in navigator && location.protocol === 'https:') {
-  addEventListener('load', () => navigator.serviceWorker.register('/sw.js').catch(() => {}));
-}
+  // Clé de sauvegarde — doit rester synchronisée avec CLE dans src/state.ts.
+  var CLE_SAUVEGARDE = 'chaville.aventure.v3';
+
+  function aSauvegarde() {
+    try { return !!localStorage.getItem(CLE_SAUVEGARDE); } catch (e) { return false; }
+  }
+
+  // Adapte l'accueil selon qu'une partie est déjà commencée.
+  (function () {
+    if (aSauvegarde()) {
+      document.querySelector('#jouer .t').textContent = 'Reprendre';
+      document.querySelector('#jouer .s').textContent = 'Continue là où tu t’es arrêté';
+      document.getElementById('lien-nouvelle').hidden = false;
+    }
+  })();
+
+  // --- Nouvelle partie : double confirmation ---
+  var voileNP = document.getElementById('voile-nouvelle');
+  var npTexte = document.getElementById('np-texte');
+  var npOk = document.getElementById('np-ok');
+  var etape2 = false;
+
+  function ouvrirNP() {
+    etape2 = false;
+    npTexte.textContent = 'Tout effacer et recommencer depuis le début ?';
+    npOk.textContent = 'Tout effacer';
+    voileNP.classList.add('ouvert');
+  }
+  function fermerNP() { voileNP.classList.remove('ouvert'); }
+
+  document.getElementById('lien-nouvelle').addEventListener('click', ouvrirNP);
+  document.getElementById('np-annuler').addEventListener('click', fermerNP);
+  voileNP.addEventListener('click', function (e) { if (e.target === voileNP) fermerNP(); });
+
+  npOk.addEventListener('click', function () {
+    if (!etape2) {
+      // 1re confirmation → on demande une 2de fois.
+      etape2 = true;
+      npTexte.textContent = 'Vraiment ? Cette action est définitive.';
+      npOk.textContent = 'Oui, tout effacer';
+      return;
+    }
+    try { localStorage.removeItem(CLE_SAUVEGARDE); } catch (e) {}
+    window.location.href = '/aventure.html';
+  });
+
+  // --- Pour les parents ---
+  var voilePA = document.getElementById('voile-parents');
+  document.getElementById('lien-parents').addEventListener('click', function () { voilePA.classList.add('ouvert'); });
+  document.getElementById('pa-fermer').addEventListener('click', function () { voilePA.classList.remove('ouvert'); });
+  voilePA.addEventListener('click', function (e) { if (e.target === voilePA) voilePA.classList.remove('ouvert'); });
+
+  // PWA
+  if ('serviceWorker' in navigator && location.protocol === 'https:') {
+    addEventListener('load', function () { navigator.serviceWorker.register('/sw.js').catch(function () {}); });
+  }
 </script>
 </body>
 </html>

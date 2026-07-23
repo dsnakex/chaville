@@ -65,6 +65,8 @@ export interface Hotspot {
   personnage?: OptionsPortrait
   /** Croquettes d'or gagnées (étincelle cachée, casse-tête réussi). */
   recompense?: number
+  /** Étincelle tutorielle : rendue bien visible (onboarding première minute). */
+  tuto?: boolean
 }
 
 /** Voix connues du moteur de dialogue (avatars + couleur de bulle). */

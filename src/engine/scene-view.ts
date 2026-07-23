@@ -2,6 +2,7 @@ import type { Hotspot, Point, Scene } from '../types'
 import { Acteur, ANCRAGE_DETECTIVE, ANCRAGE_PISTACHE } from './actor'
 import { contraindre, dansObstacle, distance, echelle, pousserHors } from './geom'
 import { carnet } from '../state'
+import { audio } from '../audio'
 import { dialogue, dialogueChoix } from '../ui/dialogue'
 import { montrerCarteFG } from '../ui/carte-fg'
 import { bandeau } from '../ui/modal'
@@ -174,16 +175,28 @@ export class VueScene {
     if (h.sorte === 'pnj' || h.sorte === 'temoin' || h.sorte === 'cassetete') {
       this.dessinerPersonnage(g, h, h.sorte === 'cassetete')
     } else if (h.sorte === 'etincelle') {
-      // Étincelle cachée : discrète, sans halo — il faut la chercher.
-      // Classe à part : le bouton loupe ne doit PAS la révéler (voir CSS).
+      // Classe à part : le bouton loupe ne doit PAS révéler les étincelles.
       g.classList.add('marqueur-etincelle')
-      const etincelle = el('use', {
-        href: '#spark', transform: `translate(${h.at.x} ${h.at.y}) scale(0.75)`,
-        opacity: 0.5, stroke: '#2F2A45', 'stroke-width': 1,
-      })
-      etincelle.classList.add('etincelle-cachee')
-      etincelle.style.animationDelay = `${(h.at.x % 11) * 0.4}s`
-      g.appendChild(etincelle)
+      if (h.tuto) {
+        // Étincelle tutorielle : bien visible, avec un halo, pour l'onboarding.
+        const halo = el('circle', { cx: h.at.x, cy: h.at.y, r: 40, fill: 'url(#dGlow)' })
+        halo.classList.add('halo-pulse')
+        const etincelle = el('use', {
+          href: '#spark', transform: `translate(${h.at.x} ${h.at.y}) scale(1.5)`,
+          stroke: '#2F2A45', 'stroke-width': 1.3,
+        })
+        etincelle.classList.add('scintille')
+        g.append(halo, etincelle)
+      } else {
+        // Étincelle cachée : discrète, sans halo — il faut la chercher.
+        const etincelle = el('use', {
+          href: '#spark', transform: `translate(${h.at.x} ${h.at.y}) scale(0.75)`,
+          opacity: 0.5, stroke: '#2F2A45', 'stroke-width': 1,
+        })
+        etincelle.classList.add('etincelle-cachee')
+        etincelle.style.animationDelay = `${(h.at.x % 11) * 0.4}s`
+        g.appendChild(etincelle)
+      }
     } else if (h.sorte === 'deduction') {
       const halo = el('circle', { cx: h.at.x, cy: h.at.y, r: 70, fill: 'url(#dGlow)' })
       halo.classList.add('halo-pulse')
@@ -362,6 +375,7 @@ export class VueScene {
     if (h.sorte === 'etincelle') {
       const gain = h.recompense ?? 1
       carnet.ramasserEtincelle(h.id, gain)
+      audio.jouer('etincelle')
       this.retirerMarqueur(h.id)
       bandeau(`✨ Une étincelle cachée ! +${gain} croquette${gain > 1 ? 's' : ''} d’or 🍪`)
       this.occupe = false
@@ -374,6 +388,7 @@ export class VueScene {
       if (bon) {
         const gain = h.recompense ?? 2
         carnet.marquerCassetete(h.id, gain)
+        audio.jouer('victoire')
         this.retirerMarqueur(h.id)
         bandeau(`🧩 Casse-tête résolu ! +${gain} croquettes d’or 🍪`)
       } else {
@@ -419,6 +434,7 @@ export class VueScene {
     if (h.sorte === 'deduction' && h.jeu?.type === 'deduction') {
       const bon = await lancerMiniJeu(h.jeu, this.scene.decor)
       if (bon) {
+        audio.jouer('victoire')
         carnet.marquerResolu(h.id)
         this.retirerMarqueur(h.id)
         await dialogue(h.jeu.denouement, 'narrateur')
@@ -440,6 +456,7 @@ export class VueScene {
 
     if (reussi) {
       if (h.indice) {
+        audio.jouer('bonne')
         carnet.ajouter(h.id, h.indice.titre, h.indice.texte, this.scene.nom)
         bandeau(`📓 Nouvel indice : ${h.indice.titre}`)
       } else {

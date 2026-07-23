@@ -154,7 +154,7 @@ export const grandPlace: Scene = {
       },
     },
     // --- Étincelles cachées ---
-    { id: 'gp-etincelle-1', libelle: 'un reflet sous l’étal', sorte: 'etincelle', at: { x: 404, y: 1128 }, recompense: 1 },
+    { id: 'gp-etincelle-1', libelle: 'un reflet sous l’étal', sorte: 'etincelle', at: { x: 404, y: 1128 }, recompense: 1, tuto: true },
     { id: 'gp-etincelle-2', libelle: 'un éclat sur le réverbère', sorte: 'etincelle', at: { x: 726, y: 812 }, recompense: 1 },
     { id: 'gp-etincelle-3', libelle: 'une lueur dans le pavé', sorte: 'etincelle', at: { x: 168, y: 1290 }, recompense: 1 },
     { id: 'gp-etincelle-4', libelle: 'un scintillement au tonneau', sorte: 'etincelle', at: { x: 34, y: 1010 }, recompense: 2 },

@@ -31,6 +31,12 @@ interface Sauvegarde {
   etincelles: string[]
   /** Casse-têtes des habitants déjà réussis. */
   cassetetes: string[]
+  /** L'onboarding de la première minute a déjà été joué. */
+  onboardingVu: boolean
+  /** Les croquettes de bienvenue ont déjà été offertes. */
+  bienvenue: boolean
+  /** Le son est coupé (choix du joueur, mémorisé). */
+  muet: boolean
   derniereScene: string
 }
 
@@ -43,6 +49,9 @@ const vide = (): Sauvegarde => ({
   croquettes: 0,
   etincelles: [],
   cassetetes: [],
+  onboardingVu: false,
+  bienvenue: false,
+  muet: false,
   derniereScene: 'hub',
 })
 
@@ -61,6 +70,9 @@ function charger(): Sauvegarde {
       croquettes: typeof s.croquettes === 'number' ? s.croquettes : d.croquettes,
       etincelles: Array.isArray(s.etincelles) ? s.etincelles : d.etincelles,
       cassetetes: Array.isArray(s.cassetetes) ? s.cassetetes : d.cassetetes,
+      onboardingVu: typeof s.onboardingVu === 'boolean' ? s.onboardingVu : d.onboardingVu,
+      bienvenue: typeof s.bienvenue === 'boolean' ? s.bienvenue : d.bienvenue,
+      muet: typeof s.muet === 'boolean' ? s.muet : d.muet,
       derniereScene: typeof s.derniereScene === 'string' ? s.derniereScene : d.derniereScene,
     }
   } catch {
@@ -157,6 +169,34 @@ export const carnet = {
     etat.cassetetes.push(id)
     etat.croquettes += recompense
     persister()
+  },
+
+  // --- Lancement : onboarding, croquettes de bienvenue, son ---
+
+  onboardingVu: (): boolean => etat.onboardingVu,
+
+  marquerOnboardingVu(): void {
+    if (!etat.onboardingVu) {
+      etat.onboardingVu = true
+      persister()
+    }
+  },
+
+  /** Offre les croquettes de bienvenue une seule fois. @returns true la 1re fois. */
+  offrirBienvenue(n: number): boolean {
+    if (etat.bienvenue) return false
+    etat.bienvenue = true
+    etat.croquettes += n
+    persister()
+    return true
+  },
+
+  muet: (): boolean => etat.muet,
+
+  basculerMuet(): boolean {
+    etat.muet = !etat.muet
+    persister()
+    return etat.muet
   },
 
   derniereScene: (): string => etat.derniereScene,

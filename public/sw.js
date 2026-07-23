@@ -1,10 +1,8 @@
-const CACHE = 'chaville-v11';
+const CACHE = 'chaville-v12';
 const ASSETS = [
   './',
   './index.html',
   './aventure.html',
-  './academie.html',
-  './demo.html',
   './manifest.json',
   './icon-192.png',
   './icon-512.png',
