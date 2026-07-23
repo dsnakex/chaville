@@ -5,7 +5,9 @@ const ARCHIBALD: Suspect = { id: 'archibald', nom: 'Archibald', role: 'Vieux sav
 const GRIOTTE: Suspect = { id: 'griotte', nom: 'Griotte', role: 'Grande poétesse au béret', portrait: { espece: 'chat', fourrure: '#B98A96', ventre: '#F2EDE0', accent: '#8A5A66', coiffe: 'beret', habit: '#7A4E86' } }
 const BASILE: Suspect = { id: 'basile', nom: 'Basile', role: 'Relieur costaud', portrait: { espece: 'chat', fourrure: '#9A8A6C', ventre: '#EDE4CE', accent: '#6B4A36', coiffe: 'casquette', habit: '#6B4A36' } }
 const COLETTE: Suspect = { id: 'colette', nom: 'Colette', role: 'Conteuse au châle', portrait: { espece: 'chat', fourrure: '#C7A98C', ventre: '#F2EDE0', accent: '#9A5B5B', coiffe: 'foulard-pois', habit: '#9A5B5B' } }
-const MALO: Suspect = { id: 'malo', nom: 'Malo', role: 'Chaton apprenti, timide', portrait: { espece: 'chat', fourrure: '#A9B0C0', ventre: '#F2EDE0', accent: '#E9AFBB', coiffe: 'aucune', habit: '#6E7488' } }
+// ⚠️ Planche « coupables » : Malo doit être NETTEMENT PLUS PETIT que les
+// adultes — ses petites pattes tachées d'encre sont un indice de l'enquête.
+const MALO: Suspect = { id: 'malo', nom: 'Malo', role: 'Chaton apprenti, timide', portrait: { espece: 'chat', fourrure: '#CF9E72', ventre: '#F2EDE0', accent: '#B07E52', habit: '#7C93A8', tenue: 'echarpe', accessoire: 'livre', planche: 'malo', taille: 0.68 } }
 const NOISETTE: Suspect = { id: 'noisette', nom: 'Noisette', role: 'Écureuil curieux', portrait: { espece: 'ecureuil', fourrure: '#B5713C', ventre: '#EAD7B4', accent: '#E0C9A0', coiffe: 'aucune', habit: '#7C5A44' } }
 const SAPHIR: Suspect = { id: 'saphir', nom: 'Saphir', role: 'Grand chat qui dort au chaud', portrait: { espece: 'chat', fourrure: '#3F4A63', ventre: '#9098AE', accent: '#5A6488', coiffe: 'aucune', habit: '#2F2A45', regard: 'endormi' } }
 

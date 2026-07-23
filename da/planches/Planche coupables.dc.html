@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  body { margin: 0; background: #EFE5D2; font-family: 'Nunito', sans-serif; color: #2F2A45; }
+  a { color: #8A5A3F; } a:hover { color: #5F3D28; }
+</style>
+</helmet>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <g id="bh">
+      <circle cx="0" cy="0" r="34" fill="#8A8790"></circle>
+      <path d="M-34,8 q-11,0 -14,7 q9,3 15,-1 Z M34,8 q11,0 14,7 q-9,3 -15,-1 Z M-30,22 q-8,7 -5,13 q7,-2 10,-8 Z M30,22 q8,7 5,13 q-7,-2 -10,-8 Z" fill="#8A8790"></path>
+      <ellipse cx="0" cy="13" rx="18" ry="13" fill="#E8E4DA"></ellipse>
+      <ellipse cx="0" cy="6" rx="5" ry="3.5" fill="#A8757F" stroke-width="1.6"></ellipse>
+      <g stroke="#2F2A45" stroke-width="1.1" opacity="0.4" stroke-linecap="round" fill="none">
+        <path d="M-20,10 L-33,7"></path><path d="M-20,15 L-32,16"></path>
+        <path d="M20,10 L33,7"></path><path d="M20,15 L32,16"></path>
+      </g>
+      <g transform="rotate(-10)">
+        <path d="M-24,-24 Q-30,-46 -14,-48 Q-18,-58 -2,-56 Q14,-60 12,-50 Q28,-48 24,-24 Z" fill="#FFFDF5"></path>
+        <path d="M-25,-24 Q0,-30 25,-24" fill="none" stroke-width="2.4"></path>
+      </g>
+      <circle cx="-24" cy="-4" r="2" fill="#FFFDF5" stroke="none"></circle>
+      <circle cx="26" cy="18" r="1.6" fill="#FFFDF5" stroke="none"></circle>
+    </g>
+    <g id="kh">
+      <path d="M-20,-16 L-36,-54 L-2,-26 Z" fill="#CF9E72"></path>
+      <path d="M20,-16 L36,-54 L2,-26 Z" fill="#CF9E72"></path>
+      <path d="M-18,-22 L-29,-46 L-7,-27 Z" fill="#F0B9C6" stroke="none"></path>
+      <path d="M18,-22 L29,-46 L7,-27 Z" fill="#F0B9C6" stroke="none"></path>
+      <circle cx="0" cy="0" r="25" fill="#CF9E72"></circle>
+      <ellipse cx="0" cy="11" rx="13" ry="9" fill="#F2EDE0"></ellipse>
+      <path d="M-3.4,5.5 L3.4,5.5 L0,9.5 Z" fill="#D96C5C" stroke="none"></path>
+      <g stroke="#2F2A45" stroke-width="1" opacity="0.4" stroke-linecap="round" fill="none">
+        <path d="M-14,8 L-25,6"></path><path d="M-14,12 L-24,13"></path>
+        <path d="M14,8 L25,6"></path><path d="M14,12 L24,13"></path>
+      </g>
+      <g transform="translate(26,-26) rotate(34)">
+        <path d="M0,2 Q9,-12 3,-26 Q-7,-12 0,2 Z" fill="#F2EDE0" stroke-width="1.8"></path>
+        <path d="M1,-2 L2,-22" stroke-width="1.1" opacity="0.5" fill="none"></path>
+      </g>
+    </g>
+    <g id="qh">
+      <path d="M-28,-20 L-38,-42 L-12,-30 Z" fill="#BE9765"></path>
+      <path d="M28,-20 L38,-42 L12,-30 Z" fill="#BE9765"></path>
+      <path d="M-26,-24 L-32,-36 L-16,-29 Z" fill="#F0B9C6" stroke="none"></path>
+      <path d="M26,-24 L32,-36 L16,-29 Z" fill="#F0B9C6" stroke="none"></path>
+      <circle cx="0" cy="0" r="32" fill="#BE9765"></circle>
+      <ellipse cx="0" cy="13" rx="16" ry="11" fill="#EFE2CC"></ellipse>
+      <path d="M-3.8,7.5 L3.8,7.5 L0,12 Z" fill="#D96C5C" stroke="none"></path>
+      <g stroke="#2F2A45" stroke-width="1.1" opacity="0.4" stroke-linecap="round" fill="none">
+        <path d="M-18,10 L-31,7"></path><path d="M-18,15 L-30,16"></path>
+        <path d="M18,10 L31,7"></path><path d="M18,15 L30,16"></path>
+      </g>
+      <g transform="translate(0,-24)">
+        <circle cx="-10" cy="0" r="8" fill="none" stroke="#F4C95D" stroke-width="3"></circle>
+        <circle cx="10" cy="0" r="8" fill="none" stroke="#F4C95D" stroke-width="3"></circle>
+        <path d="M-2,0 H2 M-18,0 h-6 M18,0 h6" stroke="#F4C95D" stroke-width="3" fill="none"></path>
+        <circle cx="-10" cy="0" r="8" fill="none" stroke-width="1.2" opacity="0.5"></circle>
+        <circle cx="10" cy="0" r="8" fill="none" stroke-width="1.2" opacity="0.5"></circle>
+      </g>
+      <path d="M-30,16 q-6,8 -2,14 M26,20 q6,6 3,13" stroke="#F4C95D" stroke-width="1.8" fill="none" stroke-linecap="round"></path>
+    </g>
+    <g id="hh">
+      <circle cx="0" cy="0" r="32" fill="#8A7B6C"></circle>
+      <path d="M-24,-18 Q-30,-34 -16,-40 L-10,-26 Z" fill="#8A7B6C"></path>
+      <path d="M24,-18 Q30,-34 16,-40 L10,-26 Z" fill="#8A7B6C"></path>
+      <path d="M-30,10 q-8,4 -9,10 q7,1 11,-4 Z M30,10 q8,4 9,10 q-7,1 -11,-4 Z" fill="#8A7B6C"></path>
+      <path d="M-26,-14 Q-14,-24 -2,-16 M2,-16 Q14,-24 26,-14" fill="#B8AA97" stroke-width="2.2"></path>
+      <path d="M-26,-14 l-6,-6 M26,-14 l6,-6" stroke-width="2.4" stroke-linecap="round" fill="none"></path>
+      <path d="M-4,4 L4,4 L0,14 Z" fill="#C99B3E" stroke-width="2"></path>
+    </g>
+    <g id="hf">
+      <path d="M0,0 Q6,-8 3,-16 Q-4,-9 0,0 Z" fill="#B8AA97" stroke="#2F2A45" stroke-width="1.6"></path>
+      <path d="M1,-3 L2,-13" stroke="#2F2A45" stroke-width="1" opacity="0.5" fill="none"></path>
+    </g>
+  </defs>
+</svg>
+<section style="padding:56px 64px; display:flex; flex-direction:column; gap:32px;">
+  <header style="max-width:1080px; display:flex; flex-direction:column; gap:8px;">
+    <div style="font-family:'Fredoka',sans-serif; font-weight:700; font-size:38px; color:#2F2A45;">Planche de référence — les coupables au grand cœur</div>
+    <p style="margin:0; font-size:17px; line-height:1.5; color:#5A5370;">Même format que les planches précédentes : poses + expressions, pastilles de couleurs, fond neutre, trait d'encre #2F2A45, or #F4C95D pour les détails précieux. <strong>⚠️ Leurs silhouettes et attributs sont des indices de jeu : proportions et détails marqués IMPÉRATIF sont contractuels pour le développeur.</strong></p>
+  </header>
+
+  <div style="background:#FBF5E8; border:1px solid #DECFB4; border-radius:20px; padding:32px 36px; box-shadow:0 6px 24px rgba(47,42,69,0.10); display:flex; flex-direction:column; gap:24px; width:1180px;">
+    <div style="display:flex; align-items:baseline; gap:16px; flex-wrap:wrap;">
+      <span style="font-family:'Fredoka',sans-serif; font-weight:600; font-size:24px;">Barnabé</span>
+      <span style="font-size:14px; color:#5A5370;">Cuisinier du Manoir — enquête 2. Persan gris fumée à face écrasée attendrissante, toque penchée, tablier fariné, fouet à la patte. <strong>⚠️ IMPÉRATIF : bien rond — ses grosses empreintes de farine sont un indice.</strong></span>
+    </div>
+    <div style="display:flex; gap:20px; align-items:center; flex-wrap:wrap; font-size:12px; color:#5A5370;">
+      <span style="display:flex; align-items:center; gap:6px;"><span style="width:16px; height:16px; border-radius:4px; background:#8A8790; border:1px solid #2F2A45;"></span>pelage #8A8790</span>
+      <span style="display:flex; align-items:center; gap:6px;"><span style="width:16px; height:16px; border-radius:4px; background:#6E6B75; border:1px solid #2F2A45;"></span>ombre #6E6B75</span>
+      <span style="display:flex; align-items:center; gap:6px;"><span style="width:16px; height:16px; border-radius:4px; background:#E8E4DA; border:1px solid #2F2A45;"></span>face #E8E4DA</span>
+      <span style="display:flex; align-items:center; gap:6px;"><span style="width:16px; height:16px; border-radius:4px; background:#F2EDE0; border:1px solid #2F2A45;"></span>tablier #F2EDE0</span>
+      <span style="display:flex; align-items:center; gap:6px;"><span style="width:16px; height:16px; border-radius:4px; background:#FFFDF5; border:1px solid #2F2A45;"></span>toque / farine #FFFDF5</span>
+    </div>
+    <div style="display:flex; gap:24px;">
+      <div style="display:flex; flex-direction:column; gap:8px; align-items:center;">
+        <div style="background:#F3EAD7; border:1px solid #DECFB4; border-radius:14px;">
+          <svg viewBox="-105 -95 210 230" width="220" style="display:block;">
+            <g stroke="#2F2A45" stroke-width="2.4" stroke-linejoin="round">
+              <line x1="-90" y1="116" x2="90" y2="116" stroke-width="1.5" stroke-dasharray="5 5" opacity="0.35"></line>
+              <g fill="#FFFDF5" stroke="none" opacity="0.6">
+                <circle cx="-58" cy="30" r="5"></circle><circle cx="-66" cy="46" r="3.5"></circle><circle cx="60" cy="56" r="4"></circle><circle cx="52" cy="20" r="3"></circle><circle cx="-50" cy="70" r="3"></circle><circle cx="68" cy="78" r="3.5"></circle>
+              </g>
+              <!-- repère d'échelle : chat de taille normale -->
+              <g fill="#B8B2C0" stroke="none" opacity="0.5">
+                <path d="M-78,110 Q-100,106 -98,80 Q-96,62 -92,54 Q-99,50 -97,38 Q-91,45 -86,45 Q-81,28 -74,28 Q-67,28 -62,45 Q-57,45 -51,38 Q-49,50 -56,54 Q-52,62 -52,80 Q-52,106 -78,110 Z"></path>
+                <path d="M-88,42 L-93,22 L-79,34 Z M-60,42 L-55,22 L-69,34 Z"></path>
+                <path d="M-52,98 Q-32,94 -34,70 Q-36,58 -46,62 Q-42,78 -52,90 Z"></path>
+              </g>
+              <text x="-75" y="126" text-anchor="middle" font-family="Nunito, sans-serif" font-size="10" fill="#5A5370" stroke="none" opacity="0.85">chat normal</text>
+              <ellipse cx="0" cy="66" rx="48" ry="44" fill="#8A8790"></ellipse>
+              <path d="M-46,52 q-8,10 -4,18 q7,-4 10,-11 Z M46,52 q8,10 4,18 q-7,-4 -10,-11 Z" fill="#8A8790"></path>
+              <path d="M-30,34 Q0,46 30,34 L36,64 Q40,100 0,102 Q-40,100 -36,64 Z" fill="#F2EDE0"></path>
+              <path d="M-30,40 Q0,50 30,40" stroke-width="1.8" opacity="0.4" fill="none"></path>
+              <g fill="#FFFDF5" stroke="none" opacity="0.85"><ellipse cx="-14" cy="66" rx="8" ry="5"></ellipse><ellipse cx="12" cy="84" rx="10" ry="6"></ellipse><ellipse cx="20" cy="58" rx="6" ry="4"></ellipse></g>
+              <ellipse cx="-18" cy="108" rx="12" ry="7" fill="#6E6B75"></ellipse>
+              <ellipse cx="18" cy="108" rx="12" ry="7" fill="#6E6B75"></ellipse>
+              <path d="M-40,58 Q-56,66 -54,80" stroke="#8A8790" stroke-width="13" stroke-linecap="round" fill="none"></path>
+              <circle cx="-54" cy="84" r="8" fill="#A6A2AC"></circle>
+              <path d="M40,58 Q56,50 60,38" stroke="#8A8790" stroke-width="13" stroke-linecap="round" fill="none"></path>
+              <circle cx="62" cy="34" r="8" fill="#A6A2AC"></circle>
+              <g transform="translate(64,28) rotate(18)">
+                <path d="M0,-4 V-20" stroke-width="5" stroke-linecap="round"></path>
+                <path d="M-7,-20 Q-10,-44 0,-48 Q10,-44 7,-20 Z" fill="none" stroke-width="2.4"></path>
+                <path d="M0,-20 Q-4,-40 0,-46 M0,-20 Q4,-40 0,-46" fill="none" stroke-width="1.6" opacity="0.7"></path>
+              </g>
+              <g transform="translate(-58,110)">
+                <ellipse cx="0" cy="0" rx="11" ry="7" fill="#FFFDF5" stroke-width="1.8" opacity="0.9"></ellipse>
+                <g fill="#FFFDF5" stroke="none" opacity="0.9"><circle cx="-8" cy="-9" r="2.4"></circle><circle cx="-2" cy="-11" r="2.4"></circle><circle cx="4" cy="-10" r="2.4"></circle><circle cx="9" cy="-7" r="2.2"></circle></g>
+              </g>
+              <g transform="translate(78,112)">
+                <ellipse cx="0" cy="0" rx="11" ry="7" fill="#FFFDF5" stroke-width="1.8" opacity="0.9"></ellipse>
+                <g fill="#FFFDF5" stroke="none" opacity="0.9"><circle cx="-8" cy="-9" r="2.4"></circle><circle cx="-2" cy="-11" r="2.4"></circle><circle cx="4" cy="-10" r="2.4"></circle><circle cx="9" cy="-7" r="2.2"></circle></g>
+              </g>
+              <g transform="translate(0,-8)">
+                <path d="M-28,-18 L-36,-34 L-14,-26 Z" fill="#8A8790"></path>
+                <path d="M28,-18 L36,-34 L14,-26 Z" fill="#8A8790"></path>
+                <use href="#bh"></use>
+                <circle cx="-13" cy="-4" r="7.5" fill="#FFFDF5"></circle>
+                <circle cx="13" cy="-4" r="7.5" fill="#FFFDF5"></circle>
+                <circle cx="-12" cy="-3" r="4.2" fill="#2F2A45" stroke="none"></circle>
+                <circle cx="14" cy="-3" r="4.2" fill="#2F2A45" stroke="none"></circle>
+                <circle cx="-10.5" cy="-4.5" r="1.3" fill="#FFFFFF" stroke="none"></circle>
+                <circle cx="15.5" cy="-4.5" r="1.3" fill="#FFFFFF" stroke="none"></circle>
+                <path d="M-5,22 Q0,25 5,22" fill="none" stroke-width="1.8" stroke-linecap="round"></path>
+              </g>
+            </g>
+          </svg>
+        </div>
+        <span style="font-family:'Fredoka',sans-serif; font-size:12px; font-weight:600; letter-spacing:1.5px; color:#5A5370;">EN CUISINE — FOUET, FARINE ET EMPREINTES</span>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:8px; align-items:center;">
+        <div style="background:#F3EAD7; border:1px solid #DECFB4; border-radius:14px;">
+          <svg viewBox="-60 -80 120 120" width="160" style="display:block;">
+            <g stroke="#2F2A45" stroke-width="2.4" stroke-linejoin="round">
+              <path d="M-28,-18 L-36,-34 L-14,-26 Z" fill="#8A8790"></path>
+              <path d="M28,-18 L36,-34 L14,-26 Z" fill="#8A8790"></path>
+              <use href="#bh"></use>
+              <circle cx="-13" cy="-4" r="7.5" fill="#FFFDF5"></circle>
+              <circle cx="13" cy="-4" r="7.5" fill="#FFFDF5"></circle>
+              <path d="M-21,-10 L-7,-7 M21,-10 L7,-7" stroke-width="1.8" stroke-linecap="round" fill="none"></path>
+              <circle cx="-11" cy="-2" r="4" fill="#2F2A45" stroke="none"></circle>
+              <circle cx="15" cy="-2" r="4" fill="#2F2A45" stroke="none"></circle>
+              <path d="M-4,23 H4" stroke-width="1.8" stroke-linecap="round" fill="none"></path>
+              <g fill="#FFFDF5" stroke="none" opacity="0.7"><circle cx="-42" cy="-18" r="3"></circle><circle cx="44" cy="-26" r="2.5"></circle><circle cx="-38" cy="24" r="2.5"></circle></g>
+            </g>
+          </svg>
+        </div>
+        <span style="font-family:'Fredoka',sans-serif; font-size:12px; font-weight:600; letter-spacing:1.5px; color:#5A5370;">AFFAIRÉ</span>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:8px; align-items:center;">
+        <div style="background:#F3EAD7; border:1px solid #DECFB4; border-radius:14px;">
+          <svg viewBox="-60 -80 120 120" width="160" style="display:block;">
+            <g stroke="#2F2A45" stroke-width="2.4" stroke-linejoin="round">
+              <path d="M-26,-18 Q-40,-14 -42,-2 L-24,-10 Z" fill="#8A8790"></path>
+              <path d="M26,-18 Q40,-14 42,-2 L24,-10 Z" fill="#8A8790"></path>
+              <use href="#bh"></use>
+              <circle cx="-13" cy="-4" r="7.5" fill="#FFFDF5"></circle>
+              <circle cx="13" cy="-4" r="7.5" fill="#FFFDF5"></circle>
+              <circle cx="-12" cy="-1" r="4" fill="#2F2A45" stroke="none"></circle>
+              <circle cx="14" cy="-1" r="4" fill="#2F2A45" stroke="none"></circle>
+              <path d="M-20,-13 L-8,-9 M20,-13 L8,-9" stroke-width="1.8" stroke-linecap="round" fill="none"></path>
+              <path d="M-5,25 Q0,22 5,25" fill="none" stroke-width="1.8" stroke-linecap="round"></path>
+              <ellipse cx="-24" cy="8" rx="4.5" ry="2.8" fill="#C48A94" opacity="0.5" stroke="none"></ellipse>
+              <ellipse cx="24" cy="8" rx="4.5" ry="2.8" fill="#C48A94" opacity="0.5" stroke="none"></ellipse>
+            </g>
+          </svg>
+        </div>
+        <span style="font-family:'Fredoka',sans-serif; font-size:12px; font-weight:600; letter-spacing:1.5px; color:#5A5370;">PENAUD — OREILLES BAISSÉES</span>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:8px; align-items:center;">
+        <div style="background:#F3EAD7; border:1px solid #DECFB4; border-radius:14px;">
+          <svg viewBox="-60 -80 120 120" width="160" style="display:block;">
+            <g stroke="#2F2A45" stroke-width="2.4" stroke-linejoin="round">
+              <path d="M-28,-18 L-36,-34 L-14,-26 Z" fill="#8A8790"></path>
+              <path d="M28,-18 L36,-34 L14,-26 Z" fill="#8A8790"></path>
+              <use href="#bh"></use>
+              <path d="M-20,-6 Q-13,-13 -6,-6 M6,-6 Q13,-13 20,-6" fill="none" stroke-width="2.6" stroke-linecap="round"></path>
+              <path d="M-9,20 Q0,31 9,20 Q0,23 -9,20 Z" fill="#7A4038" stroke-width="1.8"></path>
+              <ellipse cx="-24" cy="8" rx="4.5" ry="2.8" fill="#C48A94" opacity="0.6" stroke="none"></ellipse>
+              <ellipse cx="24" cy="8" rx="4.5" ry="2.8" fill="#C48A94" opacity="0.6" stroke="none"></ellipse>
+            </g>
+          </svg>
+        </div>
+        <span style="font-family:'Fredoka',sans-serif; font-size:12px; font-weight:600; letter-spacing:1.5px; color:#5A5370;">SOULAGÉ-RIANT</span>
+      </div>
+    </div>
+  </div>
+  <div style="background:#FBF5E8; border:1px solid #DECFB4; border-radius:20px; padding:32px 36px; box-shadow:0 6px 24px rgba(47,42,69,0.10); display:flex; flex-direction:column; gap:24px; width:1180px;">
+    <div style="display:flex; align-items:baseline; gap:16px; flex-wrap:wrap;">
+      <span style="font-family:'Fredoka',sans-serif; font-weight:600; font-size:24px;">Lontra</span>
+      <span style="font-size:14px; color:#5A5370;">La loutre du Port — enquête 3. Joueuse, corps allongé et souple, souvent en glissade ou sur le dos, une sardine à la patte. <strong>⚠️ IMPÉRATIF : petites dents pointues visibles au sourire (corde rongée) et fourrure d'aspect mouillé (traces humides = indice).</strong></span>
+    </div>
+    <div style="display:flex; gap:20px; align-items:center; flex-wrap:wrap; font-size:12px; color:#5A5370;">
+      <span style="display:flex; align-items:center; gap:6px;"><span style="width:16px; height:16px; border-radius:4px; background:#7A5A44; border:1px solid #2F2A45;"></span>fourrure #7A5A44</span>
+      <span style="display:flex; align-items:center; gap:6px;"><span style="width:16px; height:16px; border-radius:4px; background:#A88960; border:1px solid #2F2A45;"></span>reflets mouillés #A88960</span>
+      <span style="display:flex; align-items:center; gap:6px;"><span style="width:16px; height:16px; border-radius:4px; background:#D9C3A5; border:1px solid #2F2A45;"></span>ventre #D9C3A5</span>
+      <span style="display:flex; align-items:center; gap:6px;"><span style="width:16px; height:16px; border-radius:4px; background:#9FB3C8; border:1px solid #2F2A45;"></span>sardine / eau #9FB3C8</span>
+      <span style="display:flex; align-items:center; gap:6px;"><span style="width:16px; height:16px; border-radius:4px; background:#FFFDF5; border:1px solid #2F2A45;"></span>dents #FFFDF5</span>
+    </div>
+    <div style="display:flex; gap:24px;">
+      <div style="display:flex; flex-direction:column; gap:8px; align-items:center;">
+        <div style="background:#F3EAD7; border:1px solid #DECFB4; border-radius:14px;">
+          <svg viewBox="-105 -95 210 230" width="220" style="display:block;">
+            <g stroke="#2F2A45" stroke-width="2.4" stroke-linejoin="round">
+              <line x1="-90" y1="116" x2="90" y2="116" stroke-width="1.5" stroke-dasharray="5 5" opacity="0.35"></line>
+              <ellipse cx="0" cy="112" rx="52" ry="9" fill="#9FB3C8" opacity="0.18" stroke="none"></ellipse>
+              <!-- queue épaisse à la base, effilée, presque aussi longue que le corps -->
+              <path d="M-8,74 Q-42,86 -66,74 Q-86,64 -92,44 Q-80,54 -64,60 Q-44,66 -14,58 Z" fill="#7A5A44"></path>
+              <path d="M-30,72 Q-52,74 -68,64" stroke="#A88960" stroke-width="2.6" fill="none" stroke-linecap="round" opacity="0.85"></path>
+              <!-- pattes arrière courtes et palmées -->
+              <path d="M2,96 Q0,110 12,110 L30,110 Q30,102 24,98 Z" fill="#6E4E38"></path>
+              <path d="M14,110 v-7 M20,110 v-8 M26,110 v-7" stroke-width="1.4" opacity="0.6" fill="none"></path>
+              <!-- corps long et tubulaire -->
+              <path d="M-14,58 Q-24,24 -14,-8 Q-6,-30 16,-30 Q34,-28 34,4 Q34,44 28,74 Q26,96 6,98 Q-12,96 -14,58 Z" fill="#7A5A44"></path>
+              <!-- ventre crème -->
+              <path d="M18,-24 Q34,-16 33,12 Q32,48 26,76 Q22,92 10,92 Q22,60 20,20 Q19,-8 18,-24 Z" fill="#D9C3A5" stroke-width="2"></path>
+              <!-- reflets mouillés -->
+              <path d="M-8,-4 Q-16,26 -8,58 M2,64 Q-4,40 -2,10" stroke="#A88960" stroke-width="3" fill="none" stroke-linecap="round" opacity="0.9"></path>
+              <!-- gouttes -->
+              <path d="M-20,40 q-3,6 2,9 M32,52 q3,5 -2,9" stroke="#9FB3C8" stroke-width="2.2" fill="none" stroke-linecap="round" opacity="0.8"></path>
+              <!-- patte avant tenant la sardine -->
+              <path d="M22,6 Q40,10 44,26" stroke="#7A5A44" stroke-width="11" stroke-linecap="round" fill="none"></path>
+              <path d="M20,20 Q34,26 40,40" stroke="#7A5A44" stroke-width="11" stroke-linecap="round" fill="none"></path>
+              <g transform="translate(46,34) rotate(60)">
+                <path d="M0,-13 L-7,-23 L9,-21 Z" fill="#9FB3C8"></path>
+                <ellipse cx="0" cy="3" rx="9" ry="17" fill="#9FB3C8"></ellipse>
+                <circle cx="0" cy="10" r="1.5" fill="#2F2A45" stroke="none"></circle>
+                <path d="M-6,-2 Q0,1 6,-2" stroke-width="1.4" opacity="0.5" fill="none"></path>
+              </g>
+              <circle cx="46" cy="28" r="6.5" fill="#8A6A50"></circle>
+              <path d="M44,28 l3,-5 M48,29 l4,-4" stroke-width="1.4" opacity="0.6" fill="none"></path>
+              <!-- tête aplatie et fuselée, profil face à droite -->
+              <g transform="translate(12,-34)">
+                <ellipse cx="-14" cy="-8" rx="6" ry="4.5" fill="#7A5A44"></ellipse>
+                <ellipse cx="0" cy="0" rx="26" ry="17" fill="#7A5A44"></ellipse>
+                <path d="M-16,-6 q6,-4 12,-2" stroke="#A88960" stroke-width="2.6" fill="none" stroke-linecap="round" opacity="0.9"></path>
+                <!-- museau carré -->
+                <path d="M14,-11 Q34,-12 35,-2 Q36,9 20,11 Q14,4 14,-11 Z" fill="#D9C3A5" stroke-width="2.2"></path>
+                <!-- coussinets de moustaches -->
+                <ellipse cx="24" cy="4" rx="10" ry="6" fill="#F2EDE0" stroke-width="1.8"></ellipse>
+                <!-- truffe noire -->
+                <path d="M31,-6 Q39,-6 39,0 Q39,5 32,6 Q30,0 31,-6 Z" fill="#2F2A45" stroke-width="1.6"></path>
+                <!-- vibrisses longues -->
+                <g stroke-width="1" opacity="0.5" stroke-linecap="round" fill="none">
+                  <path d="M28,4 L46,2 M28,6 L47,8 M27,8 L44,14 M26,2 L44,-4"></path>
+                </g>
+                <g fill="#2F2A45" stroke="none"><circle cx="25" cy="2" r="0.9"></circle><circle cx="22" cy="6" r="0.9"></circle></g>
+                <!-- œil -->
+                <circle cx="2" cy="-6" r="6" fill="#FFFDF5" stroke-width="2"></circle>
+                <circle cx="3" cy="-5" r="3.2" fill="#2F2A45" stroke="none"></circle>
+                <circle cx="4.2" cy="-6.2" r="1.1" fill="#FFFFFF" stroke="none"></circle>
+                <!-- bouche + petites dents pointues -->
+                <path d="M18,11 Q24,15 30,11" fill="none" stroke-width="1.6" stroke-linecap="round"></path>
+                <path d="M20,11.5 L21.5,14.5 L23,11.8 Z M25,11.8 L26.5,14.5 L28,11.5 Z" fill="#FBF0D4" stroke-width="0.9"></path>
+              </g>
+            </g>
+          </svg>
+        </div>
+        <span style="font-family:'Fredoka',sans-serif; font-size:12px; font-weight:600; letter-spacing:1.5px; color:#5A5370;">DEBOUT, DE PROFIL — SARDINE EN PATTE</span>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:8px; align-items:center;">
+        <div style="background:#F3EAD7; border:1px solid #DECFB4; border-radius:14px;">
+          <svg viewBox="-105 -95 210 230" width="220" style="display:block;">
+            <g stroke="#2F2A45" stroke-width="2.4" stroke-linejoin="round">
+              <line x1="-90" y1="116" x2="90" y2="116" stroke-width="1.5" stroke-dasharray="5 5" opacity="0.35"></line>
+              <ellipse cx="0" cy="112" rx="72" ry="9" fill="#9FB3C8" opacity="0.18" stroke="none"></ellipse>
+              <!-- lignes de glissade -->
+              <path d="M-98,58 q26,-4 44,2 M-100,72 q30,-4 50,2 M-96,88 q26,-4 44,2" stroke="#9FB3C8" stroke-width="3" fill="none" stroke-linecap="round" opacity="0.6"></path>
+              <!-- queue épaisse effilée, à gauche -->
+              <path d="M-52,84 Q-78,80 -94,62 Q-80,72 -60,72 Q-70,80 -52,96 Z" fill="#7A5A44"></path>
+              <!-- corps long tubulaire, horizontal, sur le dos -->
+              <path d="M-56,88 Q-60,60 -40,54 Q0,44 44,52 Q66,56 64,78 Q62,98 40,100 Q-8,104 -44,102 Q-56,100 -56,88 Z" fill="#7A5A44"></path>
+              <!-- ventre crème dessus -->
+              <path d="M-40,58 Q0,50 42,57 Q58,60 57,74 Q40,66 0,66 Q-30,66 -44,74 Q-46,62 -40,58 Z" fill="#D9C3A5" stroke-width="2"></path>
+              <!-- reflets mouillés -->
+              <path d="M-34,88 Q-30,74 -36,62 M-6,96 Q-2,80 -8,66 M28,94 Q32,78 26,64" stroke="#A88960" stroke-width="3" fill="none" stroke-linecap="round" opacity="0.85"></path>
+              <!-- pattes arrière courtes palmées, en l'air à gauche -->
+              <path d="M-30,56 Q-36,40 -24,36 Q-14,44 -18,58 Z" fill="#6E4E38"></path>
+              <path d="M-33,40 l-5,-4 M-28,37 l-3,-6 M-23,38 l0,-6" stroke-width="1.4" opacity="0.6" fill="none"></path>
+              <!-- pattes avant tenant la sardine sur le ventre -->
+              <path d="M8,58 Q6,42 18,40 M28,58 Q30,42 20,40" stroke="#7A5A44" stroke-width="10" stroke-linecap="round" fill="none"></path>
+              <circle cx="14" cy="40" r="6" fill="#8A6A50"></circle>
+              <circle cx="24" cy="40" r="6" fill="#8A6A50"></circle>
+              <g transform="translate(18,30) rotate(-10)">
+                <path d="M-16,0 L-24,-8 L-22,8 Z" fill="#9FB3C8"></path>
+                <ellipse cx="0" cy="0" rx="17" ry="9" fill="#9FB3C8"></ellipse>
+                <circle cx="10" cy="-2" r="1.5" fill="#2F2A45" stroke="none"></circle>
+                <path d="M-6,-4 Q0,-1 6,-4" stroke-width="1.4" opacity="0.5" fill="none"></path>
+              </g>
+              <!-- gouttes -->
+              <path d="M-52,50 q-3,6 2,9 M60,60 q3,5 -2,9" stroke="#9FB3C8" stroke-width="2.2" fill="none" stroke-linecap="round" opacity="0.8"></path>
+              <!-- tête plate à droite, renversée -->
+              <g transform="translate(58,80) rotate(18)">
+                <ellipse cx="12" cy="-8" rx="5.5" ry="4" fill="#7A5A44"></ellipse>
+                <ellipse cx="0" cy="0" rx="24" ry="16" fill="#7A5A44"></ellipse>
+                <path d="M14,-6 q-6,-4 -12,-2" stroke="#A88960" stroke-width="2.4" fill="none" stroke-linecap="round" opacity="0.9"></path>
+                <path d="M-14,-10 Q-33,-11 -34,-1 Q-35,9 -19,11 Q-14,4 -14,-10 Z" fill="#D9C3A5" stroke-width="2.2"></path>
+                <ellipse cx="-23" cy="4" rx="9" ry="5.5" fill="#F2EDE0" stroke-width="1.8"></ellipse>
+                <path d="M-30,-5 Q-38,-5 -38,0 Q-38,5 -31,5 Q-29,0 -30,-5 Z" fill="#2F2A45" stroke-width="1.6"></path>
+                <g stroke-width="1" opacity="0.5" stroke-linecap="round" fill="none"><path d="M-27,4 L-45,3 M-27,6 L-44,10 M-25,2 L-43,-4"></path></g>
+                <circle cx="-1" cy="-5" r="5.5" fill="#FFFDF5" stroke-width="2"></circle>
+                <circle cx="-2" cy="-4" r="3" fill="#2F2A45" stroke="none"></circle>
+                <circle cx="-0.6" cy="-5.2" r="1" fill="#FFFFFF" stroke="none"></circle>
+                <path d="M-18,10 Q-24,14 -29,10" fill="none" stroke-width="1.6" stroke-linecap="round"></path>
+                <path d="M-20,10.5 L-21.5,13.5 L-23,10.8 Z M-25,10.8 L-26.5,13.5 L-28,10.5 Z" fill="#FBF0D4" stroke-width="0.9"></path>
+              </g>
+            </g>
+          </svg>
+        </div>
+        <span style="font-family:'Fredoka',sans-serif; font-size:12px; font-weight:600; letter-spacing:1.5px; color:#5A5370;">GLISSADE SUR LE DOS — SARDINE EN PATTE</span>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:8px; align-items:center;">
+        <div style="background:#F3EAD7; border:1px solid #DECFB4; border-radius:14px;">
+          <svg viewBox="-60 -80 120 120" width="160" style="display:block;">
+            <g stroke="#2F2A45" stroke-width="2.4" stroke-linejoin="round">
+              <circle cx="-30" cy="-9" r="8" fill="#7A5A44"></circle>
+              <circle cx="30" cy="-9" r="8" fill="#7A5A44"></circle>
+              <ellipse cx="0" cy="0" rx="32" ry="26" fill="#7A5A44"></ellipse>
+              <path d="M-24,-16 q10,-5 20,-1 M6,-18 q9,-3 16,1" stroke="#A88960" stroke-width="3" fill="none" stroke-linecap="round" opacity="0.9"></path>
+              <ellipse cx="0" cy="12" rx="20" ry="12" fill="#D9C3A5" stroke-width="2"></ellipse>
+              <path d="M-6.5,-1 Q0,-4.5 6.5,-1 Q6.5,5 0,7.5 Q-6.5,5 -6.5,-1 Z" fill="#4A3324" stroke-width="1.8"></path>
+              <circle cx="-11" cy="-6" r="7" fill="#FFFDF5"></circle>
+              <circle cx="11" cy="-6" r="7" fill="#FFFDF5"></circle>
+              <circle cx="-10" cy="-5" r="3.8" fill="#2F2A45" stroke="none"></circle>
+              <circle cx="12" cy="-5" r="3.8" fill="#2F2A45" stroke="none"></circle>
+              <circle cx="-8.5" cy="-6.5" r="1.2" fill="#FFFFFF" stroke="none"></circle>
+              <circle cx="13.5" cy="-6.5" r="1.2" fill="#FFFFFF" stroke="none"></circle>
+              <path d="M-9,17 Q0,25 9,17" fill="none" stroke-width="2" stroke-linecap="round"></path>
+              <path d="M-5.5,19.5 L-3,23.5 L-0.5,19.9 Z M2,19.9 L4.5,23.5 L7,19 Z" fill="#FBF0D4" stroke-width="1.2"></path>
+              <g stroke-width="1.1" opacity="0.4" stroke-linecap="round" fill="none"><path d="M-17,8 L-30,6 M-17,13 L-29,15 M17,8 L30,6 M17,13 L29,15"></path></g>
+              <path d="M-38,-30 q-2,6 3,8 M40,-14 q-2,6 3,8" stroke="#9FB3C8" stroke-width="2.2" fill="none" stroke-linecap="round"></path>
+            </g>
+          </svg>
+        </div>
+        <span style="font-family:'Fredoka',sans-serif; font-size:12px; font-weight:600; letter-spacing:1.5px; color:#5A5370;">ESPIÈGLE — DENTS POINTUES</span>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:8px; align-items:center;">
+        <div style="background:#F3EAD7; border:1px solid #DECFB4; border-radius:14px;">
+          <svg viewBox="-60 -80 120 120" width="160" style="display:block;">
+            <g stroke="#2F2A45" stroke-width="2.4" stroke-linejoin="round">
+              <circle cx="-30" cy="-9" r="8" fill="#7A5A44"></circle>
+              <circle cx="30" cy="-9" r="8" fill="#7A5A44"></circle>
+              <ellipse cx="0" cy="0" rx="32" ry="26" fill="#7A5A44"></ellipse>
+              <path d="M-24,-16 q10,-5 20,-1" stroke="#A88960" stroke-width="3" fill="none" stroke-linecap="round" opacity="0.9"></path>
+              <ellipse cx="0" cy="12" rx="20" ry="12" fill="#D9C3A5" stroke-width="2"></ellipse>
+              <path d="M-6.5,-1 Q0,-4.5 6.5,-1 Q6.5,5 0,7.5 Q-6.5,5 -6.5,-1 Z" fill="#4A3324" stroke-width="1.8"></path>
+              <path d="M-18,-6 Q-11,-13 -4,-6 M4,-6 Q11,-13 18,-6" fill="none" stroke-width="2.6" stroke-linecap="round"></path>
+              <path d="M-6,15 Q0,21 6,15" fill="none" stroke-width="2" stroke-linecap="round"></path>
+              <path d="M2,17 Q6,26 0,28 Q-5,26 -1,19 Z" fill="#E58BA0" stroke-width="1.8"></path>
+              <g transform="translate(38,10) rotate(24)">
+                <path d="M0,-10 L-6,-18 L7,-16 Z" fill="#9FB3C8" stroke-width="2"></path>
+                <ellipse cx="0" cy="3" rx="7" ry="13" fill="#9FB3C8" stroke-width="2"></ellipse>
+              </g>
+              <ellipse cx="-22" cy="8" rx="4" ry="2.6" fill="#C48A94" opacity="0.5" stroke="none"></ellipse>
+            </g>
+          </svg>
+        </div>
+        <span style="font-family:'Fredoka',sans-serif; font-size:12px; font-weight:600; letter-spacing:1.5px; color:#5A5370;">GOURMANDE</span>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:8px; align-items:center;">
+        <div style="background:#F3EAD7; border:1px solid #DECFB4; border-radius:14px;">
+          <svg viewBox="-60 -80 120 120" width="160" style="display:block;">
+            <g stroke="#2F2A45" stroke-width="2.4" stroke-linejoin="round">
+              <circle cx="-30" cy="-6" r="8" fill="#7A5A44"></circle>
+              <circle cx="30" cy="-6" r="8" fill="#7A5A44"></circle>
+              <ellipse cx="0" cy="0" rx="32" ry="26" fill="#7A5A44"></ellipse>
+              <path d="M-24,-16 q10,-5 20,-1" stroke="#A88960" stroke-width="3" fill="none" stroke-linecap="round" opacity="0.9"></path>
+              <ellipse cx="0" cy="12" rx="20" ry="12" fill="#D9C3A5" stroke-width="2"></ellipse>
+              <path d="M-6.5,-1 Q0,-4.5 6.5,-1 Q6.5,5 0,7.5 Q-6.5,5 -6.5,-1 Z" fill="#4A3324" stroke-width="1.8"></path>
+              <circle cx="-11" cy="-5" r="7.5" fill="#FFFDF5"></circle>
+              <circle cx="11" cy="-5" r="7.5" fill="#FFFDF5"></circle>
+              <circle cx="-10" cy="-3" r="4.4" fill="#2F2A45" stroke="none"></circle>
+              <circle cx="12" cy="-3" r="4.4" fill="#2F2A45" stroke="none"></circle>
+              <circle cx="-8.5" cy="-4.5" r="1.5" fill="#FFFFFF" stroke="none"></circle>
+              <circle cx="13.5" cy="-4.5" r="1.5" fill="#FFFFFF" stroke="none"></circle>
+              <path d="M-19,-12 L-6,-9 M19,-12 L6,-9" stroke-width="1.8" stroke-linecap="round" fill="none"></path>
+              <path d="M-5,20 Q0,17 5,20" fill="none" stroke-width="1.8" stroke-linecap="round"></path>
+              <ellipse cx="-22" cy="9" rx="4" ry="2.6" fill="#C48A94" opacity="0.6" stroke="none"></ellipse>
+              <ellipse cx="22" cy="9" rx="4" ry="2.6" fill="#C48A94" opacity="0.6" stroke="none"></ellipse>
+            </g>
+          </svg>
+        </div>
+        <span style="font-family:'Fredoka',sans-serif; font-size:12px; font-weight:600; letter-spacing:1.5px; color:#5A5370;">PENAUDE-CRAQUANTE</span>
+      </div>
+    </div>
+  </div>
+  <div style="background:#FBF5E8; border:1px solid #DECFB4; border-radius:20px; padding:32px 36px; box-shadow:0 6px 24px rgba(47,42,69,0.10); display:flex; flex-direction:column; gap:24px; width:1180px;">
+    <div style="display:flex; align-items:baseline; gap:16px; flex-wrap:wrap;">
+      <span style="font-family:'Fredoka',sans-serif; font-weight:600; font-size:24px;">Malo</span>
+      <span style="font-size:14px; color:#5A5370;">Chaton copiste de la Bibliothèque — enquête 4. Roux pâle, immenses oreilles, grands yeux timides, cahier serré contre lui, plume derrière l'oreille. <strong>⚠️ IMPÉRATIF : nettement plus petit que tous les adultes, à peine plus grand que Pistache — ses petites pattes tachées d'encre sont un indice.</strong></span>
+    </div>
+    <div style="display:flex; gap:20px; align-items:center; flex-wrap:wrap; font-size:12px; color:#5A5370;">
+      <span style="display:flex; align-items:center; gap:6px;"><span style="width:16px; height:16px; border-radius:4px; background:#CF9E72; border:1px solid #2F2A45;"></span>pelage #CF9E72</span>
+      <span style="display:flex; align-items:center; gap:6px;"><span style="width:16px; height:16px; border-radius:4px; background:#F2EDE0; border:1px solid #2F2A45;"></span>ventre #F2EDE0</span>
+      <span style="display:flex; align-items:center; gap:6px;"><span style="width:16px; height:16px; border-radius:4px; background:#F0B9C6; border:1px solid #2F2A45;"></span>oreilles #F0B9C6</span>
+      <span style="display:flex; align-items:center; gap:6px;"><span style="width:16px; height:16px; border-radius:4px; background:#2F2A45;"></span>taches d'encre #2F2A45</span>
+      <span style="display:flex; align-items:center; gap:6px;"><span style="width:16px; height:16px; border-radius:4px; background:#F2EDE0; border:1px solid #2F2A45;"></span>plume #F2EDE0</span>
+    </div>
+    <div style="display:flex; gap:24px;">
+      <div style="display:flex; flex-direction:column; gap:8px; align-items:center;">
+        <div style="background:#F3EAD7; border:1px solid #DECFB4; border-radius:14px;">
+          <svg viewBox="-105 -95 210 230" width="220" style="display:block;">
+            <g stroke="#2F2A45" stroke-width="2.2" stroke-linejoin="round">
+              <line x1="-90" y1="116" x2="90" y2="116" stroke-width="1.5" stroke-dasharray="5 5" opacity="0.35"></line>
+              <line x1="-86" y1="-64" x2="-46" y2="-64" stroke-width="1.4" stroke-dasharray="4 4" opacity="0.5"></line>
+              <text x="-86" y="-72" font-family="Nunito, sans-serif" font-size="10" fill="#5A5370" stroke="none">hauteur adulte</text>
+              <line x1="-86" y1="22" x2="-46" y2="22" stroke-width="1.4" stroke-dasharray="4 4" opacity="0.5"></line>
+              <text x="-86" y="14" font-family="Nunito, sans-serif" font-size="10" fill="#5A5370" stroke="none">Malo ≈ Pistache</text>
+              <!-- repère d'échelle : silhouette d'un chat adulte -->
+              <g fill="#B8B2C0" stroke="none" opacity="0.55">
+                <path d="M-64,108 Q-92,104 -90,74 Q-88,52 -84,44 Q-92,40 -90,26 Q-84,34 -78,34 Q-72,14 -64,14 Q-56,14 -50,34 Q-44,34 -38,26 Q-36,40 -44,44 Q-40,52 -40,74 Q-40,104 -64,108 Z"></path>
+                <path d="M-80,20 L-86,-2 L-70,10 Z M-48,20 L-42,-2 L-58,10 Z"></path>
+                <path d="M-40,96 Q-20,92 -22,66 Q-24,54 -34,58 Q-30,74 -40,88 Z"></path>
+              </g>
+              <text x="-64" y="-16" text-anchor="middle" font-family="Nunito, sans-serif" font-size="10" fill="#5A5370" stroke="none" opacity="0.8">adulte</text>
+              <g transform="translate(10,0)">
+                <path d="M14,78 Q34,84 38,70" fill="none" stroke="#CF9E72" stroke-width="7" stroke-linecap="round"></path>
+                <ellipse cx="0" cy="82" rx="22" ry="26" fill="#CF9E72"></ellipse>
+                <ellipse cx="-1" cy="88" rx="13" ry="16" fill="#F2EDE0" stroke-width="2"></ellipse>
+                <ellipse cx="-9" cy="106" rx="7" ry="4.5" fill="#A87A52"></ellipse>
+                <ellipse cx="9" cy="106" rx="7" ry="4.5" fill="#A87A52"></ellipse>
+                <g fill="#2F2A45" stroke="none"><circle cx="-11" cy="103" r="2.2"></circle><circle cx="-6" cy="107" r="1.8"></circle><circle cx="12" cy="104" r="2"></circle></g>
+                <g transform="translate(0,74)">
+                  <rect x="-13" y="-16" width="26" height="32" rx="3" fill="#FBF0D4" stroke-width="2.2"></rect>
+                  <path d="M-13,-16 q-3,16 0,32" stroke-width="2" fill="none"></path>
+                  <path d="M-7,-10 h14 M-7,-4 h14 M-7,2 h10" stroke-width="1.2" opacity="0.5" fill="none"></path>
+                </g>
+                <path d="M-16,66 L-8,78" stroke="#CF9E72" stroke-width="8" stroke-linecap="round" fill="none"></path>
+                <circle cx="-6" cy="80" r="5" fill="#DDA97E"></circle>
+                <path d="M16,66 L8,78" stroke="#CF9E72" stroke-width="8" stroke-linecap="round" fill="none"></path>
+                <circle cx="6" cy="80" r="5" fill="#DDA97E"></circle>
+                <g fill="#2F2A45" stroke="none"><circle cx="-7" cy="77" r="1.8"></circle><circle cx="8" cy="79" r="1.6"></circle></g>
+                <g transform="translate(0,44)">
+                  <use href="#kh"></use>
+                  <circle cx="-10" cy="-3" r="7" fill="#FFFDF5"></circle>
+                  <circle cx="10" cy="-3" r="7" fill="#FFFDF5"></circle>
+                  <circle cx="-9" cy="-1.5" r="4" fill="#2F2A45" stroke="none"></circle>
+                  <circle cx="11" cy="-1.5" r="4" fill="#2F2A45" stroke="none"></circle>
+                  <circle cx="-7.5" cy="-3" r="1.3" fill="#FFFFFF" stroke="none"></circle>
+                  <circle cx="12.5" cy="-3" r="1.3" fill="#FFFFFF" stroke="none"></circle>
+                  <path d="M-4,17 Q0,19.5 4,17" fill="none" stroke-width="1.6" stroke-linecap="round"></path>
+                </g>
+              </g>
+            </g>
+          </svg>
+        </div>
+        <span style="font-family:'Fredoka',sans-serif; font-size:12px; font-weight:600; letter-spacing:1.5px; color:#5A5370;">CAHIER CONTRE LUI — PATTES TACHÉES D'ENCRE</span>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:8px; align-items:center;">
+        <div style="background:#F3EAD7; border:1px solid #DECFB4; border-radius:14px;">
+          <svg viewBox="-105 -95 210 230" width="220" style="display:block;">
+            <g stroke="#2F2A45" stroke-width="2.2" stroke-linejoin="round">
+              <line x1="-90" y1="116" x2="90" y2="116" stroke-width="1.5" stroke-dasharray="5 5" opacity="0.35"></line>
+              <!-- queue enroulée -->
+              <path d="M28,96 Q54,92 52,66 Q50,52 38,56 Q46,72 32,88 Z" fill="#CF9E72"></path>
+              <!-- corps recroquevillé -->
+              <ellipse cx="0" cy="76" rx="30" ry="26" fill="#CF9E72"></ellipse>
+              <ellipse cx="-2" cy="82" rx="17" ry="16" fill="#F2EDE0" stroke-width="2"></ellipse>
+              <ellipse cx="-16" cy="104" rx="8" ry="5" fill="#A87A52"></ellipse>
+              <ellipse cx="16" cy="104" rx="8" ry="5" fill="#A87A52"></ellipse>
+              <!-- cahier ouvert au sol -->
+              <g transform="translate(0,96)">
+                <path d="M-30,4 L0,-4 L30,4 L30,14 L0,8 L-30,14 Z" fill="#FBF0D4" stroke-width="2.2"></path>
+                <path d="M0,-4 V8" stroke-width="1.8"></path>
+                <path d="M-24,4 h18 M-24,8 h14 M8,4 h18 M8,8 h14" stroke-width="1" opacity="0.5" fill="none"></path>
+              </g>
+              <!-- pattes sur le cahier + plume + taches d'encre -->
+              <path d="M-14,74 Q-20,86 -12,92" stroke="#CF9E72" stroke-width="9" stroke-linecap="round" fill="none"></path>
+              <circle cx="-11" cy="93" r="5" fill="#DDA97E"></circle>
+              <path d="M14,72 Q22,84 16,92" stroke="#CF9E72" stroke-width="9" stroke-linecap="round" fill="none"></path>
+              <circle cx="17" cy="93" r="5" fill="#DDA97E"></circle>
+              <g fill="#2F2A45" stroke="none"><circle cx="-12" cy="95" r="2.4"></circle><circle cx="-6" cy="97" r="1.8"></circle><circle cx="18" cy="95" r="2.2"></circle><circle cx="12" cy="97" r="1.6"></circle></g>
+              <g transform="translate(24,86) rotate(28)">
+                <path d="M0,4 V-20 Q7,-16 4,4 Z" fill="#F2EDE0" stroke-width="2"></path>
+                <path d="M1,0 L2,-16" stroke-width="1" opacity="0.5" fill="none"></path>
+                <path d="M0,4 L-1,12" stroke="#2F2A45" stroke-width="2" stroke-linecap="round"></path>
+              </g>
+              <!-- tête penchée sur le cahier -->
+              <g transform="translate(0,50) rotate(6)">
+                <use href="#kh"></use>
+                <path d="M-17,-8 H-3 M3,-8 H17" stroke-width="1.8" stroke-linecap="round" fill="none"></path>
+                <circle cx="-9" cy="-2" r="3.6" fill="#2F2A45" stroke="none"></circle>
+                <circle cx="9" cy="-2" r="3.6" fill="#2F2A45" stroke="none"></circle>
+                <path d="M-4,16 Q0,18 4,16" fill="none" stroke-width="1.6" stroke-linecap="round"></path>
+              </g>
+            </g>
+          </svg>
+        </div>
+        <span style="font-family:'Fredoka',sans-serif; font-size:12px; font-weight:600; letter-spacing:1.5px; color:#5A5370;">RECROQUEVILLÉ SUR SON CAHIER — PLUME À LA PATTE</span>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:8px; align-items:center;">
+        <div style="background:#F3EAD7; border:1px solid #DECFB4; border-radius:14px;">
+          <svg viewBox="-60 -80 120 120" width="160" style="display:block;">
+            <g stroke="#2F2A45" stroke-width="2.2" stroke-linejoin="round" transform="translate(0,-4) scale(1.15)">
+              <use href="#kh"></use>
+              <circle cx="-10" cy="-3" r="7.5" fill="#FFFDF5"></circle>
+              <circle cx="10" cy="-3" r="7.5" fill="#FFFDF5"></circle>
+              <circle cx="-11" cy="0" r="4.2" fill="#2F2A45" stroke="none"></circle>
+              <circle cx="9" cy="0" r="4.2" fill="#2F2A45" stroke="none"></circle>
+              <circle cx="-9.8" cy="-1.3" r="1.3" fill="#FFFFFF" stroke="none"></circle>
+              <circle cx="10.2" cy="-1.3" r="1.3" fill="#FFFFFF" stroke="none"></circle>
+              <path d="M-3.5,17 Q0,15.5 3.5,17" fill="none" stroke-width="1.6" stroke-linecap="round"></path>
+              <ellipse cx="-19" cy="6" rx="4" ry="2.6" fill="#F0B9C6" opacity="0.8" stroke="none"></ellipse>
+              <ellipse cx="19" cy="6" rx="4" ry="2.6" fill="#F0B9C6" opacity="0.8" stroke="none"></ellipse>
+            </g>
+          </svg>
+        </div>
+        <span style="font-family:'Fredoka',sans-serif; font-size:12px; font-weight:600; letter-spacing:1.5px; color:#5A5370;">TIMIDE — REGARD EN DESSOUS</span>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:8px; align-items:center;">
+        <div style="background:#F3EAD7; border:1px solid #DECFB4; border-radius:14px;">
+          <svg viewBox="-60 -80 120 120" width="160" style="display:block;">
+            <g stroke="#2F2A45" stroke-width="2.2" stroke-linejoin="round" transform="translate(0,-4) scale(1.15)">
+              <use href="#kh"></use>
+              <path d="M-17,-8 H-3 M3,-8 H17" stroke-width="1.8" stroke-linecap="round" fill="none"></path>
+              <circle cx="-9" cy="-2" r="3.6" fill="#2F2A45" stroke="none"></circle>
+              <circle cx="9" cy="-2" r="3.6" fill="#2F2A45" stroke="none"></circle>
+              <path d="M2,16 Q6,22 1,24 Q-3,22 0,17 Z" fill="#E58BA0" stroke-width="1.6"></path>
+              <path d="M-38,26 L-30,34 M-34,22 L-26,30" stroke-width="1.4" opacity="0.5" fill="none"></path>
+            </g>
+          </svg>
+        </div>
+        <span style="font-family:'Fredoka',sans-serif; font-size:12px; font-weight:600; letter-spacing:1.5px; color:#5A5370;">CONCENTRÉ EN ÉCRIVANT</span>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:8px; align-items:center;">
+        <div style="background:#F3EAD7; border:1px solid #DECFB4; border-radius:14px;">
+          <svg viewBox="-60 -80 120 120" width="160" style="display:block;">
+            <g stroke="#2F2A45" stroke-width="2.2" stroke-linejoin="round" transform="translate(0,-4) scale(1.15)">
+              <use href="#kh"></use>
+              <path d="M-16,-4 Q-10,-10 -4,-4 M4,-4 Q10,-10 16,-4" fill="none" stroke-width="2.4" stroke-linecap="round"></path>
+              <path d="M-6,15 Q0,22 6,15 Q0,17.5 -6,15 Z" fill="#7A4038" stroke-width="1.6"></path>
+              <ellipse cx="-19" cy="6" rx="5.5" ry="3.6" fill="#E58BA0" opacity="0.85" stroke="none"></ellipse>
+              <ellipse cx="19" cy="6" rx="5.5" ry="3.6" fill="#E58BA0" opacity="0.85" stroke="none"></ellipse>
+              <path d="M0,-7 L1.7,-1.7 7,0 1.7,1.7 0,7 -1.7,1.7 -7,0 -1.7,-1.7 Z" fill="#F4C95D" transform="translate(36,-30) scale(0.8)" stroke="none"></path>
+            </g>
+          </svg>
+        </div>
+        <span style="font-family:'Fredoka',sans-serif; font-size:12px; font-weight:600; letter-spacing:1.5px; color:#5A5370;">ROUGISSANT DE FIERTÉ</span>
+      </div>
+    </div>
+  </div>
+  <div style="background:#FBF5E8; border:1px solid #DECFB4; border-radius:20px; padding:32px 36px; box-shadow:0 6px 24px rgba(47,42,69,0.10); display:flex; flex-direction:column; gap:24px; width:1180px;">
+    <div style="display:flex; align-items:baseline; gap:16px; flex-wrap:wrap;">
+      <span style="font-family:'Fredoka',sans-serif; font-weight:600; font-size:24px;">Paillette</span>
+      <span style="font-size:14px; color:#5A5370;">Costumière du Théâtre — enquête 5. Caramel, étourdie et adorable : lunettes remontées sur le front (qu'elle cherche partout), pelote d'épingles au poignet, dé à coudre doré, mètre-ruban en écharpe. <strong>⚠️ Les fils dorés accrochés à sa fourrure sont l'indice des fils sur le pupitre.</strong></span>
+    </div>
+    <div style="display:flex; gap:20px; align-items:center; flex-wrap:wrap; font-size:12px; color:#5A5370;">
+      <span style="display:flex; align-items:center; gap:6px;"><span style="width:16px; height:16px; border-radius:4px; background:#BE9765; border:1px solid #2F2A45;"></span>pelage #BE9765</span>
+      <span style="display:flex; align-items:center; gap:6px;"><span style="width:16px; height:16px; border-radius:4px; background:#EFE2CC; border:1px solid #2F2A45;"></span>museau #EFE2CC</span>
+      <span style="display:flex; align-items:center; gap:6px;"><span style="width:16px; height:16px; border-radius:4px; background:#6E5A6B; border:1px solid #2F2A45;"></span>robe #6E5A6B</span>
+      <span style="display:flex; align-items:center; gap:6px;"><span style="width:16px; height:16px; border-radius:4px; background:#C4574E; border:1px solid #2F2A45;"></span>pelote #C4574E</span>
+      <span style="display:flex; align-items:center; gap:6px;"><span style="width:16px; height:16px; border-radius:4px; background:#F4C95D; border:1px solid #2F2A45;"></span>fils / dé / lunettes #F4C95D</span>
+    </div>
+    <div style="display:flex; gap:24px;">
+      <div style="display:flex; flex-direction:column; gap:8px; align-items:center;">
+        <div style="background:#F3EAD7; border:1px solid #DECFB4; border-radius:14px;">
+          <svg viewBox="-105 -95 210 230" width="220" style="display:block;">
+            <g stroke="#2F2A45" stroke-width="2.4" stroke-linejoin="round">
+              <line x1="-90" y1="116" x2="90" y2="116" stroke-width="1.5" stroke-dasharray="5 5" opacity="0.35"></line>
+              <path d="M18,58 Q46,66 50,44" fill="none" stroke="#2F2A45" stroke-width="15" stroke-linecap="round"></path>
+              <path d="M18,58 Q46,66 50,44" fill="none" stroke="#BE9765" stroke-width="10" stroke-linecap="round"></path>
+              <path d="M-20,30 Q-30,68 -28,106 L28,106 Q30,68 20,30 Q0,42 -20,30 Z" fill="#6E5A6B"></path>
+              <path d="M-24,88 q10,-6 16,2 q8,-8 16,0 q8,-6 16,2" stroke="#F4C95D" stroke-width="2" fill="none" opacity="0.8"></path>
+              <ellipse cx="-11" cy="109" rx="8" ry="5" fill="#A8763F"></ellipse>
+              <ellipse cx="11" cy="109" rx="8" ry="5" fill="#A8763F"></ellipse>
+              <path d="M-16,34 Q0,44 16,34 L14,48 Q0,56 -14,48 Z" fill="#F4C95D"></path>
+              <path d="M-13,40 v6 M-6,43 v6 M1,44 v6 M8,42 v6" stroke-width="1.4" opacity="0.6" fill="none"></path>
+              <path d="M-20,38 L-44,26" stroke="#2F2A45" stroke-width="16" stroke-linecap="round" fill="none"></path>
+              <path d="M-20,38 L-44,26" stroke="#BE9765" stroke-width="11" stroke-linecap="round" fill="none"></path>
+              <circle cx="-47" cy="24" r="6.5" fill="#CBA472"></circle>
+              <circle cx="-40" cy="32" r="7" fill="#C4574E" stroke-width="2.2"></circle>
+              <g stroke-width="1.6" stroke-linecap="round"><path d="M-44,26 l-4,-7 M-39,25 l0,-8 M-35,27 l4,-7"></path><g fill="#F4C95D" stroke="none"><circle cx="-48.5" cy="18" r="1.6"></circle><circle cx="-39" cy="16" r="1.6"></circle><circle cx="-30.5" cy="19" r="1.6"></circle></g></g>
+              <path d="M20,38 L42,20" stroke="#2F2A45" stroke-width="16" stroke-linecap="round" fill="none"></path>
+              <path d="M20,38 L42,20" stroke="#BE9765" stroke-width="11" stroke-linecap="round" fill="none"></path>
+              <circle cx="45" cy="18" r="6.5" fill="#CBA472"></circle>
+              <path d="M43,8 a6,6 0 0 1 8,5 l-9,1 Z" fill="#F4C95D" stroke-width="2"></path>
+              <path d="M44,10.5 h5 M44,13 h6" stroke-width="1" opacity="0.6" fill="none"></path>
+              <path d="M-26,52 q-10,14 -2,24 q-8,10 2,18" stroke="#F4C95D" stroke-width="2.8" fill="none" stroke-linecap="round"></path>
+              <path d="M24,60 q8,12 0,22" stroke="#F4C95D" stroke-width="2.8" fill="none" stroke-linecap="round"></path>
+              <!-- fils dorés bien visibles accrochés à la fourrure (indice) -->
+              <g stroke="#F4C95D" stroke-width="2.6" fill="none" stroke-linecap="round">
+                <path d="M-30,20 q-14,6 -20,-2 q10,10 22,4"></path>
+                <path d="M30,24 q14,4 18,-4 q-6,12 -20,6"></path>
+                <path d="M-14,44 q-8,10 2,16"></path>
+                <path d="M8,40 q10,6 6,18"></path>
+              </g>
+              <g fill="#F4C95D" stroke="none"><circle cx="-50" cy="18" r="1.8"></circle><circle cx="48" cy="20" r="1.8"></circle><circle cx="-12" cy="60" r="1.6"></circle><circle cx="14" cy="58" r="1.6"></circle></g>
+              <g transform="translate(0,-6)">
+                <use href="#qh"></use><path d="M-28,-14 q-12,4 -16,-3 q9,9 20,3" stroke="#F4C95D" stroke-width="2.4" fill="none" stroke-linecap="round"></path>
+                <circle cx="-12" cy="-2" r="7.5" fill="#FFFDF5"></circle>
+                <circle cx="12" cy="-2" r="7.5" fill="#FFFDF5"></circle>
+                <circle cx="-11" cy="-1" r="4.2" fill="#2F2A45" stroke="none"></circle>
+                <circle cx="13" cy="-1" r="4.2" fill="#2F2A45" stroke="none"></circle>
+                <circle cx="-9.5" cy="-2.5" r="1.3" fill="#FFFFFF" stroke="none"></circle>
+                <circle cx="14.5" cy="-2.5" r="1.3" fill="#FFFFFF" stroke="none"></circle>
+                <path d="M-5,23 Q0,26 5,23" fill="none" stroke-width="1.8" stroke-linecap="round"></path>
+              </g>
+            </g>
+          </svg>
+        </div>
+        <span style="font-family:'Fredoka',sans-serif; font-size:12px; font-weight:600; letter-spacing:1.5px; color:#5A5370;">EN ATELIER — MÈTRE-RUBAN, PELOTE ET DÉ</span>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:8px; align-items:center;">
+        <div style="background:#F3EAD7; border:1px solid #DECFB4; border-radius:14px;">
+          <svg viewBox="-60 -80 120 120" width="160" style="display:block;">
+            <g stroke="#2F2A45" stroke-width="2.4" stroke-linejoin="round">
+              <use href="#qh"></use><path d="M-28,-14 q-12,4 -16,-3 q9,9 20,3" stroke="#F4C95D" stroke-width="2.4" fill="none" stroke-linecap="round"></path>
+              <path d="M-19,-8 H-5 M5,-8 H19" stroke-width="1.8" stroke-linecap="round" fill="none"></path>
+              <circle cx="-10" cy="-3" r="4" fill="#2F2A45" stroke="none"></circle>
+              <circle cx="14" cy="-3" r="4" fill="#2F2A45" stroke="none"></circle>
+              <path d="M-12,21 h24" stroke-width="1.8" stroke-linecap="round" fill="none"></path>
+              <g stroke-width="1.6" stroke-linecap="round"><path d="M-9,21 l-3,6 M-1,21 l0,7 M7,21 l3,6"></path><g fill="#F4C95D" stroke="none"><circle cx="-12.5" cy="28.5" r="1.5"></circle><circle cx="-1" cy="29.5" r="1.5"></circle><circle cx="10.5" cy="28.5" r="1.5"></circle></g></g>
+            </g>
+          </svg>
+        </div>
+        <span style="font-family:'Fredoka',sans-serif; font-size:12px; font-weight:600; letter-spacing:1.5px; color:#5A5370;">AFFAIRÉE — ÉPINGLES AUX DENTS</span>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:8px; align-items:center;">
+        <div style="background:#F3EAD7; border:1px solid #DECFB4; border-radius:14px;">
+          <svg viewBox="-60 -80 120 120" width="160" style="display:block;">
+            <g stroke="#2F2A45" stroke-width="2.4" stroke-linejoin="round">
+              <use href="#qh"></use><path d="M-28,-14 q-12,4 -16,-3 q9,9 20,3" stroke="#F4C95D" stroke-width="2.4" fill="none" stroke-linecap="round"></path>
+              <circle cx="-12" cy="-2" r="9.5" fill="#FFFDF5"></circle>
+              <circle cx="12" cy="-2" r="9.5" fill="#FFFDF5"></circle>
+              <circle cx="-12" cy="-1" r="3" fill="#2F2A45" stroke="none"></circle>
+              <circle cx="12" cy="-1" r="3" fill="#2F2A45" stroke="none"></circle>
+              <path d="M-22,-15 L-26,-19 M22,-15 L26,-19" stroke-width="1.6" stroke-linecap="round" fill="none"></path>
+              <ellipse cx="0" cy="23" rx="4.5" ry="6" fill="#7A4038" stroke-width="2"></ellipse>
+              <path d="M-42,0 l-6,-2 M-41,8 l-6,3 M42,0 l6,-2 M41,8 l6,3" stroke-width="1.8" stroke-linecap="round" fill="none"></path>
+            </g>
+          </svg>
+        </div>
+        <span style="font-family:'Fredoka',sans-serif; font-size:12px; font-weight:600; letter-spacing:1.5px; color:#5A5370;">AHURIE — LA PARTITION DANS LA DOUBLURE !</span>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:8px; align-items:center;">
+        <div style="background:#F3EAD7; border:1px solid #DECFB4; border-radius:14px;">
+          <svg viewBox="-60 -80 120 120" width="160" style="display:block;">
+            <g stroke="#2F2A45" stroke-width="2.4" stroke-linejoin="round">
+              <use href="#qh"></use><path d="M-28,-14 q-12,4 -16,-3 q9,9 20,3" stroke="#F4C95D" stroke-width="2.4" fill="none" stroke-linecap="round"></path>
+              <path d="M-19,-4 Q-12,-11 -5,-4 M5,-4 Q12,-11 19,-4" fill="none" stroke-width="2.6" stroke-linecap="round"></path>
+              <path d="M-9,20 Q0,32 9,20 Q0,23 -9,20 Z" fill="#7A4038" stroke-width="1.8"></path>
+              <ellipse cx="-22" cy="7" rx="4.5" ry="2.8" fill="#E58BA0" opacity="0.7" stroke="none"></ellipse>
+              <ellipse cx="22" cy="7" rx="4.5" ry="2.8" fill="#E58BA0" opacity="0.7" stroke="none"></ellipse>
+              <path d="M-32,26 q4,4 8,4 M32,26 q-4,4 -8,4" stroke-width="1.6" stroke-linecap="round" fill="none"></path>
+            </g>
+          </svg>
+        </div>
+        <span style="font-family:'Fredoka',sans-serif; font-size:12px; font-weight:600; letter-spacing:1.5px; color:#5A5370;">FOU RIRE</span>
+      </div>
+    </div>
+  </div>
+  <div style="background:#FBF5E8; border:1px solid #DECFB4; border-radius:20px; padding:32px 36px; box-shadow:0 6px 24px rgba(47,42,69,0.10); display:flex; flex-direction:column; gap:24px; width:1180px;">
+    <div style="display:flex; align-items:baseline; gap:16px; flex-wrap:wrap;">
+      <span style="font-family:'Fredoka',sans-serif; font-weight:600; font-size:24px;">Hector</span>
+      <span style="font-size:14px; color:#5A5370;">Hibou de la Tour — enquête 6. Vieux sage digne, grand et un peu voûté, col ébouriffé, sourcils de plumes majestueux, regard doux. <strong>⚠️ IMPÉRATIF : ses plumes se détachent facilement — les plumes dans les rouages sont un indice.</strong></span>
+    </div>
+    <div style="display:flex; gap:20px; align-items:center; flex-wrap:wrap; font-size:12px; color:#5A5370;">
+      <span style="display:flex; align-items:center; gap:6px;"><span style="width:16px; height:16px; border-radius:4px; background:#8A7B6C; border:1px solid #2F2A45;"></span>plumage #8A7B6C</span>
+      <span style="display:flex; align-items:center; gap:6px;"><span style="width:16px; height:16px; border-radius:4px; background:#6E6152; border:1px solid #2F2A45;"></span>ailes #6E6152</span>
+      <span style="display:flex; align-items:center; gap:6px;"><span style="width:16px; height:16px; border-radius:4px; background:#B8AA97; border:1px solid #2F2A45;"></span>sourcils / plumes libres #B8AA97</span>
+      <span style="display:flex; align-items:center; gap:6px;"><span style="width:16px; height:16px; border-radius:4px; background:#E4D8C4; border:1px solid #2F2A45;"></span>ventre #E4D8C4</span>
+      <span style="display:flex; align-items:center; gap:6px;"><span style="width:16px; height:16px; border-radius:4px; background:#C99B3E; border:1px solid #2F2A45;"></span>bec / serres #C99B3E</span>
+    </div>
+    <div style="display:flex; gap:24px;">
+      <div style="display:flex; flex-direction:column; gap:8px; align-items:center;">
+        <div style="background:#F3EAD7; border:1px solid #DECFB4; border-radius:14px;">
+          <svg viewBox="-105 -95 210 230" width="220" style="display:block;">
+            <g stroke="#2F2A45" stroke-width="2.4" stroke-linejoin="round">
+              <line x1="-90" y1="116" x2="90" y2="116" stroke-width="1.5" stroke-dasharray="5 5" opacity="0.35"></line>
+              <!-- perchoir en pierre -->
+              <path d="M-60,108 Q0,100 60,108 L60,116 L-60,116 Z" fill="#4C4666"></path>
+              <path d="M-40,106 h20 M4,104 h22" stroke-width="1.4" opacity="0.4" fill="none"></path>
+              <!-- queue -->
+              <path d="M20,92 Q40,110 34,124 L14,120 Q22,106 12,94 Z" fill="#6E6152"></path>
+              <path d="M24,100 L30,116 M18,102 L22,118" stroke-width="1.4" opacity="0.5" fill="none"></path>
+              <!-- corps trois-quarts, léger profil droit -->
+              <path d="M-30,14 Q-48,46 -42,84 Q-36,106 2,106 Q40,104 42,72 Q42,40 24,16 Q0,30 -30,14 Z" fill="#7A6F62"></path>
+              <!-- aile gauche repliée, plumes en écailles -->
+              <path d="M-30,22 Q-52,44 -48,84 Q-44,98 -34,100 Q-40,64 -30,36 Z" fill="#6E6152"></path>
+              <g fill="#8A7E6E" stroke-width="1.6">
+                <path d="M-44,50 q8,5 15,3 q-2,7 -14,5 Z"></path>
+                <path d="M-45,64 q8,5 15,3 q-2,7 -14,5 Z"></path>
+                <path d="M-45,78 q8,5 15,3 q-2,7 -14,5 Z"></path>
+                <path d="M-42,92 q7,4 13,2 q-2,6 -12,4 Z"></path>
+              </g>
+              <!-- poitrail crème en écailles distinctes -->
+              <ellipse cx="-2" cy="66" rx="26" ry="34" fill="#E4D8C4" stroke-width="2.2"></ellipse>
+              <g fill="#F2EAD8" stroke-width="1.4">
+                <path d="M-20,44 q7,5 13,0 q-1,7 -12,4 Z"></path><path d="M-4,42 q7,5 13,0 q-1,7 -12,4 Z"></path><path d="M12,46 q6,4 11,0 q-1,6 -10,4 Z"></path>
+                <path d="M-22,58 q7,5 13,0 q-1,7 -12,4 Z"></path><path d="M-6,56 q7,5 13,0 q-1,7 -12,4 Z"></path><path d="M10,58 q6,4 11,0 q-1,6 -10,4 Z"></path>
+                <path d="M-20,72 q7,5 13,0 q-1,7 -12,4 Z"></path><path d="M-4,70 q7,5 13,0 q-1,7 -12,4 Z"></path><path d="M11,72 q6,4 11,0 q-1,6 -10,4 Z"></path>
+                <path d="M-16,86 q6,4 11,0 q-1,6 -10,4 Z"></path><path d="M-1,84 q6,4 11,0 q-1,6 -10,4 Z"></path>
+              </g>
+              <!-- plume décollée, prête à tomber (indice) -->
+              <g transform="translate(30,58) rotate(28)">
+                <path d="M0,0 Q7,-11 3,-24 Q-5,-12 0,0 Z" fill="#B8AA97" stroke-width="1.8"></path>
+                <path d="M1,-3 L2,-20" stroke-width="1" opacity="0.5" fill="none"></path>
+              </g>
+              <path d="M22,50 q5,3 8,7" stroke-width="1.2" opacity="0.4" fill="none" stroke-dasharray="2 3"></path>
+              <!-- serres -->
+              <path d="M-16,106 l-4,8 M-11,106 l0,9 M-6,106 l3,8" stroke="#C99B3E" stroke-width="3" stroke-linecap="round" fill="none"></path>
+              <path d="M2,106 l-3,8 M7,106 l0,9 M12,106 l4,8" stroke="#C99B3E" stroke-width="3" stroke-linecap="round" fill="none"></path>
+              <!-- tête : aigrettes, disque facial, bec crochu -->
+              <g transform="translate(-4,-6)">
+                <!-- aigrettes dressées -->
+                <path d="M-22,-24 Q-30,-46 -18,-52 Q-16,-38 -12,-28 Z" fill="#7A6F62" stroke-width="2.2"></path>
+                <path d="M22,-24 Q30,-46 18,-52 Q16,-38 12,-28 Z" fill="#7A6F62" stroke-width="2.2"></path>
+                <path d="M-22,-30 Q-24,-42 -18,-48 M22,-30 Q24,-42 18,-48" stroke-width="1.2" opacity="0.5" fill="none"></path>
+                <circle cx="0" cy="-4" r="30" fill="#7A6F62"></circle>
+                <!-- disque facial en deux cercles / cœur -->
+                <circle cx="-12" cy="-4" r="15" fill="#E4D8C4" stroke-width="2.2"></circle>
+                <circle cx="12" cy="-4" r="15" fill="#E4D8C4" stroke-width="2.2"></circle>
+                <path d="M0,-16 Q-6,-10 -6,-2 M0,-16 Q6,-10 6,-2" stroke-width="1.6" opacity="0.6" fill="none"></path>
+                <path d="M-24,-4 Q-26,6 -14,12 M24,-4 Q26,6 14,12" stroke-width="1.4" opacity="0.5" fill="none"></path>
+                <!-- sourcils tombants -->
+                <path d="M-22,-13 Q-14,-16 -6,-11 M22,-13 Q14,-16 6,-11" fill="#8A7E6E" stroke-width="2.2"></path>
+                <!-- grands yeux ambrés -->
+                <circle cx="-11" cy="-3" r="10.5" fill="#F4C95D" stroke-width="2.4"></circle>
+                <circle cx="11" cy="-3" r="10.5" fill="#F4C95D" stroke-width="2.4"></circle>
+                <circle cx="-11" cy="-3" r="5" fill="#2F2A45" stroke="none"></circle>
+                <circle cx="11" cy="-3" r="5" fill="#2F2A45" stroke="none"></circle>
+                <circle cx="-8.5" cy="-5.5" r="1.6" fill="#FFFFFF" stroke="none"></circle>
+                <circle cx="13.5" cy="-5.5" r="1.6" fill="#FFFFFF" stroke="none"></circle>
+                <!-- petit bec crochu court -->
+                <path d="M-4,2 L4,2 L1,9 Q0,12 -1,9 Z" fill="#C99B3E" stroke-width="2"></path>
+                <path d="M-1,9 Q0,13 2,10" stroke-width="1.6" fill="none" stroke-linecap="round"></path>
+              </g>
+            </g>
+          </svg>
+        </div>
+        <span style="font-family:'Fredoka',sans-serif; font-size:12px; font-weight:600; letter-spacing:1.5px; color:#5A5370;">PERCHÉ, TROIS-QUARTS — PLUME PRÊTE À TOMBER</span>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:8px; align-items:center;">
+        <div style="background:#F3EAD7; border:1px solid #DECFB4; border-radius:14px;">
+          <svg viewBox="-60 -80 120 120" width="160" style="display:block;">
+            <g stroke="#2F2A45" stroke-width="2.4" stroke-linejoin="round">
+              <use href="#hh"></use>
+              <circle cx="-13" cy="-4" r="8.5" fill="#FFFDF5"></circle>
+              <circle cx="13" cy="-4" r="8.5" fill="#FFFDF5"></circle>
+              <path d="M-21.5,-7 A8.5,8.5 0 0 1 -4.5,-7 L-4.5,-5 L-21.5,-5 Z" fill="#8A7B6C" stroke="none"></path>
+              <path d="M4.5,-7 A8.5,8.5 0 0 1 21.5,-7 L21.5,-5 L4.5,-5 Z" fill="#8A7B6C" stroke="none"></path>
+              <path d="M-21.5,-5 H-4.5 M4.5,-5 H21.5" stroke-width="1.8" stroke-linecap="round" fill="none"></path>
+              <circle cx="-12" cy="-2" r="4" fill="#2F2A45" stroke="none"></circle>
+              <circle cx="14" cy="-2" r="4" fill="#2F2A45" stroke="none"></circle>
+              <path d="M-6,20 Q0,22 6,20" stroke-width="1.6" stroke-linecap="round" fill="none"></path>
+            </g>
+          </svg>
+        </div>
+        <span style="font-family:'Fredoka',sans-serif; font-size:12px; font-weight:600; letter-spacing:1.5px; color:#5A5370;">DIGNE</span>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:8px; align-items:center;">
+        <div style="background:#F3EAD7; border:1px solid #DECFB4; border-radius:14px;">
+          <svg viewBox="-60 -80 120 120" width="160" style="display:block;">
+            <g stroke="#2F2A45" stroke-width="2.4" stroke-linejoin="round">
+              <use href="#hh"></use>
+              <circle cx="-13" cy="-3" r="8" fill="#FFFDF5"></circle>
+              <circle cx="13" cy="-3" r="8" fill="#FFFDF5"></circle>
+              <circle cx="-12" cy="0" r="4.2" fill="#2F2A45" stroke="none"></circle>
+              <circle cx="14" cy="0" r="4.2" fill="#2F2A45" stroke="none"></circle>
+              <path d="M-22,-13 L-8,-9 M22,-13 L8,-9" stroke-width="1.8" stroke-linecap="round" fill="none"></path>
+              <path d="M-5,21 Q0,18.5 5,21" stroke-width="1.7" stroke-linecap="round" fill="none"></path>
+              <use href="#hf" transform="translate(38,18) rotate(40) scale(0.8)"></use>
+            </g>
+          </svg>
+        </div>
+        <span style="font-family:'Fredoka',sans-serif; font-size:12px; font-weight:600; letter-spacing:1.5px; color:#5A5370;">PENAUD — LE NID DÉCOUVERT</span>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:8px; align-items:center;">
+        <div style="background:#F3EAD7; border:1px solid #DECFB4; border-radius:14px;">
+          <svg viewBox="-60 -80 120 120" width="160" style="display:block;">
+            <g stroke="#2F2A45" stroke-width="2.4" stroke-linejoin="round">
+              <use href="#hh"></use>
+              <path d="M-20,-4 Q-13,-11 -6,-4 M6,-4 Q13,-11 20,-4" fill="none" stroke-width="2.6" stroke-linecap="round"></path>
+              <path d="M-6,19 Q0,24 6,19" stroke-width="1.8" stroke-linecap="round" fill="none"></path>
+              <ellipse cx="-23" cy="6" rx="4.5" ry="2.8" fill="#C48A94" opacity="0.5" stroke="none"></ellipse>
+              <ellipse cx="23" cy="6" rx="4.5" ry="2.8" fill="#C48A94" opacity="0.5" stroke="none"></ellipse>
+              <path d="M0,-7 L1.7,-1.7 7,0 1.7,1.7 0,7 -1.7,1.7 -7,0 -1.7,-1.7 Z" fill="#F4C95D" transform="translate(40,-28) scale(0.8)" stroke="none"></path>
+            </g>
+          </svg>
+        </div>
+        <span style="font-family:'Fredoka',sans-serif; font-size:12px; font-weight:600; letter-spacing:1.5px; color:#5A5370;">ATTENDRI — DEVANT SES PETITS</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+</x-dc>
+</body>
+</html>

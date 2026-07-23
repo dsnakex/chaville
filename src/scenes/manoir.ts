@@ -4,7 +4,9 @@ import { PORTRAITS } from '../art'
 // Suspects du bal (portés depuis academie.html, enquête « Le collier de la Duchesse »).
 const LEO: Suspect = { id: 'leo', nom: 'Léo', role: 'Majordome siamois', portrait: { espece: 'chat', fourrure: '#D8CDBA', ventre: '#F2EDE0', accent: '#6E5A4A', coiffe: 'noeud', habit: '#2B2740' } }
 const ZOE: Suspect = { id: 'zoe', nom: 'Zoé', role: 'Danseuse tricolore', portrait: { espece: 'chat', fourrure: '#E8A87C', ventre: '#F2EDE0', accent: '#C4574E', coiffe: 'noeud', habit: '#C77DA0' } }
-const BARNABE: Suspect = { id: 'barnabe', nom: 'Barnabé', role: 'Cuisinier persan', portrait: { espece: 'chat', fourrure: '#E7E2D6', ventre: '#F7F3EA', accent: '#C9B79C', coiffe: 'chef', habit: '#EDE6D6' } }
+// ⚠️ Planche « coupables » : Barnabé doit lire BIEN ROND — ses grosses
+// empreintes de farine sont un indice de l'enquête.
+const BARNABE: Suspect = { id: 'barnabe', nom: 'Barnabé', role: 'Cuisinier persan', portrait: { espece: 'chat', fourrure: '#8A8790', ventre: '#E8E4DA', accent: '#6E6B74', habit: '#F2EDE0', tenue: 'tablier', planche: 'barnabe', taille: 1.1, largeur: 1.2 } }
 const FILOU: Suspect = { id: 'filou', nom: 'Filou', role: 'Magicien roux', portrait: { espece: 'chat', fourrure: '#C97B4A', ventre: '#F2EDE0', accent: '#A85A2E', coiffe: 'haut-de-forme', habit: '#33304A' } }
 const LUNA: Suspect = { id: 'luna', nom: 'Luna', role: 'Pianiste noire', portrait: { espece: 'chat', fourrure: '#4E4A5E', ventre: '#B7B2C4', accent: '#6A6478', coiffe: 'noeud', habit: '#2F2A45' } }
 

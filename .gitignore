@@ -4,3 +4,6 @@ dist/
 
 # Artefacts de session (handoff Cowork) — ne pas versionner
 assets/*handoff*
+
+# Archive de handoff à la racine
+/Myst*handoff*.zip

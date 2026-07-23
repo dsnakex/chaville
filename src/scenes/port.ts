@@ -8,7 +8,9 @@ const BARBE: Suspect = { id: 'barbe', nom: 'Barbe-Grise', role: 'Capitaine, vieu
 const MARINETTE: Suspect = { id: 'marinette', nom: 'Marinette', role: 'Matelote rousse', portrait: { espece: 'chat', fourrure: '#C97B4A', ventre: '#F2EDE0', accent: '#A85A2E', coiffe: 'casquette', habit: '#4A6480' } }
 const GASPARD: Suspect = { id: 'gaspard', nom: 'Gaspard', role: 'Gardien du phare', portrait: { espece: 'chat', fourrure: '#A8A39B', ventre: '#F2EDE0', accent: '#7C776E', coiffe: 'aucune', habit: '#5A5370' } }
 const PLUME_P: Suspect = { id: 'plumep', nom: 'Plume', role: 'Poissonnière blanche', portrait: { espece: 'chat', fourrure: '#E7E2D6', ventre: '#F7F3EA', accent: '#C9B79C', coiffe: 'foulard-pois', habit: '#59677A' } }
-const LONTRA: Suspect = { id: 'lontra', nom: 'Lontra', role: 'Loutre joueuse de passage', portrait: { espece: 'ecureuil', fourrure: '#8A6F52', ventre: '#D8C4A0', accent: '#B89A6A', coiffe: 'aucune', habit: '#5E7A6A' } }
+// ⚠️ Planche « coupables » : loutre et non ourson — petites dents pointues
+// (corde rongée) et fourrure d'aspect mouillé (traces humides) sont des indices.
+const LONTRA: Suspect = { id: 'lontra', nom: 'Lontra', role: 'Loutre joueuse de passage', portrait: { espece: 'chat', fourrure: '#7A5A44', ventre: '#D9C3A5', accent: '#A88960', habit: '#6E4E38', accessoire: 'poisson', planche: 'lontra', taille: 0.94, largeur: 1.08 } }
 const RITON: Suspect = { id: 'riton', nom: 'Riton', role: 'Rat des quais, solitaire', portrait: { espece: 'souris', fourrure: '#9A9384', ventre: '#E4E1D8', accent: '#C9A0A8', coiffe: 'aucune', habit: '#6B5A44' } }
 
 export const port: Scene = {

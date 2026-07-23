@@ -7,7 +7,7 @@ import { montrerCarteFG } from '../ui/carte-fg'
 import { bandeau } from '../ui/modal'
 import { lancerMiniJeu } from '../minigames'
 import { lancerConfrontation } from '../minigames/confrontation'
-import { SPRITES_DETECTIVE, SPRITES_PISTACHE, PORTRAITS, corpsSVG, HAUTEUR_CORPS } from '../art'
+import { SPRITES_DETECTIVE, SPRITES_PISTACHE, PORTRAITS, corpsSVG, hauteurCorps } from '../art'
 import type { OptionsPortrait } from '../art'
 
 const SVG_NS = 'http://www.w3.org/2000/svg'
@@ -266,7 +266,9 @@ export class VueScene {
     }
 
     // Bulle pulsante au-dessus de la tête : « parle-moi » ou « casse-tête ».
-    const hauteur = opts ? HAUTEUR_CORPS : 128
+    // Tient compte de la corpulence : la bulle de Malo descend, celle de
+    // Barnabé monte, chacune reste juste au-dessus de sa tête.
+    const hauteur = opts ? hauteurCorps(opts) : 128
     const bulle = el('g', { transform: `translate(${sol.x} ${(sol.y - hauteur * s).toFixed(1)})` })
     bulle.classList.add('scintille')
     bulle.append(

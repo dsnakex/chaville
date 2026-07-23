@@ -2,7 +2,9 @@ import type { Scene, Suspect } from '../types'
 
 const TIC: Suspect = { id: 'tic', nom: 'Tic', role: 'Horloger jumeau', portrait: { espece: 'chat', fourrure: '#9A8C6E', ventre: '#EDE4CE', accent: '#6B5A44', coiffe: 'casquette', habit: '#6B5A44' } }
 const TAC: Suspect = { id: 'tac', nom: 'Tac', role: 'Horloger jumeau', portrait: { espece: 'chat', fourrure: '#9A8C6E', ventre: '#EDE4CE', accent: '#6B5A44', coiffe: 'casquette', habit: '#5A4A38' } }
-const HECTOR: Suspect = { id: 'hector', nom: 'Hector', role: 'Hibou de la tour', portrait: { espece: 'hibou', fourrure: '#8A6F52', ventre: '#D8C4A0', accent: '#B89A6A', coiffe: 'aucune', habit: '#6B5540' } }
+// ⚠️ Planche « coupables » : ses plumes se détachent facilement — les plumes
+// retrouvées dans les rouages sont un indice de l'enquête.
+const HECTOR: Suspect = { id: 'hector', nom: 'Hector', role: 'Hibou de la tour', portrait: { espece: 'hibou', fourrure: '#8A7B6C', ventre: '#D8C4A0', accent: '#6E6255', habit: '#6B5540', accessoire: 'plume-envol', planche: 'hector', taille: 1.06 } }
 const PERDRIX: Suspect = { id: 'perdrix', nom: 'Perdrix', role: 'Pie bavarde des toits', portrait: { espece: 'oiseau', fourrure: '#33333E', ventre: '#F2EDE0', accent: '#5A6488', coiffe: 'aucune', habit: '#2F2A45' } }
 const MINUIT: Suspect = { id: 'minuit', nom: 'Minuit', role: 'Veilleuse de nuit', portrait: { espece: 'chat', fourrure: '#3F4A63', ventre: '#9098AE', accent: '#5A6488', coiffe: 'aucune', habit: '#2F2A45', regard: 'endormi' } }
 const CARILLON: Suspect = { id: 'carillon', nom: 'Carillon', role: 'Sonneur des cloches', portrait: { espece: 'chat', fourrure: '#A8A39B', ventre: '#F2EDE0', accent: '#7C776E', coiffe: 'aucune', habit: '#7A5A44' } }

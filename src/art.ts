@@ -205,14 +205,19 @@ export const SPRITES_PISTACHE = { front: '#pis-front', side: '#pis-side', back: 
 // ---------------------------------------------------------------------------
 
 export type Espece = 'chat' | 'souris' | 'hibou' | 'ecureuil' | 'oiseau'
-export type Regard = 'normal' | 'severe' | 'endormi' | 'surpris'
+export type Regard = 'normal' | 'severe' | 'endormi' | 'surpris' | 'ambre'
 export type Coiffe =
   | 'aucune' | 'deerstalker' | 'kepi' | 'foulard-pois' | 'casquette'
   | 'beret' | 'chef' | 'monocle' | 'noeud' | 'haut-de-forme'
 
 /** Tenues et accessoires : n'apparaissent que sur les corps entiers. */
 export type Tenue = 'aucune' | 'manteau' | 'tablier' | 'robe' | 'gilet' | 'echarpe'
-export type Accessoire = 'aucun' | 'carnet' | 'poisson' | 'livre' | 'canne' | 'eventail'
+export type Accessoire =
+  | 'aucun' | 'carnet' | 'poisson' | 'livre' | 'canne' | 'eventail'
+  /** Broche note de musique portée sur la poitrine (Madame Sopranino). */
+  | 'broche-note'
+  /** Plume qui se détache (Hector : les plumes des rouages sont un indice). */
+  | 'plume-envol'
 
 export interface OptionsPortrait {
   espece: Espece
@@ -228,11 +233,20 @@ export interface OptionsPortrait {
   /** Corps entier : objet tenu à la patte. */
   accessoire?: Accessoire
   /**
-   * Personnage nommé dont la tête vient TELLE QUELLE des planches
-   * (`detective`, `griffe`, `sardine`, `moustache`). Les suspects génériques
-   * n'en ont pas : ils restent produits par le générateur paramétrique.
+   * Personnage nommé dont la tête vient TELLE QUELLE des planches. Les suspects
+   * génériques n'en ont pas : ils restent produits par le générateur paramétrique.
    */
   planche?: string
+  /**
+   * Corpulence du personnage, appliquée AUTOUR DE LA LIGNE DE SOL (les pieds ne
+   * bougent pas). 1 = adulte standard.
+   * ⚠️ Contractuel côté enquête : Barnabé doit lire GROS (ses grosses empreintes
+   * de farine sont un indice) et Malo nettement PLUS PETIT que les adultes
+   * (ses petites pattes sont un indice).
+   */
+  taille?: number
+  /** Largeur supplémentaire (Barnabé « bien rond »). */
+  largeur?: number
 }
 
 const esc = (s: string): string => s.replace(/&/g, '&amp;').replace(/"/g, '&quot;')
@@ -290,6 +304,16 @@ function yeux(regard: Regard, fourrure: string): string {
         <path d="M-21,-1 H-5 M5,-1 H21" stroke="#2F2A45" stroke-width="2" stroke-linecap="round" fill="none"></path>
         <circle cx="-12" cy="2" r="3.8" fill="#2F2A45" stroke="none"></circle>
         <circle cx="14" cy="2" r="3.8" fill="#2F2A45" stroke="none"></circle>`
+    case 'ambre':
+      // Iris ambré du démasqué (planche SPOILER) — regard vif, jamais froid.
+      return `<circle cx="-11" cy="-2" r="7" fill="#FFFDF5"></circle>
+        <circle cx="11" cy="-2" r="7" fill="#FFFDF5"></circle>
+        <circle cx="-11" cy="-2" r="4.4" fill="#F4C95D"></circle>
+        <circle cx="11" cy="-2" r="4.4" fill="#F4C95D"></circle>
+        <circle cx="-10.5" cy="-1.5" r="2.2" fill="#2F2A45" stroke="none"></circle>
+        <circle cx="11.5" cy="-1.5" r="2.2" fill="#2F2A45" stroke="none"></circle>
+        <circle cx="-9.4" cy="-3" r="1" fill="#FFFFFF" stroke="none"></circle>
+        <circle cx="12.6" cy="-3" r="1" fill="#FFFFFF" stroke="none"></circle>`
     case 'endormi':
       return `<path d="M-23,-3 Q-14,3 -5,-3 M5,-3 Q14,3 23,-3" fill="none" stroke="#2F2A45" stroke-width="2.4" stroke-linecap="round"></path>`
     case 'surpris':
@@ -372,7 +396,7 @@ function moustaches(): string {
  *
  * `yeuxSVG` est injecté à l'endroit exact où la planche le place.
  */
-const TETES_PLANCHE: Record<string, (yeuxSVG: string) => string> = {
+const TETES_PLANCHE: Record<string, (yeuxSVG: string, classeYeux: string) => string> = {
   // « #ch » + « #cen » — chat gris tigré, rayures front et joues, deerstalker.
   detective: (yeuxSVG) => `
     <path d="M-35,-24 L-50,-46 L-16,-36 Z" fill="#8C93A8"></path>
@@ -452,6 +476,196 @@ const TETES_PLANCHE: Record<string, (yeuxSVG: string) => string> = {
     <path d="M-8,-14 Q12,-22 38,-13 Q18,-6 -8,-10 Z" fill="#55391F"></path>
     <circle cx="0" cy="-46" r="3" fill="#55391F"></circle>
     ${yeuxSVG}`,
+
+  // --- Habitants n° 2 -----------------------------------------------------
+
+  // « #ah » — angora très volumineux, mèches soyeuses, nœud de ruban à deux
+  // boucles avec sa perle d'or.
+  duchesse: (yeuxSVG) => `
+    <path d="M-30,-22 L-42,-46 L-12,-32 Z" fill="#EFEAE0"></path>
+    <path d="M30,-22 L42,-46 L12,-32 Z" fill="#EFEAE0"></path>
+    <path d="M-28,-26 L-35,-40 L-18,-31 Z" fill="#E9AFBB" stroke="none"></path>
+    <path d="M28,-26 L35,-40 L18,-31 Z" fill="#E9AFBB" stroke="none"></path>
+    <circle cx="0" cy="0" r="34" fill="#EFEAE0"></circle>
+    <path d="M-34,-4 q-12,-3 -16,4 q9,5 16,2 Z M34,-4 q12,-3 16,4 q-9,5 -16,2 Z M-25,22 q-10,8 -6,15 q7,-3 11,-9 Z M25,22 q10,8 6,15 q-7,-3 -11,-9 Z M-30,-22 q-10,-6 -10,-16 q8,4 12,10 Z M30,-22 q10,-6 10,-16 q-8,4 -12,10 Z" fill="#EFEAE0"></path>
+    <path d="M-20,-30 q-4,-8 2,-12 M20,-30 q4,-8 -2,-12" fill="none" stroke="#C9BFAE" stroke-width="2" stroke-linecap="round" opacity="0.8"></path>
+    <ellipse cx="0" cy="15" rx="15" ry="10" fill="#FFFDF5"></ellipse>
+    <path d="M-3.8,8.5 L3.8,8.5 L0,13 Z" fill="#E58BA0" stroke="none"></path>
+    <g stroke="#2F2A45" stroke-width="1.1" opacity="0.4" stroke-linecap="round" fill="none">
+      <path d="M-18,11 L-32,8"></path><path d="M-18,16 L-31,17"></path>
+      <path d="M18,11 L32,8"></path><path d="M18,16 L31,17"></path>
+    </g>
+    <g transform="translate(0,-34)">
+      <path d="M-6,3 L-10,17 M6,3 L10,17" stroke="#E58BA0" stroke-width="4.5" stroke-linecap="round" fill="none"></path>
+      <path d="M0,2 Q-17,-9 -15,5 Q-14,13 0,6 Z" fill="#E58BA0" stroke-width="2.2"></path>
+      <path d="M0,2 Q17,-9 15,5 Q14,13 0,6 Z" fill="#E58BA0" stroke-width="2.2"></path>
+      <path d="M-12,-1 Q-11,4 -3,4 M12,-1 Q11,4 3,4" stroke-width="1.2" opacity="0.5" fill="none"></path>
+      <circle cx="0" cy="3" r="4" fill="#F4C95D" stroke-width="1.8"></circle>
+    </g>
+    ${yeuxSVG}`,
+
+  // « #ph » — chignon avec le crayon planté, lorgnon d'or à chaînette.
+  plume: (yeuxSVG) => `
+    <path d="M-29,-23 L-39,-44 L-11,-32 Z" fill="#C2B6A6"></path>
+    <path d="M29,-23 L39,-44 L11,-32 Z" fill="#C2B6A6"></path>
+    <path d="M-27,-27 L-33,-38 L-17,-31 Z" fill="#E9AFBB" stroke="none"></path>
+    <path d="M27,-27 L33,-38 L17,-31 Z" fill="#E9AFBB" stroke="none"></path>
+    <circle cx="0" cy="-40" r="11" fill="#9A8C7C"></circle>
+    <path d="M-6,-45 q6,5 12,0 M-5,-38 q5,4 10,0" stroke="#2F2A45" stroke-width="1.2" opacity="0.4" fill="none"></path>
+    <g transform="rotate(-32 0 -40)">
+      <rect x="-2.5" y="-62" width="5" height="26" rx="1.5" fill="#C99B3E" stroke-width="1.8"></rect>
+      <path d="M-2.5,-62 L0,-69 L2.5,-62 Z" fill="#6B4A36" stroke-width="1.6"></path>
+    </g>
+    <circle cx="0" cy="0" r="32" fill="#C2B6A6"></circle>
+    <ellipse cx="0" cy="14" rx="15" ry="10" fill="#F2EDE0"></ellipse>
+    <path d="M-3.8,8 L3.8,8 L0,12.5 Z" fill="#C98A94" stroke="none"></path>
+    <g stroke="#2F2A45" stroke-width="1.1" opacity="0.4" stroke-linecap="round" fill="none">
+      <path d="M-17,10 L-31,7"></path><path d="M-17,15 L-30,16"></path>
+      <path d="M17,10 L31,7"></path><path d="M17,15 L30,16"></path>
+    </g>
+    ${yeuxSVG}
+    <circle cx="13" cy="0" r="12" fill="none" stroke="#F4C95D" stroke-width="3.5"></circle>
+    <circle cx="13" cy="0" r="12" fill="none" stroke-width="1.4" opacity="0.6"></circle>
+    <path d="M24,7 q10,12 4,24" fill="none" stroke="#C99B3E" stroke-width="2" stroke-linecap="round"></path>`,
+
+  // « #oh » — crème aux reflets dorés, mèche de diva.
+  sopranino: (yeuxSVG) => `
+    <path d="M-30,-22 L-41,-44 L-12,-31 Z" fill="#E7DCC8"></path>
+    <path d="M30,-22 L41,-44 L12,-31 Z" fill="#E7DCC8"></path>
+    <path d="M-28,-26 L-34,-38 L-18,-30 Z" fill="#E9AFBB" stroke="none"></path>
+    <path d="M28,-26 L34,-38 L18,-30 Z" fill="#E9AFBB" stroke="none"></path>
+    <circle cx="0" cy="0" r="34" fill="#E7DCC8"></circle>
+    <path d="M-30,-14 q6,-4 10,0 M22,-16 q6,-4 10,2" stroke="#E3C98F" stroke-width="3" fill="none" stroke-linecap="round" opacity="0.9"></path>
+    <path d="M-4,-32 q4,-10 12,-8 q-8,4 -6,10 Z" fill="#E3C98F" stroke-width="1.8"></path>
+    <ellipse cx="0" cy="16" rx="16" ry="11" fill="#FFFDF5"></ellipse>
+    <path d="M-4,9 L4,9 L0,13.5 Z" fill="#C4574E" stroke="none"></path>
+    <g stroke="#2F2A45" stroke-width="1.1" opacity="0.4" stroke-linecap="round" fill="none">
+      <path d="M-19,12 L-33,9"></path><path d="M-19,17 L-32,18"></path>
+      <path d="M19,12 L33,9"></path><path d="M19,17 L32,18"></path>
+    </g>
+    ${yeuxSVG}
+    <path d="M-20,-6 Q-13,-12 -6,-6 M6,-6 Q13,-12 20,-6" fill="none" stroke="#2F2A45" stroke-width="2.6" stroke-linecap="round"></path>
+    <path d="M-20,-10 l-5,-5 M-13,-12 l-3,-6 M20,-10 l5,-5 M13,-12 l3,-6" stroke="#2F2A45" stroke-width="1.6" stroke-linecap="round" fill="none"></path>`,
+
+  // --- Les coupables au grand cœur (silhouettes = indices d'enquête) -------
+
+  // « #bh » — persan gris fumée à face écrasée, toque penchée, farine.
+  // IMPÉRATIF planche : bien rond (ses grosses empreintes sont un indice).
+  barnabe: (yeuxSVG) => `
+    <circle cx="0" cy="0" r="34" fill="#8A8790"></circle>
+    <path d="M-34,8 q-11,0 -14,7 q9,3 15,-1 Z M34,8 q11,0 14,7 q-9,3 -15,-1 Z M-30,22 q-8,7 -5,13 q7,-2 10,-8 Z M30,22 q8,7 5,13 q-7,-2 -10,-8 Z" fill="#8A8790"></path>
+    <ellipse cx="0" cy="13" rx="18" ry="13" fill="#E8E4DA"></ellipse>
+    <ellipse cx="0" cy="6" rx="5" ry="3.5" fill="#A8757F" stroke-width="1.6"></ellipse>
+    <g stroke="#2F2A45" stroke-width="1.1" opacity="0.4" stroke-linecap="round" fill="none">
+      <path d="M-20,10 L-33,7"></path><path d="M-20,15 L-32,16"></path>
+      <path d="M20,10 L33,7"></path><path d="M20,15 L32,16"></path>
+    </g>
+    ${yeuxSVG}
+    <g transform="rotate(-10)">
+      <path d="M-24,-24 Q-30,-46 -14,-48 Q-18,-58 -2,-56 Q14,-60 12,-50 Q28,-48 24,-24 Z" fill="#FFFDF5"></path>
+      <path d="M-25,-24 Q0,-30 25,-24" fill="none" stroke-width="2.4"></path>
+    </g>
+    <circle cx="-24" cy="-4" r="2" fill="#FFFDF5" stroke="none"></circle>
+    <circle cx="26" cy="18" r="1.6" fill="#FFFDF5" stroke="none"></circle>`,
+
+  // « #kh » — chaton roux pâle, immenses oreilles, plume derrière l'oreille.
+  // IMPÉRATIF planche : nettement plus petit (crâne r=25 contre 34 chez l'adulte).
+  malo: (yeuxSVG) => `
+    <path d="M-20,-16 L-36,-54 L-2,-26 Z" fill="#CF9E72"></path>
+    <path d="M20,-16 L36,-54 L2,-26 Z" fill="#CF9E72"></path>
+    <path d="M-18,-22 L-29,-46 L-7,-27 Z" fill="#F0B9C6" stroke="none"></path>
+    <path d="M18,-22 L29,-46 L7,-27 Z" fill="#F0B9C6" stroke="none"></path>
+    <circle cx="0" cy="0" r="25" fill="#CF9E72"></circle>
+    <ellipse cx="0" cy="11" rx="13" ry="9" fill="#F2EDE0"></ellipse>
+    <path d="M-3.4,5.5 L3.4,5.5 L0,9.5 Z" fill="#D96C5C" stroke="none"></path>
+    <g stroke="#2F2A45" stroke-width="1" opacity="0.4" stroke-linecap="round" fill="none">
+      <path d="M-14,8 L-25,6"></path><path d="M-14,12 L-24,13"></path>
+      <path d="M14,8 L25,6"></path><path d="M14,12 L24,13"></path>
+    </g>
+    ${yeuxSVG}
+    <g transform="translate(26,-26) rotate(34)">
+      <path d="M0,2 Q9,-12 3,-26 Q-7,-12 0,2 Z" fill="#F2EDE0" stroke-width="1.8"></path>
+      <path d="M1,-2 L2,-22" stroke-width="1.1" opacity="0.5" fill="none"></path>
+    </g>`,
+
+  // « #qh » — caramel, lunettes remontées sur le front, fils dorés accrochés
+  // à la fourrure (indice des fils du pupitre).
+  paillette: (yeuxSVG) => `
+    <path d="M-28,-20 L-38,-42 L-12,-30 Z" fill="#BE9765"></path>
+    <path d="M28,-20 L38,-42 L12,-30 Z" fill="#BE9765"></path>
+    <path d="M-26,-24 L-32,-36 L-16,-29 Z" fill="#F0B9C6" stroke="none"></path>
+    <path d="M26,-24 L32,-36 L16,-29 Z" fill="#F0B9C6" stroke="none"></path>
+    <circle cx="0" cy="0" r="32" fill="#BE9765"></circle>
+    <ellipse cx="0" cy="13" rx="16" ry="11" fill="#EFE2CC"></ellipse>
+    <path d="M-3.8,7.5 L3.8,7.5 L0,12 Z" fill="#D96C5C" stroke="none"></path>
+    <g stroke="#2F2A45" stroke-width="1.1" opacity="0.4" stroke-linecap="round" fill="none">
+      <path d="M-18,10 L-31,7"></path><path d="M-18,15 L-30,16"></path>
+      <path d="M18,10 L31,7"></path><path d="M18,15 L30,16"></path>
+    </g>
+    ${yeuxSVG}
+    <g transform="translate(0,-24)">
+      <circle cx="-10" cy="0" r="8" fill="none" stroke="#F4C95D" stroke-width="3"></circle>
+      <circle cx="10" cy="0" r="8" fill="none" stroke="#F4C95D" stroke-width="3"></circle>
+      <path d="M-2,0 H2 M-18,0 h-6 M18,0 h6" stroke="#F4C95D" stroke-width="3" fill="none"></path>
+      <circle cx="-10" cy="0" r="8" fill="none" stroke-width="1.2" opacity="0.5"></circle>
+      <circle cx="10" cy="0" r="8" fill="none" stroke-width="1.2" opacity="0.5"></circle>
+    </g>
+    <path d="M-30,16 q-6,8 -2,14 M26,20 q6,6 3,13" stroke="#F4C95D" stroke-width="1.8" fill="none" stroke-linecap="round"></path>`,
+
+  // « #hh » — vieux hibou, col ébouriffé, sourcils de plumes, bec d'or.
+  hector: (yeuxSVG) => `
+    <circle cx="0" cy="0" r="32" fill="#8A7B6C"></circle>
+    <path d="M-24,-18 Q-30,-34 -16,-40 L-10,-26 Z" fill="#8A7B6C"></path>
+    <path d="M24,-18 Q30,-34 16,-40 L10,-26 Z" fill="#8A7B6C"></path>
+    <path d="M-30,10 q-8,4 -9,10 q7,1 11,-4 Z M30,10 q8,4 9,10 q-7,1 -11,-4 Z" fill="#8A7B6C"></path>
+    ${yeuxSVG}
+    <path d="M-26,-14 Q-14,-24 -2,-16 M2,-16 Q14,-24 26,-14" fill="#B8AA97" stroke-width="2.2"></path>
+    <path d="M-26,-14 l-6,-6 M26,-14 l6,-6" stroke-width="2.4" stroke-linecap="round" fill="none"></path>
+    <path d="M-4,4 L4,4 L0,14 Z" fill="#C99B3E" stroke-width="2"></path>`,
+
+  // Lontra — tête de LOUTRE de profil (planche, pose « debout de profil ») :
+  // museau carré, truffe noire, vibrisses… et surtout ses PETITES DENTS
+  // POINTUES et ses reflets mouillés, qui sont deux indices d'enquête.
+  // Elle porte son propre œil : on ignore le jeu d'yeux générique.
+  lontra: (_yeuxSVG, classeYeux) => `
+    <ellipse cx="-14" cy="-8" rx="6" ry="4.5" fill="#7A5A44"></ellipse>
+    <ellipse cx="0" cy="0" rx="26" ry="17" fill="#7A5A44"></ellipse>
+    <path d="M-16,-6 q6,-4 12,-2" stroke="#A88960" stroke-width="2.6" fill="none" stroke-linecap="round" opacity="0.9"></path>
+    <path d="M14,-11 Q34,-12 35,-2 Q36,9 20,11 Q14,4 14,-11 Z" fill="#D9C3A5" stroke-width="2.2"></path>
+    <ellipse cx="24" cy="4" rx="10" ry="6" fill="#F2EDE0" stroke-width="1.8"></ellipse>
+    <path d="M31,-6 Q39,-6 39,0 Q39,5 32,6 Q30,0 31,-6 Z" fill="#2F2A45" stroke-width="1.6"></path>
+    <g stroke-width="1" opacity="0.5" stroke-linecap="round" fill="none">
+      <path d="M28,4 L46,2 M28,6 L47,8 M27,8 L44,14 M26,2 L44,-4"></path>
+    </g>
+    <g fill="#2F2A45" stroke="none"><circle cx="25" cy="2" r="0.9"></circle><circle cx="22" cy="6" r="0.9"></circle></g>
+    <g class="${classeYeux}">
+      <circle cx="2" cy="-6" r="6" fill="#FFFDF5" stroke-width="2"></circle>
+      <circle cx="3" cy="-5" r="3.2" fill="#2F2A45" stroke="none"></circle>
+      <circle cx="4.2" cy="-6.2" r="1.1" fill="#FFFFFF" stroke="none"></circle>
+    </g>
+    <path d="M18,11 Q24,15 30,11" fill="none" stroke-width="1.6" stroke-linecap="round"></path>
+    <path d="M20,11.5 L21.5,14.5 L23,11.8 Z M25,11.8 L26.5,14.5 L28,11.5 Z" fill="#FBF0D4" stroke-width="0.9"></path>`,
+
+  // « #bal-head » — ⚠️ n'apparaît qu'après la manche 3 de la confrontation.
+  demasque: (yeuxSVG) => `
+    <path d="M-23,-18 L-31,-40 L-7,-28 Z" fill="#BFBCCE"></path>
+    <path d="M23,-18 L31,-40 L7,-28 Z" fill="#BFBCCE"></path>
+    <path d="M-21,-22 L-27,-35 L-11,-27 Z" fill="#6E5A6B" stroke="none"></path>
+    <path d="M21,-22 L27,-35 L11,-27 Z" fill="#6E5A6B" stroke="none"></path>
+    <ellipse cx="0" cy="0" rx="24" ry="29" fill="#BFBCCE"></ellipse>
+    <ellipse cx="0" cy="13" rx="13" ry="9.5" fill="#D6CFE0"></ellipse>
+    <path d="M-3.6,7 L3.6,7 L0,11 Z" fill="#9E6E86" stroke="none"></path>
+    <g stroke="#2F2A45" stroke-width="1.1" opacity="0.4" stroke-linecap="round" fill="none">
+      <path d="M-16,9 L-30,6"></path><path d="M-16,14 L-29,15"></path>
+      <path d="M16,9 L30,6"></path><path d="M16,14 L29,15"></path>
+    </g>
+    <ellipse cx="0" cy="-27" rx="33" ry="6.5" fill="#453F5E"></ellipse>
+    <path d="M-19,-27 L-17,-63 Q0,-67 17,-63 L19,-27 Z" fill="#57506F"></path>
+    <path d="M-17,-46 Q0,-42 17,-46" fill="none" stroke="#F4C95D" stroke-width="3.5" stroke-linecap="round"></path>
+    <path d="M-17,-63 Q0,-67 17,-63 Q0,-71 -17,-63 Z" fill="#453F5E"></path>
+    ${yeuxSVG}
+    <path d="M-16,-9 Q-11,-12 -6,-10 M6,-10 Q11,-12 16,-9" stroke="#2F2A45" stroke-width="1.6" stroke-linecap="round" fill="none"></path>
+    <path d="M-7,15 Q2,21 10,13" fill="none" stroke="#2F2A45" stroke-width="1.8" stroke-linecap="round"></path>`,
 }
 
 /**
@@ -463,10 +677,11 @@ const TETES_PLANCHE: Record<string, (yeuxSVG: string) => string> = {
  */
 function teteSVG(o: OptionsPortrait, anime = false): string {
   const brut = yeux(o.regard ?? 'normal', o.fourrure)
+  const classeYeux = anime ? 'pnj-yeux' : ''
   const yeuxSVG = anime ? `<g class="pnj-yeux">${brut}</g>` : brut
 
   const planche = o.planche ? TETES_PLANCHE[o.planche] : undefined
-  if (planche) return planche(yeuxSVG)
+  if (planche) return planche(yeuxSVG, classeYeux)
 
   const fourrure = o.fourrure
   const ventre = o.ventre ?? '#F2EDE0'
@@ -488,10 +703,18 @@ export function portraitSVG(o: OptionsPortrait): string {
   const epaules = `<path d="M-46,58 Q-46,24 0,24 Q46,24 46,58 Z" fill="${habit}" stroke="#2F2A45" stroke-width="2.4" stroke-linejoin="round"></path>
     <ellipse cx="0" cy="28" rx="20" ry="10" fill="${fourrure}" stroke="none"></ellipse>`
 
-  return `<g stroke="#2F2A45" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round">
-    ${epaules}
-    ${teteSVG(o)}
-  </g>`
+  const dedans = `${epaules}${teteSVG(o)}`
+
+  // La corpulence vaut aussi pour les bustes : dans l'alignement de suspects de
+  // la déduction, Malo doit se voir plus petit et Barnabé plus gros — c'est un
+  // indice d'enquête. Mise à l'échelle autour de la ligne d'épaules (y=58).
+  const t = o.taille ?? 1
+  const l = o.largeur ?? 1
+  const contenu = t === 1 && l === 1
+    ? dedans
+    : `<g transform="translate(0 58) scale(${(t * l).toFixed(3)} ${t.toFixed(3)}) translate(0 -58)">${dedans}</g>`
+
+  return `<g stroke="#2F2A45" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round">${contenu}</g>`
 }
 
 // --- Présets des personnages nommés (planches) -----------------------------
@@ -502,14 +725,14 @@ export const PORTRAITS: Record<string, OptionsPortrait> = {
   griffe: { espece: 'chat', fourrure: '#7C8698', ventre: '#E8E4DA', accent: '#5C6478', regard: 'severe', coiffe: 'kepi', habit: '#4A5470', tenue: 'manteau', planche: 'griffe' },
   sardine: { espece: 'chat', fourrure: '#8FA3B0', ventre: '#F2EDE0', accent: '#7C8A99', coiffe: 'foulard-pois', habit: '#59677A', tenue: 'tablier', accessoire: 'poisson', planche: 'sardine' },
   moustache: { espece: 'chat', fourrure: '#A8A39B', ventre: '#F2EDE0', accent: '#8C877E', coiffe: 'casquette', habit: '#8A7B5C', tenue: 'gilet', planche: 'moustache' },
-  /** Maîtresse du bal (Manoir). */
-  duchesse: { espece: 'chat', fourrure: '#EFEAE0', ventre: '#F7F3EA', accent: '#C9BFAE', coiffe: 'noeud', habit: '#7A4E86', tenue: 'robe', accessoire: 'eventail' },
-  /** Bibliothécaire (Bibliothèque). */
-  plume: { espece: 'chat', fourrure: '#C2B6A6', ventre: '#F2EDE0', accent: '#9A8C7C', coiffe: 'monocle', habit: '#5A6A80', tenue: 'robe', accessoire: 'livre' },
-  /** La diva (Théâtre). */
-  sopranino: { espece: 'chat', fourrure: '#E7DCC8', ventre: '#F7F3EA', accent: '#C9B79C', coiffe: 'noeud', habit: '#A8433B', tenue: 'robe', accessoire: 'eventail' },
+  /** Maîtresse du bal (Manoir) — planche « habitants n° 2 ». */
+  duchesse: { espece: 'chat', fourrure: '#EFEAE0', ventre: '#F7F3EA', accent: '#C9BFAE', habit: '#7A4E86', tenue: 'robe', accessoire: 'eventail', planche: 'duchesse', largeur: 1.06 },
+  /** Bibliothécaire (Bibliothèque) — planche « habitants n° 2 ». */
+  plume: { espece: 'chat', fourrure: '#C2B6A6', ventre: '#F2EDE0', accent: '#9A8C7C', habit: '#5A6A80', tenue: 'robe', accessoire: 'livre', planche: 'plume' },
+  /** La diva (Théâtre) — planche « habitants n° 2 ». Broche note de musique. */
+  sopranino: { espece: 'chat', fourrure: '#E7DCC8', ventre: '#F7F3EA', accent: '#C9B79C', habit: '#A8433B', tenue: 'robe', accessoire: 'broche-note', planche: 'sopranino' },
   /** Visage révélé du Fantôme Gris — n'apparaît QU'APRÈS la manche 3. */
-  demasque: { espece: 'chat', fourrure: '#BFBCCE', ventre: '#E8E6EF', accent: '#A5A2BB', coiffe: 'haut-de-forme', habit: '#8E8AA6' },
+  demasque: { espece: 'chat', fourrure: '#BFBCCE', ventre: '#D6CFE0', accent: '#6E5A6B', regard: 'ambre', habit: '#57506F', tenue: 'manteau', planche: 'demasque' },
 }
 
 // ---------------------------------------------------------------------------
@@ -642,6 +865,21 @@ function accessoireSVG(accessoire: Accessoire): string {
       return `<g transform="rotate(-14 50 92)">
         <path d="M50,104 L30,74 Q50,62 70,74 Z" fill="#F4C95D"></path>
         <path d="M50,104 L40,80 M50,104 L50,74 M50,104 L60,80" stroke="#2F2A45" stroke-width="1.2" opacity="0.5"></path></g>`
+    case 'broche-note':
+      // Broche de la planche, portée sur la poitrine (et non tenue à la patte).
+      return `<g transform="translate(-8 64)">
+        <circle cx="0" cy="0" r="5" fill="#F4C95D" stroke-width="2"></circle>
+        <path d="M4,-1.5 V-14 q4,1 7,-2.5" fill="none" stroke="#F4C95D" stroke-width="3" stroke-linecap="round"></path>
+      </g>`
+    case 'plume-envol':
+      // « #hf » : la plume qui se détache — l'indice des rouages.
+      return `<g transform="translate(50 96) rotate(24)">
+        <path d="M0,0 Q6,-8 3,-16 Q-4,-9 0,0 Z" fill="#B8AA97" stroke="#2F2A45" stroke-width="1.6"></path>
+        <path d="M1,-3 L2,-13" stroke="#2F2A45" stroke-width="1" opacity="0.5" fill="none"></path>
+      </g>
+      <g transform="translate(66 118) rotate(-38) scale(0.8)">
+        <path d="M0,0 Q6,-8 3,-16 Q-4,-9 0,0 Z" fill="#B8AA97" stroke="#2F2A45" stroke-width="1.6"></path>
+      </g>`
     case 'aucun':
     default:
       return ''
@@ -678,11 +916,20 @@ export function corpsSVG(o: OptionsPortrait, anime = true): string {
          </g>`}
     ${accessoireSVG(o.accessoire ?? 'aucun')}`
 
-  return `<g stroke="#2F2A45" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round">
+  const dedans = `
     ${queue(o.espece, fourrure, ombre)}
     <g class="${anime ? 'pnj-corps' : ''}">${corps}</g>
-    <g transform="translate(0 28)">${teteSVG(o, anime)}</g>
-  </g>`
+    <g transform="translate(0 28)">${teteSVG(o, anime)}</g>`
+
+  // La corpulence se règle AUTOUR DE LA LIGNE DE SOL (y=138) : le personnage
+  // grandit ou rapetisse vers le haut, ses pieds restent posés au même endroit.
+  const t = o.taille ?? 1
+  const l = o.largeur ?? 1
+  const echelle = t === 1 && l === 1
+    ? dedans
+    : `<g transform="translate(0 138) scale(${(t * l).toFixed(3)} ${t.toFixed(3)}) translate(0 -138)">${dedans}</g>`
+
+  return `<g stroke="#2F2A45" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round">${echelle}</g>`
 }
 
 /**
@@ -690,5 +937,9 @@ export function corpsSVG(o: OptionsPortrait, anime = true): string {
  * plus un peu d'air : sert à poser la bulle « parle-moi » au-dessus de la tête.
  */
 export const HAUTEUR_CORPS = 188
+
+/** Hauteur réelle d'un personnage, corpulence comprise (position de sa bulle). */
+export const hauteurCorps = (o: OptionsPortrait): number =>
+  HAUTEUR_CORPS * (o.taille ?? 1)
 
 export { esc }

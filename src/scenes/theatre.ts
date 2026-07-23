@@ -4,7 +4,9 @@ import { PORTRAITS } from '../art'
 const RIDEAU: Suspect = { id: 'rideau', nom: 'Rideau', role: 'Machiniste costaud', portrait: { espece: 'chat', fourrure: '#7C8698', ventre: '#E4E1D8', accent: '#5C6478', coiffe: 'casquette', habit: '#4A4058' } }
 const MELODIE: Suspect = { id: 'melodie', nom: 'Mélodie', role: 'Harpiste rêveuse', portrait: { espece: 'chat', fourrure: '#C7A9C0', ventre: '#F2EDE0', accent: '#9A7A94', coiffe: 'aucune', habit: '#8A6B9A' } }
 const FAUSSET: Suspect = { id: 'fausset', nom: 'Fausset', role: 'Ténor bavard', portrait: { espece: 'chat', fourrure: '#C9A25C', ventre: '#F2EDE0', accent: '#9A7A3E', coiffe: 'noeud', habit: '#33304A' } }
-const PAILLETTE: Suspect = { id: 'paillette', nom: 'Paillette', role: 'Costumière étourdie', portrait: { espece: 'chat', fourrure: '#D9A6C0', ventre: '#F2EDE0', accent: '#F4C95D', coiffe: 'aucune', habit: '#C4844E' } }
+// ⚠️ Planche « coupables » : les fils dorés accrochés à sa fourrure sont
+// l'indice des fils retrouvés sur le pupitre.
+const PAILLETTE: Suspect = { id: 'paillette', nom: 'Paillette', role: 'Costumière étourdie', portrait: { espece: 'chat', fourrure: '#BE9765', ventre: '#EFE2CC', accent: '#9A7A4E', habit: '#C4844E', tenue: 'echarpe', planche: 'paillette' } }
 const LUMIERE: Suspect = { id: 'lumiere', nom: 'Lumière', role: 'Éclairagiste précis', portrait: { espece: 'chat', fourrure: '#A8A39B', ventre: '#F2EDE0', accent: '#7C776E', coiffe: 'aucune', habit: '#5A5370' } }
 const ECHO: Suspect = { id: 'echo', nom: 'Écho', role: 'Vieux souffleur discret', portrait: { espece: 'chat', fourrure: '#8F97A6', ventre: '#E4E1D8', accent: '#6A7182', coiffe: 'aucune', habit: '#4A4660', regard: 'endormi' } }
 
